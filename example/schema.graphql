@@ -1,0 +1,47 @@
+"CAPITALIZE ALL LETTERS IN STRING"
+directive @uppercase on FIELD | FIELD_DEFINITION
+
+type Query {
+    account(id: ID!): Account
+    sum: Int
+}
+
+interface Node {
+    id: ID!
+}
+
+type Account implements Node {
+    id: ID!
+    number: String! @uppercase
+    currency: Currency!
+    transactions: [Transaction!]!
+}
+
+type Transaction implements Node {
+    id: ID!
+    amount: Int!
+    ups: String
+    createdAt: DateTime
+    status: TransactionStatus!
+}
+
+type NamedCurrency implements Node {
+    id: ID!
+    name: String!
+}
+
+type CodedCurrency implements Node {
+    id: ID!
+    code: Int!
+}
+
+union Currency = NamedCurrency | CodedCurrency
+
+"TRANSACTION STATUS DOC"
+enum TransactionStatus {
+    NEW
+    "SUCCESS DOC"
+    SUCCESS
+    FAIL
+}
+scalar DateTime

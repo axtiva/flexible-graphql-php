@@ -1,0 +1,31 @@
+{
+  "name": "axtiva/flexible-graphql-php",
+  "description": "Schema SDL first lib for generate php code from graphql sdl to TypeRegistry with webonyx/graphql-php",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "bpteam",
+      "email": "bpteam22@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Axtiva\\FlexibleGraphql\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Axtiva\\FlexibleGraphql\\Example\\": "example/"
+    }
+  },
+  "require": {
+    "php": ">=7.4",
+    "webonyx/graphql-php": "^14.0",
+    "nikic/php-parser": "^4.12",
+    "twig/twig": "^3.0"
+  },
+  "require-dev": {
+    "psr/container": "^1 | ^2"
+  }
+}
