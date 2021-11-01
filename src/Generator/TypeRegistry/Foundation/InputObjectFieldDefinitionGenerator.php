@@ -17,7 +17,7 @@ class InputObjectFieldDefinitionGenerator implements InputObjectFieldDefinitionG
 
     public function __construct(
         VariableSerializerInterface $serializer,
-        TypeDefinitionResolverInterface $typeDefinitionResolver,
+        TypeDefinitionResolverInterface $typeDefinitionResolver
     ) {
         $this->serializer = $serializer;
         $this->typeDefinitionResolver = $typeDefinitionResolver;

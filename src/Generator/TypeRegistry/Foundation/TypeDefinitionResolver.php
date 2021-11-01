@@ -21,7 +21,7 @@ class TypeDefinitionResolver implements TypeDefinitionResolverInterface
 
     public function __construct(
         ScalarTypeGeneratorInterface             $typeGenerator,
-        TypeRegistryMethodCallGeneratorInterface $methodCallGenerator,
+        TypeRegistryMethodCallGeneratorInterface $methodCallGenerator
     ) {
         $this->typeGenerator = $typeGenerator;
         $this->methodCallGenerator = $methodCallGenerator;
