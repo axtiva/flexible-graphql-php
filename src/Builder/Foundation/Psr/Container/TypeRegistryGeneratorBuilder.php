@@ -113,11 +113,11 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
 
         $unionTypeResolver = new Resolver\Psr\Container\UnionTypeGenerator(
             new UnionResolveTypeGeneratorConfig($this->config),
-            $this->containerCallGenerator
+            $this->wrappedContainerCallGenerator
         );
         $scalarResolver = new Resolver\Psr\Container\ScalarGenerator(
             new ScalarResolverGeneratorConfig($this->config),
-            $this->wrappedContainerCallGenerator
+            $this->containerCallGenerator
         );
 
         $typeRegistryMethodNameGenerator = new TypeRegistryMethodNameGenerator();
