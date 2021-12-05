@@ -13,7 +13,7 @@ use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\ScalarResolverGenera
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\TypeRegistryGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\UnionResolveTypeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\TypeRegistryGeneratorConfigInterface;
-use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\ContainerCallResolverProvider;
+use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\WrappedContainerCallResolverProvider;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\ResolverProviderInterface;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\BooleanGenerator;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\CompositeScalarTypeGenerator;
@@ -55,7 +55,7 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
     {
         $this->config = new CodeGeneratorConfig($dir, $namespace);
         $this->registryConfig = new TypeRegistryGeneratorConfig($this->config);
-        $this->containerCallGenerator = new ContainerCallResolverProvider();
+        $this->containerCallGenerator = new WrappedContainerCallResolverProvider();
         $this->serializer = new VariableSerializer();
     }
 
