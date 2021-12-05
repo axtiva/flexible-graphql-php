@@ -8,12 +8,19 @@ use Axtiva\FlexibleGraphql\Generator\ResolverProvider\ResolverProviderInterface;
 
 class WrappedContainerCallResolverProvider implements ResolverProviderInterface
 {
+    private ResolverProviderInterface $generator;
+
+    public function __construct(ResolverProviderInterface $generator)
+    {
+        $this->generator = $generator;
+    }
+
     public function generate(string $name): string
     {
         return sprintf(<<<'PHP'
-function ($rootValue, $args, $context, $info) {
-    $this->container->get('%s')($rootValue, $args, $context, $info);
-}
-PHP, $name);
+(function ($rootValue, $args, $context, $info) {
+    return %s($rootValue, $args, $context, $info);
+})
+PHP, $this->generator->generate($name));
     }
 }
