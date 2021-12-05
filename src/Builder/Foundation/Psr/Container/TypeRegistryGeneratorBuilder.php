@@ -13,6 +13,7 @@ use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\ScalarResolverGenera
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\TypeRegistryGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\UnionResolveTypeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\TypeRegistryGeneratorConfigInterface;
+use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\ContainerCallResolverProvider;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\WrappedContainerCallResolverProvider;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\ResolverProviderInterface;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\BooleanGenerator;
@@ -45,6 +46,7 @@ use Axtiva\FlexibleGraphql\Generator\TypeRegistry\TypeRegistryGeneratorInterface
 
 class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterface
 {
+    private ResolverProviderInterface $wrappedContainerCallGenerator;
     private ResolverProviderInterface $containerCallGenerator;
     private ?string $defaultResolverServiceName = null;
     private VariableSerializerInterface $serializer;
@@ -55,7 +57,8 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
     {
         $this->config = new CodeGeneratorConfig($dir, $namespace);
         $this->registryConfig = new TypeRegistryGeneratorConfig($this->config);
-        $this->containerCallGenerator = new WrappedContainerCallResolverProvider();
+        $this->containerCallGenerator = new ContainerCallResolverProvider();
+        $this->wrappedContainerCallGenerator = new WrappedContainerCallResolverProvider($this->containerCallGenerator);
         $this->serializer = new VariableSerializer();
     }
 
@@ -72,6 +75,7 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
     public function setContainerCallGenerator(ResolverProviderInterface $generator): void
     {
         $this->containerCallGenerator = $generator;
+        $this->wrappedContainerCallGenerator = new WrappedContainerCallResolverProvider($generator);
     }
 
     public function setDefaultFieldResolver(string $defaultResolverServiceName): void
@@ -89,7 +93,7 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
         if ($this->defaultResolverServiceName) {
             $defaultResolver = new Resolver\Psr\Container\DefaultFieldGenerator(
                 $this->defaultResolverServiceName,
-                $this->containerCallGenerator
+                $this->wrappedContainerCallGenerator
             );
         } else {
             $defaultResolver = new Resolver\DefaultResolver\FieldGenerator();
@@ -97,7 +101,7 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
 
         $fieldGenerator = new Resolver\Psr\Container\FieldGenerator(
             new FieldResolverGeneratorConfig($this->config),
-            $this->containerCallGenerator,
+            $this->wrappedContainerCallGenerator,
         );
 
         $fieldResolverWithDirectiveGenerator = new Resolver\Wrapper\FieldResolverDirectiveWrapped(
@@ -113,7 +117,7 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
         );
         $scalarResolver = new Resolver\Psr\Container\ScalarGenerator(
             new ScalarResolverGeneratorConfig($this->config),
-            $this->containerCallGenerator
+            $this->wrappedContainerCallGenerator
         );
 
         $typeRegistryMethodNameGenerator = new TypeRegistryMethodNameGenerator();
