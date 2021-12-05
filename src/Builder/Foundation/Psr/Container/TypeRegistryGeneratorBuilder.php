@@ -93,7 +93,7 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
         if ($this->defaultResolverServiceName) {
             $defaultResolver = new Resolver\Psr\Container\DefaultFieldGenerator(
                 $this->defaultResolverServiceName,
-                $this->wrappedContainerCallGenerator
+                $this->containerCallGenerator
             );
         } else {
             $defaultResolver = new Resolver\DefaultResolver\FieldGenerator();
@@ -113,7 +113,7 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
 
         $unionTypeResolver = new Resolver\Psr\Container\UnionTypeGenerator(
             new UnionResolveTypeGeneratorConfig($this->config),
-            $this->wrappedContainerCallGenerator
+            $this->containerCallGenerator
         );
         $scalarResolver = new Resolver\Psr\Container\ScalarGenerator(
             new ScalarResolverGeneratorConfig($this->config),
