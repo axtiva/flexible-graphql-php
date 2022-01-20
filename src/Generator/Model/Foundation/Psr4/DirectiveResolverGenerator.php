@@ -38,7 +38,7 @@ class DirectiveResolverGenerator implements DirectiveResolverGeneratorInterface
             throw new UnsupportedType(sprintf('Unsupported directive %s for %s', $directive->name, __CLASS__));
         }
 
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates');
+        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
         $twig = new Environment($loader);
         return $twig->render('Model/DirectiveResolver.php.twig', [
             'namespace' => $this->config->getDirectiveResolverNamespace($directive),

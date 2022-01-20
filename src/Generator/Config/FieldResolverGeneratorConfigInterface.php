@@ -5,7 +5,7 @@ namespace Axtiva\FlexibleGraphql\Generator\Config;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\Type;
 
-interface FieldResolverGeneratorConfigInterface
+interface FieldResolverGeneratorConfigInterface extends LanguageLevelConfigInterface
 {
     public function getResolverNamespace(): ?string;
     public function getResolverDirPath(): string;

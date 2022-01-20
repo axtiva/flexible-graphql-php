@@ -38,7 +38,7 @@ class FieldResolverGenerator implements FieldResolverGeneratorInterface
             throw new UnsupportedType(sprintf('Unsupported field %s for %s', $field->name, __CLASS__));
         }
 
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates');
+        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
         $twig = new Environment($loader);
 
         return $twig->render('Model/FieldResolver.php.twig', [

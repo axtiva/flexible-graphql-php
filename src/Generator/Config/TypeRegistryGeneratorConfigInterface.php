@@ -2,7 +2,7 @@
 
 namespace Axtiva\FlexibleGraphql\Generator\Config;
 
-interface TypeRegistryGeneratorConfigInterface
+interface TypeRegistryGeneratorConfigInterface extends LanguageLevelConfigInterface
 {
     public function getTypeRegistryNamespace(): ?string;
     public function getTypeRegistryClassName(): string;

@@ -4,7 +4,7 @@ namespace Axtiva\FlexibleGraphql\Generator\Config;
 
 use GraphQL\Type\Definition\Directive;
 
-interface DirectiveResolverGeneratorConfigInterface
+interface DirectiveResolverGeneratorConfigInterface extends LanguageLevelConfigInterface
 {
     public function getDirectiveResolverNamespace(Directive $directive): ?string;
     public function getDirectiveResolverClassName(Directive $directive): string;

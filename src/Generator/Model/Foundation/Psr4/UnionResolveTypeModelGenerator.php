@@ -45,7 +45,7 @@ class UnionResolveTypeModelGenerator implements UnionResolveTypeModelGeneratorIn
         }
         /** @var UnionType $type */
 
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates');
+        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
         $twig = new Environment($loader);
 
         $classesInUse = [];

@@ -40,7 +40,7 @@ class EnumModelGenerator implements EnumModelGeneratorInterface
             throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
         }
 
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates');
+        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
         $twig = new Environment($loader);
 
         return $twig->render('Model/EnumModel.php.twig', [

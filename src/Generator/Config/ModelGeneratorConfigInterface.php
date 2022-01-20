@@ -4,7 +4,7 @@ namespace Axtiva\FlexibleGraphql\Generator\Config;
 
 use GraphQL\Type\Definition\Type;
 
-interface ModelGeneratorConfigInterface
+interface ModelGeneratorConfigInterface extends LanguageLevelConfigInterface
 {
     public function getModelNamespace(Type $type): ?string;
     public function getModelClassName(Type $type): string;
