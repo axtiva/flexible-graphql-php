@@ -4,10 +4,13 @@ namespace Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4;
 
 use Axtiva\FlexibleGraphql\Generator\Config\CodeGeneratorConfigInterface;
 use Axtiva\FlexibleGraphql\Generator\Config\DirectiveResolverGeneratorConfigInterface;
+use Axtiva\FlexibleGraphql\Generator\Config\Foundation\GetPHPVersionFromCodeGeneratorTrait;
 use GraphQL\Type\Definition\Directive;
 
 class DirectiveResolverGeneratorConfig implements DirectiveResolverGeneratorConfigInterface
 {
+    use GetPHPVersionFromCodeGeneratorTrait;
+
     private CodeGeneratorConfigInterface $config;
 
     public function __construct(CodeGeneratorConfigInterface $config)

@@ -62,9 +62,9 @@ class CodeGeneratorBuilder implements CodeGeneratorBuilderInterface
     private ScalarResolverGeneratorConfigInterface $scalarConfig;
     private DirectiveResolverGeneratorConfigInterface $directiveConfig;
 
-    public function __construct(string $dir, string $namespace = null)
+    public function __construct(CodeGeneratorConfigInterface $config)
     {
-        $this->config = new CodeGeneratorConfig($dir, $namespace);
+        $this->config = $config;
         $this->objectGeneratorConfig = new ObjectGeneratorConfig($this->config);
         $this->interfaceGeneratorConfig = new InterfaceGeneratorConfig($this->config);
         $this->unionModelConfig = new UnionModelGeneratorConfig($this->config);

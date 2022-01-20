@@ -38,7 +38,7 @@ class ScalarResolverGenerator implements ScalarResolverGeneratorInterface
         }
         /** @var CustomScalarType $type */
 
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates');
+        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
         $twig = new Environment($loader);
 
         return $twig->render('Model/ScalarResolver.php.twig', [

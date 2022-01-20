@@ -53,9 +53,9 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
     private TypeRegistryGeneratorConfigInterface $registryConfig;
     private CodeGeneratorConfigInterface $config;
 
-    public function __construct(string $dir, string $namespace = null)
+    public function __construct(CodeGeneratorConfigInterface $config)
     {
-        $this->config = new CodeGeneratorConfig($dir, $namespace);
+        $this->config = $config;
         $this->registryConfig = new TypeRegistryGeneratorConfig($this->config);
         $this->containerCallGenerator = new ContainerCallResolverProvider();
         $this->wrappedContainerCallGenerator = new WrappedContainerCallResolverProvider($this->containerCallGenerator);
