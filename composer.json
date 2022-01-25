@@ -16,7 +16,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Axtiva\\FlexibleGraphql\\Example\\": "example/"
+      "Axtiva\\FlexibleGraphql\\Example\\": "example/",
+      "Axtiva\\FlexibleGraphql\\Tests\\": "tests/"
     }
   },
   "require": {
@@ -26,6 +27,7 @@
     "twig/twig": "^1.0 | ^2.0 | ^3.0"
   },
   "require-dev": {
-    "psr/container": "^1 | ^2"
+    "psr/container": "^1 | ^2",
+    "phpunit/phpunit": "^9.5"
   }
 }
