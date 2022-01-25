@@ -6,6 +6,9 @@ use Axtiva\FlexibleGraphql\Generator\Model\FieldProviderInterface;
 use PhpParser\Node;
 use PhpParser\NodeVisitorAbstract;
 
+/**
+ * @internal
+ */
 class PropertyNodeVisitor extends NodeVisitorAbstract implements FieldProviderInterface
 {
     private array $variables = [];
