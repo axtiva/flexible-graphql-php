@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\Psr\Container;
 
 use Axtiva\FlexibleGraphql\Generator\Config\UnionResolveTypeGeneratorConfigInterface;
-use Axtiva\FlexibleGraphql\Generator\ResolverProvider\ResolverProviderInterface;
+use Axtiva\FlexibleGraphql\Generator\ResolverProvider\UnionResolverProviderInterface;
 use GraphQL\Type\Definition\UnionType;
 use Axtiva\FlexibleGraphql\Generator\Exception\NotDefinedResolver;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\UnionTypeResolverGeneratorInterface;
 
 class UnionTypeGenerator implements UnionTypeResolverGeneratorInterface
 {
-    private ResolverProviderInterface $resolverProvider;
+    private UnionResolverProviderInterface $resolverProvider;
     private UnionResolveTypeGeneratorConfigInterface $unionConfig;
 
     public function __construct(
         UnionResolveTypeGeneratorConfigInterface $unionConfig,
-        ResolverProviderInterface $resolverProvider
+        UnionResolverProviderInterface $resolverProvider
     ) {
         $this->resolverProvider = $resolverProvider;
         $this->unionConfig = $unionConfig;
@@ -25,9 +25,10 @@ class UnionTypeGenerator implements UnionTypeResolverGeneratorInterface
 
     public function generate(UnionType $type): string
     {
-        if (file_exists($this->unionConfig->getModelClassFileName($type))) {
+        if (class_exists($this->unionConfig->getModelFullClassName($type))) {
             return $this->resolverProvider->generate(
-                $this->unionConfig->getModelFullClassName($type)
+                $this->unionConfig,
+                $type
             );
         }
 

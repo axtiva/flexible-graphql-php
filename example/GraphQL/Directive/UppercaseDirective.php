@@ -13,7 +13,16 @@ use Axtiva\FlexibleGraphql\Resolver\DirectiveResolverInterface;
  */
 final class UppercaseDirective implements DirectiveResolverInterface
 {
-    function __invoke(callable $next, $directiveArgs, $rootValue, $args, $context, ResolveInfo $info)
+    /**
+     * @param callable $next
+     * @param $directiveArgs
+     * @param $rootValue
+     * @param $args
+     * @param $context
+     * @param ResolveInfo $info
+     * @return mixed
+     */
+    public function __invoke(callable $next, $directiveArgs, $rootValue, $args, $context, ResolveInfo $info)
     {
         return mb_strtoupper($next($rootValue, $args, $context, $info));
     }

@@ -1,0 +1,8 @@
+type Account {
+    id: ID!
+    number: String!
+}
+
+extend type Query {
+    sum: Int
+}

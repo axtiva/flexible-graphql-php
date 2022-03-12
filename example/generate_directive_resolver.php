@@ -18,4 +18,4 @@ $builder = new CodeGeneratorBuilder(new CodeGeneratorConfig($dir, CodeGeneratorC
 $generator = $builder->build();
 
 $directive = $schema->getDirective('uppercase');
-$generator->generateDirectiveResolver($directive, $schema);
+foreach($generator->generateDirectiveResolver($directive, $schema) as $item);

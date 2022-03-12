@@ -6,7 +6,7 @@ namespace {{ namespace }};
 {% endif %}
 
 use GraphQL\Language\AST\Node;
-use Axtiva\FlexibleGraphql\Resolver\CustomScalarResolverInterface;
+use Axtiva\FlexibleGraphql\Resolver\TypedCustomScalarResolverInterface;
 use Axtiva\FlexibleGraphql\Generator\Exception\NotImplementedResolver;
 
 /**
@@ -16,8 +16,16 @@ use Axtiva\FlexibleGraphql\Generator\Exception\NotImplementedResolver;
  * {{ description }}
 {% endif %}
  */
-final class {{ short_class_name }} implements CustomScalarResolverInterface
+final class {{ short_class_name }} implements TypedCustomScalarResolverInterface
 {
+    public static function getTypeName(): ?string
+    {
+        return null;
+        // Return type name of scalar for support autocompleate and type checking,
+        // use class name or any scalar name like array, string, int, ...
+        // Example: return \DateTimeImmutable::class;
+    }
+
     public function serialize($value)
     {
         throw new NotImplementedResolver('Not implemented field resolver ' . __CLASS__);

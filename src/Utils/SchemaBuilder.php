@@ -25,7 +25,7 @@ class SchemaBuilder
                     if (empty($schema)) {
                         $schema = BuildSchema::build(Parser::parse(file_get_contents($fsElement)));
                     } else {
-                        SchemaExtender::extend($schema, Parser::parse(file_get_contents($fsElement)));
+                        $schema = SchemaExtender::extend($schema, Parser::parse(file_get_contents($fsElement)));
                     }
                 }
             }

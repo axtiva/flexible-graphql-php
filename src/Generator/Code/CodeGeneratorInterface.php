@@ -22,14 +22,14 @@ interface CodeGeneratorInterface
     public function generateType(Type $type, Schema $schema): iterable;
 
     /**
-     * @return GeneratedCode class name and file path to generated file
+     * @return GeneratedCode[] class name and file path to generated files
      */
-    public function generateFieldResolver(Type $type, FieldDefinition $field, Schema $schema): GeneratedCode;
+    public function generateFieldResolver(Type $type, FieldDefinition $field, Schema $schema): iterable;
 
     /**
-     * @return GeneratedCode path to generated file
+     * @return GeneratedCode[] path to generated files
      */
-    public function generateDirectiveResolver(Directive $directive, Schema $schema): GeneratedCode;
+    public function generateDirectiveResolver(Directive $directive, Schema $schema): iterable;
 
     /**
      * @return GeneratedCode path to generated file

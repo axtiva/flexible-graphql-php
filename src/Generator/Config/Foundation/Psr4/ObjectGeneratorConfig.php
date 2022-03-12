@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4;
 
 use Axtiva\FlexibleGraphql\Generator\Config\CodeGeneratorConfigInterface;
@@ -11,7 +13,7 @@ class ObjectGeneratorConfig implements ObjectGeneratorConfigInterface
 {
     use GetPHPVersionFromCodeGeneratorTrait;
 
-    private CodeGeneratorConfigInterface $config;
+    protected CodeGeneratorConfigInterface $config;
 
     public function __construct(CodeGeneratorConfigInterface $config)
     {
@@ -37,11 +39,11 @@ class ObjectGeneratorConfig implements ObjectGeneratorConfigInterface
 
     public function getModelDirPath(Type $type): string
     {
-        return $this->config->getCodeDirPath() . '/Model';
+        return $this->config->getCodeDirPath() . \DIRECTORY_SEPARATOR . 'Model';
     }
 
     public function getModelClassFileName(Type $type): string
     {
-        return $this->getModelDirPath($type) . '/' . $this->getModelClassName($type) . '.php';
+        return $this->getModelDirPath($type) . \DIRECTORY_SEPARATOR . $this->getModelClassName($type) . '.php';
     }
 }

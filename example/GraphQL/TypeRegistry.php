@@ -9,7 +9,7 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
-use GraphQL\Type\Definition\EnumType;
+use Axtiva\FlexibleGraphql\Type\EnumType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\UnionType;
@@ -49,7 +49,10 @@ class TypeRegistry
             'name' => 'account',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AccountResolver'),
+            'resolve' => (function ($rootValue, $args, $context, $info) {
+    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\AccountResolverArgs($args);
+    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AccountResolver')($rootValue, $args, $context, $info);
+}),
             'type' => function() { return $this->getType('Account'); },
             'args' => ['id' => [
             'name' => 'id',
@@ -61,9 +64,48 @@ class TypeRegistry
             'name' => 'sum',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\SumResolver'),
+            'resolve' => function($rootValue, $args, $context, $info) {
+                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective')(
+                        (function ($rootValue, $args, $context, $info) {
+    
+    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\SumResolver')($rootValue, $args, $context, $info);
+}), 
+                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\PlusXDirectiveArgs(array (
+  'x' => '7',
+)),
+                        $rootValue, $args, $context, $info
+                        );
+                    },
             'type' => function() { return Type::int(); },
             'args' => [],
+        ]),'dynamicSum' => FieldDefinition::create([
+            'name' => 'dynamicSum',
+            'description' => NULL,
+            'deprecationReason' => NULL,
+            'resolve' => function($rootValue, $args, $context, $info) {
+                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective')(
+                        (function ($rootValue, $args, $context, $info) {
+    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\DynamicSumResolverArgs($args);
+    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\DynamicSumResolver')($rootValue, $args, $context, $info);
+}), 
+                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\PlusXDirectiveArgs(array (
+  'x' => '4',
+)),
+                        $rootValue, $args, $context, $info
+                        );
+                    },
+            'type' => function() { return Type::int(); },
+            'args' => ['x' => [
+            'name' => 'x',
+            'type' => function() { return Type::nonNull(function() { return Type::int(); }); },
+            'defaultValue' => NULL,
+            'description' => NULL,
+        ],'y' => [
+            'name' => 'y',
+            'type' => function() { return Type::nonNull(function() { return Type::int(); }); },
+            'defaultValue' => NULL,
+            'description' => NULL,
+        ]],
         ])],
         ]);
             }
@@ -107,7 +149,10 @@ class TypeRegistry
             'name' => 'transactions',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Account\TransactionsResolver'),
+            'resolve' => (function ($rootValue, $args, $context, $info) {
+    
+    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Account\TransactionsResolver')($rootValue, $args, $context, $info);
+}),
             'type' => function() { return Type::nonNull(function() { return new ListOfType(function() { return Type::nonNull(function() { return $this->getType('Transaction'); }); }); }); },
             'args' => [],
         ])],
@@ -233,7 +278,10 @@ class TypeRegistry
             'name' => 'status',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Transaction\StatusResolver'),
+            'resolve' => (function ($rootValue, $args, $context, $info) {
+    
+    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Transaction\StatusResolver')($rootValue, $args, $context, $info);
+}),
             'type' => function() { return Type::nonNull(function() { return $this->getType('TransactionStatus'); }); },
             'args' => [],
         ])],
@@ -247,11 +295,9 @@ class TypeRegistry
                 return new CustomScalarType([
             'name' => 'DateTime',
             'description' => NULL,
-            
             'serialize' => function($value) {return ($this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar'))->serialize($value);},
             'parseValue' => function($value) {return ($this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar'))->parseValue($value);},
             'parseLiteral' => function($value, $variables) {return ($this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar'))->parseLiteral($value, $variables);},
-            
         ]);
             }
         
@@ -285,6 +331,19 @@ class TypeRegistry
         
 
 
+            public function HelloWorld()
+            {
+                return new CustomScalarType([
+            'name' => 'HelloWorld',
+            'description' => NULL,
+            'serialize' => function($value) {return (\Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultScalarResolver::getInstance())->serialize($value);},
+            'parseValue' => function($value) {return (\Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultScalarResolver::getInstance())->parseValue($value);},
+            'parseLiteral' => function($value, $variables) {return (\Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultScalarResolver::getInstance())->parseLiteral($value, $variables);},
+        ]);
+            }
+        
+
+
     public function directive_uppercase()
     {
         static $directive = null;
@@ -305,9 +364,34 @@ class TypeRegistry
         
 
 
+    public function directive_plusX()
+    {
+        static $directive = null;
+        if ($directive === null) {
+            $directive = new Directive([
+            'name' => 'plusX',
+            'description' => NULL,
+            'isRepeatable' => false,
+            'locations' => ['FIELD','FIELD_DEFINITION'],
+            'args' => [
+                [
+            'name' => 'x',
+            'type' => function() { return Type::nonNull(function() { return Type::int(); }); },
+            'defaultValue' => NULL,
+            'description' => NULL,
+        ]
+            ],
+        ]);
+        }
+        
+        return $directive;
+    }
+        
+
+
     public function getDirectives()
     {
-        return [$this->directive_uppercase()];
+        return [$this->directive_uppercase(),$this->directive_plusX()];
     }
         
 

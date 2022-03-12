@@ -8,6 +8,8 @@ use Axtiva\FlexibleGraphql\Generator\Code\CodeGeneratorInterface;
 use Axtiva\FlexibleGraphql\Generator\Config\ObjectGeneratorConfigInterface;
 use Axtiva\FlexibleGraphql\Generator\Exception\FilesystemException;
 use Axtiva\FlexibleGraphql\Generator\Exception\UnsupportedType;
+use Axtiva\FlexibleGraphql\Generator\Model\ArgsDirectiveResolverModelGeneratorInterface;
+use Axtiva\FlexibleGraphql\Generator\Model\ArgsFieldResolverModelGeneratorInterface;
 use Axtiva\FlexibleGraphql\Generator\Model\DirectiveResolverGeneratorInterface;
 use Axtiva\FlexibleGraphql\Generator\Model\FieldResolverGeneratorInterface;
 use Axtiva\FlexibleGraphql\Generator\Model\Foundation\PHPParser\PropertyNodeVisitor;
@@ -38,11 +40,15 @@ class CodeGenerator implements CodeGeneratorInterface
     private Parser $parser;
     private ScalarResolverGeneratorInterface $scalarResolverGenerator;
     private DirectiveResolverGeneratorInterface $directiveResolverGenerator;
+    private ArgsDirectiveResolverModelGeneratorInterface $argsDirectiveResolverGenerator;
+    private ArgsFieldResolverModelGeneratorInterface $argsFieldResolverModelGenerator;
 
     public function __construct(
         array $fieldResolversGenerator,
         ScalarResolverGeneratorInterface $scalarResolverGenerator,
         DirectiveResolverGeneratorInterface $directiveResolverGenerator,
+        ArgsDirectiveResolverModelGeneratorInterface $argsDirectiveResolverGenerator,
+        ArgsFieldResolverModelGeneratorInterface $argsFieldResolverModelGenerator,
         ModelGeneratorInterface ...$generators
     ) {
         $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
@@ -50,12 +56,12 @@ class CodeGenerator implements CodeGeneratorInterface
         $this->fieldResolversGenerator = $fieldResolversGenerator;
         $this->scalarResolverGenerator = $scalarResolverGenerator;
         $this->directiveResolverGenerator = $directiveResolverGenerator;
+        $this->argsDirectiveResolverGenerator = $argsDirectiveResolverGenerator;
+        $this->argsFieldResolverModelGenerator = $argsFieldResolverModelGenerator;
     }
 
     public function generateAllTypes(Schema $schema): iterable
     {
-        yield from [];
-
         /** @var ObjectType|UnionType $type */
         foreach ($schema->getTypeMap() as $type) {
             yield from $this->generateType($type, $schema);
@@ -64,11 +70,9 @@ class CodeGenerator implements CodeGeneratorInterface
 
     public function generateType(Type $type, Schema $schema): iterable
     {
-        yield from [];
-
         if ($type->name === 'Query' || $type->name === 'Mutation') {
             foreach ($type->getFields() as $field) {
-                yield $this->generateFieldResolver($type, $field, $schema);
+                yield from $this->generateFieldResolver($type, $field, $schema);
             }
         } else {
             if ($this->isSupportedType($type) === false) {
@@ -100,7 +104,7 @@ class CodeGenerator implements CodeGeneratorInterface
                         }
                         foreach ($type instanceof TypeWithFields ? $type->getFields() : [] as $field) {
                             if (!in_array($field->name, $existedFields)) {
-                                yield $this->generateFieldResolver($type, $field, $schema);
+                                yield from $this->generateFieldResolver($type, $field, $schema);
                             }
                         }
                     }
@@ -128,7 +132,7 @@ class CodeGenerator implements CodeGeneratorInterface
         return new GeneratedCode($classname, $filename);
     }
 
-    public function generateDirectiveResolver(Directive $directive, Schema $schema): GeneratedCode
+    public function generateDirectiveResolver(Directive $directive, Schema $schema): iterable
     {
         $classname = $this->directiveResolverGenerator->getConfig()->getDirectiveResolverFullClassName($directive);
         $filename = $this->directiveResolverGenerator->getConfig()->getDirectiveResolverClassFileName($directive);
@@ -137,10 +141,20 @@ class CodeGenerator implements CodeGeneratorInterface
             $this->saveFile($code, $filename);
         }
 
-        return new GeneratedCode($classname, $filename);
+        yield new GeneratedCode($classname, $filename);
+
+        if ($this->argsDirectiveResolverGenerator->isSupportedType($directive)) {
+            $classname = $this->argsDirectiveResolverGenerator->getConfig()->getDirectiveArgsFullClassName($directive);
+            $filename = $this->argsDirectiveResolverGenerator->getConfig()->getDirectiveArgsClassFileName($directive);
+
+            $code = $this->argsDirectiveResolverGenerator->generate($directive, $schema);
+            $this->saveFile($code, $filename);
+
+            yield new GeneratedCode($classname, $filename);
+        }
     }
 
-    public function generateFieldResolver(Type $type, FieldDefinition $field, Schema $schema): GeneratedCode
+    public function generateFieldResolver(Type $type, FieldDefinition $field, Schema $schema): iterable
     {
         foreach ($this->fieldResolversGenerator as $generator) {
             if ($generator->isSupportedType($type, $field)) {
@@ -150,10 +164,22 @@ class CodeGenerator implements CodeGeneratorInterface
                     $code = $generator->generate($type, $field, $schema);
                     $this->saveFile($code, $filename);
                 }
+                yield new GeneratedCode($classname, $filename);
 
-                return new GeneratedCode($classname, $filename);
+                if ($this->argsFieldResolverModelGenerator->isSupportedType($type, $field)) {
+                    $classname = $this->argsFieldResolverModelGenerator->getConfig()->getFieldArgsFullClassName($type, $field);
+                    $filename = $this->argsFieldResolverModelGenerator->getConfig()->getFieldArgsClassFileName($type, $field);
+
+                    $code = $this->argsFieldResolverModelGenerator->generate($type, $field, $schema);
+                    $this->saveFile($code, $filename);
+
+                    yield new GeneratedCode($classname, $filename);
+                }
+
+                return;
             }
         }
+
         throw new UnsupportedType($type->toString() . '.' . $field->getName());
     }
 
@@ -196,7 +222,7 @@ class CodeGenerator implements CodeGeneratorInterface
             }
         }
 
-        if (! file_put_contents($filename, $code)) {
+        if (!file_put_contents($filename, $code)) {
             throw new FilesystemException($filename);
         }
     }

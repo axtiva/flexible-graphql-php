@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4;
 
 use Axtiva\FlexibleGraphql\Generator\Config\CodeGeneratorConfigInterface;
@@ -48,13 +50,13 @@ class FieldResolverGeneratorConfig implements FieldResolverGeneratorConfigInterf
 
     public function getFieldResolverDirPath(Type $type, FieldDefinition $field): string
     {
-        return $this->getResolverDirPath() . DIRECTORY_SEPARATOR . "{$type->toString()}";
+        return $this->getResolverDirPath() . \DIRECTORY_SEPARATOR . "{$type->toString()}";
     }
 
     public function getFieldResolverClassFileName(Type $type, FieldDefinition $field): string
     {
         return $this->getFieldResolverDirPath($type, $field)
-            . DIRECTORY_SEPARATOR
+            . \DIRECTORY_SEPARATOR
             . $this->getFieldResolverClassName($type, $field) . '.php';
     }
 }

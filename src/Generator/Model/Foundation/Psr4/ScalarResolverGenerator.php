@@ -37,7 +37,6 @@ class ScalarResolverGenerator implements ScalarResolverGeneratorInterface
             throw new UnsupportedType(sprintf('Unsupported type %s in %s', $type->name, __CLASS__));
         }
         /** @var CustomScalarType $type */
-
         $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
         $twig = new Environment($loader);
 

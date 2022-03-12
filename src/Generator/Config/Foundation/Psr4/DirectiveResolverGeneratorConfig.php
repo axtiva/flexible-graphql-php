@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4;
 
 use Axtiva\FlexibleGraphql\Generator\Config\CodeGeneratorConfigInterface;
@@ -37,11 +39,11 @@ class DirectiveResolverGeneratorConfig implements DirectiveResolverGeneratorConf
 
     public function getDirectiveResolverClassFileName(Directive $directive): string
     {
-        return $this->getDirectiveResolverDirPath($directive) . "/{$this->getDirectiveResolverClassName($directive)}.php";
+        return $this->getDirectiveResolverDirPath($directive) . \DIRECTORY_SEPARATOR . "{$this->getDirectiveResolverClassName($directive)}.php";
     }
 
     public function getDirectiveResolverDirPath(Directive $directive): string
     {
-        return $this->config->getCodeDirPath() . '/Directive';
+        return $this->config->getCodeDirPath() . \DIRECTORY_SEPARATOR . 'Directive';
     }
 }

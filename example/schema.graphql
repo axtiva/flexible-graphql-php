@@ -1,9 +1,11 @@
 "CAPITALIZE ALL LETTERS IN STRING"
 directive @uppercase on FIELD | FIELD_DEFINITION
+directive @plusX(x: Int!) on FIELD | FIELD_DEFINITION
 
 type Query {
     account(id: ID!): Account
-    sum: Int
+    sum: Int @plusX(x: 7)
+    dynamicSum(x: Int!, y: Int!): Int @plusX(x: 4)
 }
 
 interface Node {
@@ -45,3 +47,4 @@ enum TransactionStatus {
     FAIL
 }
 scalar DateTime
+scalar HelloWorld

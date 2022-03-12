@@ -16,13 +16,16 @@ class CustomScalarGenerator implements TypeGeneratorInterface, ScalarTypeGenerat
 {
     private VariableSerializerInterface $serializer;
     private ScalarResolverGeneratorInterface $resolverGenerator;
+    private ScalarResolverGeneratorInterface $defaultResolverGenerator;
 
     public function __construct(
         VariableSerializerInterface $serializer,
-        ScalarResolverGeneratorInterface $resolverGenerator
+        ScalarResolverGeneratorInterface $resolverGenerator,
+        ScalarResolverGeneratorInterface $defaultResolverGenerator
     ) {
         $this->serializer = $serializer;
         $this->resolverGenerator = $resolverGenerator;
+        $this->defaultResolverGenerator = $defaultResolverGenerator;
     }
 
     public function isSupportedType(Type $type): bool
@@ -40,20 +43,18 @@ class CustomScalarGenerator implements TypeGeneratorInterface, ScalarTypeGenerat
             throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
         }
 
-        $resolverTemplate = '';
         if ($this->resolverGenerator->hasResolver($type)) {
             $customResolver = $this->resolverGenerator->generate($type);
-            $resolverTemplate = "
-            'serialize' => function(\$value) {return ({$customResolver})->serialize(\$value);},
-            'parseValue' => function(\$value) {return ({$customResolver})->parseValue(\$value);},
-            'parseLiteral' => function(\$value, \$variables) {return ({$customResolver})->parseLiteral(\$value, \$variables);},
-            ";
+        } else {
+            $customResolver = $this->defaultResolverGenerator->generate($type);
         }
 
         return "new CustomScalarType([
             'name' => {$this->serializer->serialize($type->name)},
             'description' => {$this->serializer->serialize($type->description)},
-            {$resolverTemplate}
+            'serialize' => function(\$value) {return ({$customResolver})->serialize(\$value);},
+            'parseValue' => function(\$value) {return ({$customResolver})->parseValue(\$value);},
+            'parseLiteral' => function(\$value, \$variables) {return ({$customResolver})->parseLiteral(\$value, \$variables);},
         ])";
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4;
 
 use Axtiva\FlexibleGraphql\Generator\Config\CodeGeneratorConfigInterface;
@@ -37,13 +39,13 @@ class EnumModelGeneratorConfig implements EnumObjectGeneratorConfigInterface
 
     public function getModelClassFileName(Type $type): string
     {
-        return $this->getModelDirPath($type) . '/' . $this->getModelClassName($type) . '.php';
+        return $this->getModelDirPath($type) . \DIRECTORY_SEPARATOR . $this->getModelClassName($type) . '.php';
     }
 
     public function getModelDirPath(Type $type): string
     {
         return $this->config->getCodeDirPath()
-            . DIRECTORY_SEPARATOR
+            . \DIRECTORY_SEPARATOR
             . 'Model';
     }
 }
