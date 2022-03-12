@@ -3,6 +3,7 @@
 declare (strict_types=1);
 namespace Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query;
 
+use Axtiva\FlexibleGraphql\Generator\Exception\NotImplementedResolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use Axtiva\FlexibleGraphql\Resolver\ResolverInterface;
 
@@ -12,7 +13,14 @@ use Axtiva\FlexibleGraphql\Resolver\ResolverInterface;
  */
 final class SumResolver implements ResolverInterface
 {
-    function __invoke($rootValue, $args, $context, ResolveInfo $info)
+    /**
+     * @param $rootValue
+     * @param $args
+     * @param $context
+     * @param ResolveInfo $info
+     * @return ?int
+     */
+    public function __invoke($rootValue, $args, $context, ResolveInfo $info)
     {
         return 1 + 1;
     }

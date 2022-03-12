@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\Psr\Container;
 
 use Axtiva\FlexibleGraphql\Generator\Config\DirectiveResolverGeneratorConfigInterface;
-use Axtiva\FlexibleGraphql\Generator\ResolverProvider\ResolverProviderInterface;
+use Axtiva\FlexibleGraphql\Generator\ResolverProvider\DirectiveResolverProviderInterface;
+use Axtiva\FlexibleGraphql\Generator\ResolverProvider\FieldResolverProviderInterface;
 use GraphQL\Language\AST\DirectiveNode;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\DirectiveResolverGeneratorInterface;
 use Axtiva\FlexibleGraphql\Generator\Exception\NotDefinedResolver;
@@ -14,11 +15,11 @@ use GraphQL\Type\Definition\Directive;
 class DirectiveGenerator implements DirectiveResolverGeneratorInterface
 {
     private DirectiveResolverGeneratorConfigInterface $directiveConfig;
-    private ResolverProviderInterface $resolverProvider;
+    private DirectiveResolverProviderInterface $resolverProvider;
 
     public function __construct(
         DirectiveResolverGeneratorConfigInterface $directiveConfig,
-        ResolverProviderInterface $resolverProvider
+        DirectiveResolverProviderInterface $resolverProvider
     ) {
         $this->directiveConfig = $directiveConfig;
         $this->resolverProvider = $resolverProvider;
@@ -26,7 +27,7 @@ class DirectiveGenerator implements DirectiveResolverGeneratorInterface
 
     public function hasResolver(DirectiveNode $directive): bool
     {
-        return file_exists($this->directiveConfig->getDirectiveResolverClassFileName(
+        return \class_exists($this->directiveConfig->getDirectiveResolverFullClassName(
             $this->getDirectiveDefinition($directive))
         );
     }
@@ -34,12 +35,8 @@ class DirectiveGenerator implements DirectiveResolverGeneratorInterface
     public function generate(DirectiveNode $directive): string
     {
         if ($this->hasResolver($directive)) {
-            $directiveDefinition = $this->getDirectiveDefinition($directive);
-            $namespace = $this->directiveConfig->getDirectiveResolverNamespace($directiveDefinition)
-                ?  $this->directiveConfig->getDirectiveResolverNamespace($directiveDefinition) . '\\'
-                : '';
             return $this->resolverProvider->generate(
-                $namespace . $this->directiveConfig->getDirectiveResolverClassName($directiveDefinition)
+                $this->directiveConfig, $this->getDirectiveDefinition($directive)
             );
         }
 

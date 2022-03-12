@@ -20,6 +20,6 @@ $builder = new CodeGeneratorBuilder(new CodeGeneratorConfig($dir, CodeGeneratorC
 $generator = $builder->build();
 
 /** @var ObjectType $type */
-$type = $schema->getType('Transaction');
-$field = $type->getField('status');
-$generator->generateFieldResolver($type, $field, $schema);
+$type = $schema->getType('Query');
+$field = $type->getField('account');
+foreach($generator->generateFieldResolver($type, $field, $schema) as $item);

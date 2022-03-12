@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\Psr\Container;
 
-use Axtiva\FlexibleGraphql\Generator\ResolverProvider\ResolverProviderInterface;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\Type;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\FieldResolverGeneratorInterface;
@@ -14,10 +13,9 @@ class DefaultFieldGenerator implements FieldResolverGeneratorInterface
     private string $defaultResolver;
 
     public function __construct(
-        string $resolverServiceName,
-        ResolverProviderInterface $resolverProvider
+        string $defaultResolver
     ) {
-        $this->defaultResolver = $resolverProvider->generate($resolverServiceName);
+        $this->defaultResolver = $defaultResolver;
     }
 
     public function hasResolver(Type $type, FieldDefinition $field): bool

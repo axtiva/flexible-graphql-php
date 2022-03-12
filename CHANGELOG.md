@@ -1,9 +1,14 @@
-0.3.0
+1.0.0 
+
+Make user-friendly types and resolvers for generated classes
 
 - add templates for different php version
+- add some unit tests for generators
 - add args fields generation
+- add args directives generation
 - add input type models
-- add php dock generation
+- typed custom scalar
+- add php doc generation with typed arguments for resolvers
 
 0.2.0
 

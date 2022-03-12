@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4;
 
 use Axtiva\FlexibleGraphql\Generator\Config\CodeGeneratorConfigInterface;
@@ -41,6 +43,6 @@ class TypeRegistryGeneratorConfig implements TypeRegistryGeneratorConfigInterfac
 
     public function getTypeRegistryClassFileName(): string
     {
-        return $this->getTypeRegistryDirPath() . '/' . $this->getTypeRegistryClassName() . '.php';
+        return $this->getTypeRegistryDirPath() . \DIRECTORY_SEPARATOR . $this->getTypeRegistryClassName() . '.php';
     }
 }

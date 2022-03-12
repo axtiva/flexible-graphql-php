@@ -24,6 +24,8 @@ $container = new PsrContainerExample([
         new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AccountResolver,
     \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\SumResolver::class =>
         new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\SumResolver,
+    \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\DynamicSumResolver::class =>
+        new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\DynamicSumResolver,
     // Service name are equal name defined at $fieldResolverMap in file example/generate_type_registry.php
     \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Account\TransactionsResolver::class =>
         new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Account\TransactionsResolver,
@@ -31,11 +33,12 @@ $container = new PsrContainerExample([
         new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Transaction\StatusResolver,
     // Service name are equal name defined at $unionTypeResolverMap in file example/generate_type_registry.php
     \Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\CurrencyTypeResolver::class =>
-        new Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\CurrencyTypeResolver,
+        new \Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\CurrencyTypeResolver,
     // Service name are equal name defined at $scalarResolverMap in file example/generate_type_registry.php
     \Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar::class => new \Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar,
     // Service name are equal name defined at $directiveResolverMap in file example/generate_type_registry.php
     \Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective::class => new \Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective,
+    \Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective::class => new \Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective,
 
 ]);
 

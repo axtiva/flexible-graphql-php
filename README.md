@@ -44,3 +44,11 @@ Update TypeRegistry from schema and resolvers map:
 ```shell
 php example/generate_type_registry.php
 ```
+
+## Tests
+
+Run tests
+
+```
+php vendor/bin/phpunit 
+```

@@ -6,7 +6,6 @@ use Axtiva\FlexibleGraphql\Generator\Config\FieldResolverGeneratorConfigInterfac
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use PhpParser\Node;
 
 interface FieldResolverGeneratorInterface
 {

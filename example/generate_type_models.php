@@ -17,5 +17,4 @@ $builder = new CodeGeneratorBuilder(new CodeGeneratorConfig($dir, CodeGeneratorC
 
 $generator = $builder->build();
 
-foreach ($generator->generateAllTypes($schema) as $filename) {
-}
+foreach ($generator->generateAllTypes($schema) as $filename);

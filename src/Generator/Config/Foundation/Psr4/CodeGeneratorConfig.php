@@ -8,7 +8,11 @@ use Axtiva\FlexibleGraphql\Generator\Config\CodeGeneratorConfigInterface;
 
 class CodeGeneratorConfig implements CodeGeneratorConfigInterface
 {
-    private const VERSION_SUPPORTS = [self::V7_4, self::V8_0, self::V8_1];
+    private const VERSION_SUPPORTS = [
+        self::V7_4,
+//        self::V8_0,
+//        self::V8_1
+    ];
 
     private ?string $codeNamespace;
     private string $codeDirPath;
@@ -23,7 +27,7 @@ class CodeGeneratorConfig implements CodeGeneratorConfigInterface
             );
         }
         $this->codeNamespace = $namespace ? trim($namespace, '\\') : null;
-        $this->codeDirPath = rtrim($dir, '/');
+        $this->codeDirPath = rtrim($dir, '/\\');
         $this->phpVersion = $phpVersion;
     }
 

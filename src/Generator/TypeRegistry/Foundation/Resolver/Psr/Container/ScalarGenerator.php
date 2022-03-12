@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\Psr\Container;
 
 use Axtiva\FlexibleGraphql\Generator\Config\ScalarResolverGeneratorConfigInterface;
-use Axtiva\FlexibleGraphql\Generator\ResolverProvider\ResolverProviderInterface;
+use Axtiva\FlexibleGraphql\Generator\ResolverProvider\ScalarResolverProviderInterface;
 use GraphQL\Type\Definition\CustomScalarType;
 use Axtiva\FlexibleGraphql\Generator\Exception\UnsupportedType;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\ScalarResolverGeneratorInterface;
 
 class ScalarGenerator implements ScalarResolverGeneratorInterface
 {
-    private ResolverProviderInterface $resolverProvider;
+    private ScalarResolverProviderInterface $resolverProvider;
     private ScalarResolverGeneratorConfigInterface $config;
 
     public function __construct(
         ScalarResolverGeneratorConfigInterface $config,
-        ResolverProviderInterface $resolverProvider
+        ScalarResolverProviderInterface $resolverProvider
     ) {
         $this->resolverProvider = $resolverProvider;
         $this->config = $config;
@@ -25,14 +25,15 @@ class ScalarGenerator implements ScalarResolverGeneratorInterface
 
     public function hasResolver(CustomScalarType $type): bool
     {
-        return file_exists($this->config->getModelClassFileName($type));
+        return class_exists($this->config->getModelFullClassName($type));
     }
 
     public function generate(CustomScalarType $type): string
     {
         if ($this->hasResolver($type)) {
             return $this->resolverProvider->generate(
-                $this->config->getModelFullClassName($type)
+                $this->config,
+                $type
             );
         }
 
