@@ -106,6 +106,21 @@ class TypeRegistry
             'defaultValue' => NULL,
             'description' => NULL,
         ]],
+        ]),'addHour' => FieldDefinition::create([
+            'name' => 'addHour',
+            'description' => NULL,
+            'deprecationReason' => NULL,
+            'resolve' => (function ($rootValue, $args, $context, $info) {
+    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\AddHourResolverArgs($args);
+    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AddHourResolver')($rootValue, $args, $context, $info);
+}),
+            'type' => function() { return $this->getType('DateTime'); },
+            'args' => ['date' => [
+            'name' => 'date',
+            'type' => function() { return Type::nonNull(function() { return $this->getType('DateTime'); }); },
+            'defaultValue' => NULL,
+            'description' => NULL,
+        ]],
         ])],
         ]);
             }

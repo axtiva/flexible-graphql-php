@@ -6,6 +6,7 @@ type Query {
     account(id: ID!): Account
     sum: Int @plusX(x: 7)
     dynamicSum(x: Int!, y: Int!): Int @plusX(x: 4)
+    addHour(date: DateTime!): DateTime
 }
 
 interface Node {

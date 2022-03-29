@@ -99,10 +99,6 @@ final class SumDirectiveArgs extends InputType
             return new DemoEnumEnum($value);
         }
         
-        if ($name === 'date') {
-            return new DateTimeImmutable($value);
-        }
-        
         return $value;
     }
 }

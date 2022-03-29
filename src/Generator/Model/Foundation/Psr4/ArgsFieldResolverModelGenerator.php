@@ -126,7 +126,7 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
             $type = $type->getWrappedType();
         }
 
-        return $type instanceof CustomScalarType || $type instanceof EnumType || $type instanceof InputObjectType;
+        return $type instanceof EnumType || $type instanceof InputObjectType;
     }
 
     private function getFieldTypePHPDefinition(Type $type): string
