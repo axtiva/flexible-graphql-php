@@ -24,6 +24,8 @@ $container = new PsrContainerExample([
         new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AccountResolver,
     \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\SumResolver::class =>
         new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\SumResolver,
+    \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AddHourResolver::class =>
+        new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AddHourResolver,
     \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\DynamicSumResolver::class =>
         new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\DynamicSumResolver,
     // Service name are equal name defined at $fieldResolverMap in file example/generate_type_registry.php

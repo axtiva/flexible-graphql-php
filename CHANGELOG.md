@@ -1,3 +1,7 @@
+1.0.1
+
+- fix args decorator for scalar types
+
 1.0.0 
 
 Make user-friendly types and resolvers for generated classes
