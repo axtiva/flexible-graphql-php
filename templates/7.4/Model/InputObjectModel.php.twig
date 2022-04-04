@@ -22,15 +22,15 @@ use {{ import_class }};
  */
 final class {{ short_class_name }} extends InputType
 {
-    protected function decorate($name)
+    protected function decorate($name, $value)
     {
         {% for field in fields %}{% if field.is_custom and field.type_name %}
 
         if ($name === '{{ field.name }}') {
-            return new {{ field.type_name }}($this[$name]);
+            return new {{ field.type_name }}($value);
         }
         {% endif %}{% endfor %}
 
-        return $this[$name];
+        return $value;
     }
 }

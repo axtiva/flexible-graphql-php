@@ -99,11 +99,37 @@ class %s
     private function getAllMethods(Schema $schema): string
     {
         $string = [];
+        $hasQuery = false;
+        $hasMutation = false;
         $allBuiltInTypes = array_keys(Type::getAllBuiltInTypes());
         foreach ($schema->getTypeMap() as $type) {
             if (!in_array($type->name, $allBuiltInTypes)) {
                 $string[] = $this->typeRegistryMethodGenerator->getMethod($type);
+                if ($type->name === 'Query') {
+                    $hasQuery = true;
+                }
+                if ($type->name === 'Mutation') {
+                    $hasMutation = true;
+                }
             }
+        }
+
+        if (!$hasQuery) {
+            $string[] = <<<'PHP'
+    public function Query()
+    {
+        return new ObjectType(['name' => 'Query']);
+    }
+PHP;
+        }
+
+        if (!$hasMutation) {
+            $string[] = <<<'PHP'
+    public function Mutation()
+    {
+        return new ObjectType(['name' => 'Mutation']);
+    }
+PHP;
         }
 
         $allBuiltInDirectives = array_keys(Directive::getInternalDirectives());

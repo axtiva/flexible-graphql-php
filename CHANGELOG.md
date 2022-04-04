@@ -1,3 +1,8 @@
+1.0.2
+
+- fix input type model generator
+- generate empty main types if there are not defined in schema
+
 1.0.1
 
 - fix args decorator for scalar types

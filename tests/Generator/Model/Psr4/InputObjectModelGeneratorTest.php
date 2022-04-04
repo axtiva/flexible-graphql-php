@@ -96,18 +96,18 @@ use Axtiva\FlexibleGraphql\Type\InputType;
  */
 final class TestInputInputType extends InputType
 {
-    protected function decorate($name)
+    protected function decorate($name, $value)
     {
         
         if ($name === 'demoEnum') {
-            return new DemoEnumEnum($this[$name]);
+            return new DemoEnumEnum($value);
         }
         
         if ($name === 'demoInput') {
-            return new DemoInputInputType($this[$name]);
+            return new DemoInputInputType($value);
         }
         
-        return $this[$name];
+        return $value;
     }
 }
 PHP
