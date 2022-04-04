@@ -52,6 +52,7 @@ $typeRegistry = new TypeRegistry($container);
 
 $schema = new Schema([
     'query' => $typeRegistry->getType('Query'),
+    'mutation' => $typeRegistry->getType('Mutation'),
     'typeLoader' => static function(string $name) use ($typeRegistry) : GraphQL\Type\Definition\Type {
         return $typeRegistry->getType($name);
     },
