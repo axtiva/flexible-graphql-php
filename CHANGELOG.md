@@ -1,3 +1,7 @@
+1.0.3
+
+- bugfix for empty properties in InputType and Args objects
+
 1.0.2
 
 - fix input type model generator

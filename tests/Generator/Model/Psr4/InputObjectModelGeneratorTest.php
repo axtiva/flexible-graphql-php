@@ -98,6 +98,9 @@ final class TestInputInputType extends InputType
 {
     protected function decorate($name, $value)
     {
+        if ($value === null) {
+            return null;
+        }
         
         if ($name === 'demoEnum') {
             return new DemoEnumEnum($value);
