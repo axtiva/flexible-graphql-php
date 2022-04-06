@@ -98,6 +98,9 @@ final class NameResolverArgs extends InputType
 {
     protected function decorate($name, $value)
     {
+        if ($value === null) {
+            return null;
+        }
         
         if ($name === 'testInput') {
             return new DemoInputInputType($value);
