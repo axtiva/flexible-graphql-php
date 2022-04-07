@@ -246,8 +246,7 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
 
         $customScalarGenerator = new CustomScalarGenerator(
             $this->serializer,
-            $scalarResolver,
-            new Resolver\DefaultResolver\ScalarGenerator()
+            $scalarResolver
         );
 
         $typeGenerator = new CompositeTypeGenerator(

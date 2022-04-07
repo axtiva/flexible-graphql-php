@@ -223,9 +223,7 @@ class TypeRegistry
                 return new CustomScalarType([
             'name' => 'HelloScalar',
             'description' => NULL,
-            'serialize' => function($value) {return (\Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultScalarResolver::getInstance())->serialize($value);},
-            'parseValue' => function($value) {return (\Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultScalarResolver::getInstance())->parseValue($value);},
-            'parseLiteral' => function($value, $variables) {return (\Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultScalarResolver::getInstance())->parseLiteral($value, $variables);},
+
         ]);
             }
         

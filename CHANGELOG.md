@@ -1,3 +1,7 @@
+1.0.4
+
+- bugfix remove default scalar resolver from generators
+
 1.0.3
 
 - bugfix for empty properties in InputType and Args objects
