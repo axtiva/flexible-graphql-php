@@ -28,6 +28,16 @@ class CodeGeneratorConfig implements CodeGeneratorConfigInterface
         }
         $this->codeNamespace = $namespace ? trim($namespace, '\\') : null;
         $this->codeDirPath = rtrim($dir, '/\\');
+        if (false === is_dir($this->codeDirPath)) {
+            throw new \InvalidArgumentException(
+                'Directory for models does not exist ' . $this->codeDirPath . ' create it manually.'
+            );
+        }
+        if (false === is_writable($this->codeDirPath)) {
+            throw new \InvalidArgumentException(
+                'Directory for models does not writable ' . $this->codeDirPath . ' change permissions manually.'
+            );
+        }
         $this->phpVersion = $phpVersion;
     }
 

@@ -4,6 +4,7 @@ namespace Axtiva\FlexibleGraphql\Tests\Builder\Psr\Container;
 
 use Axtiva\FlexibleGraphql\Builder\Foundation\Psr\Container\TypeRegistryGeneratorBuilder;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\CodeGeneratorConfig;
+use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
@@ -21,7 +22,10 @@ class TypeRegistryGeneratorBuilderTest extends TestCase
         string $expected
     ) {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
-        $dir = '/tmp/TmpTestData/GraphQL';
+        $dir = uniqid('/tmp/TmpTestData/GraphQL');
+
+        FileSystemHelper::rmdir($dir);
+        FileSystemHelper::mkdir($dir);
 
         $mainConfig = new CodeGeneratorConfig($dir, $languageLevel, $namespace);
 
@@ -29,6 +33,8 @@ class TypeRegistryGeneratorBuilderTest extends TestCase
         $generator = $builder->build();
 
         $this->assertEquals($expected, $generator->generate($schema));
+
+        FileSystemHelper::rmdir($dir);
     }
 
     public function dataProviderGeneratePhpCode(): iterable

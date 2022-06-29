@@ -5,6 +5,7 @@ namespace Axtiva\FlexibleGraphql\Tests\Generator\ResolverProvider;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\CodeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\DirectiveResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\ContainerCallDirectiveResolverProvider;
+use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Schema;
@@ -26,6 +27,9 @@ class ContainerCallDirectiveResolverProviderTest extends TestCase
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
         $dir = '/tmp/TmpTestData/GraphQL';
 
+        FileSystemHelper::rmdir($dir);
+        FileSystemHelper::mkdir($dir);
+
         $mainConfig = new CodeGeneratorConfig($dir, $languageLevel, $namespace);
         $directiveConfig = new DirectiveResolverGeneratorConfig($mainConfig);
         $generator = new ContainerCallDirectiveResolverProvider();
@@ -35,6 +39,8 @@ class ContainerCallDirectiveResolverProviderTest extends TestCase
         $this->assertInstanceOf(Directive::class, $directive);
 
         $this->assertEquals($expected, $generator->generate($directiveConfig, $directive));
+
+        FileSystemHelper::rmdir($dir);
     }
 
     public function dataProviderGeneratePhpCode(): iterable

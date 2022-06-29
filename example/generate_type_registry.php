@@ -5,7 +5,6 @@ require(__DIR__ . '/../vendor/autoload.php');
 use Axtiva\FlexibleGraphql\Builder\Foundation\Psr\Container\TypeRegistryGeneratorBuilder;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\CodeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Utils\SchemaBuilder;
-use GraphQL\Utils\BuildSchema;
 
 /** Describe graphql schema */
 

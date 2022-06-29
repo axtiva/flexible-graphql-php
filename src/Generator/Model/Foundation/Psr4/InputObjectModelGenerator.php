@@ -6,35 +6,25 @@ namespace Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4;
 
 use Axtiva\FlexibleGraphql\Generator\Config\EnumObjectGeneratorConfigInterface;
 use Axtiva\FlexibleGraphql\Generator\Config\InputObjectGeneratorConfigInterface;
-use Axtiva\FlexibleGraphql\Generator\Config\InterfaceGeneratorConfigInterface;
-use Axtiva\FlexibleGraphql\Generator\Config\ObjectGeneratorConfigInterface;
 use Axtiva\FlexibleGraphql\Generator\Config\ScalarResolverGeneratorConfigInterface;
-use Axtiva\FlexibleGraphql\Generator\Config\UnionObjectGeneratorConfigInterface;
 use Axtiva\FlexibleGraphql\Generator\Exception\UnsupportedType;
 use Axtiva\FlexibleGraphql\Generator\Model\InputObjectModelGeneratorInterface;
-use Axtiva\FlexibleGraphql\Generator\Model\ObjectModelGeneratorInterface;
-use Axtiva\FlexibleGraphql\Resolver\AutoGenerationInterface;
 use Axtiva\FlexibleGraphql\Resolver\TypedCustomScalarResolverInterface;
 use Axtiva\FlexibleGraphql\Utils\ObjectHelper;
+use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\BooleanType;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\FloatType;
 use GraphQL\Type\Definition\IDType;
 use GraphQL\Type\Definition\InputObjectType;
-use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\IntType;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
 {
@@ -69,9 +59,6 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
         }
 
         /** @var InputObjectType $type */
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
-        $twig = new Environment($loader);
-
         $fields = [];
         $importClasses = [];
         foreach ($type->getFields() as $field) {
@@ -115,7 +102,8 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
             ];
         }
 
-        return $twig->render('Model/InputObjectModel.php.twig', [
+        $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/InputObjectModel.php';
+        return TemplateRender::render($template, [
             'namespace' => $this->config->getModelNamespace($type),
             'type_name' => $type->name,
             'short_class_name' => $this->config->getModelClassName($type),

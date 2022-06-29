@@ -19,7 +19,7 @@ class CodeGeneratorTest extends TestCase
     public function testQuantityOfTypes(int $totalTypes, Schema $schema)
     {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
-        $dir = '/tmp/TmpTestData/GraphQL';
+        $dir = uniqid('/tmp/TmpTestData/GraphQL');
 
         FileSystemHelper::rmdir($dir);
         FileSystemHelper::mkdir($dir);
@@ -34,6 +34,17 @@ class CodeGeneratorTest extends TestCase
         }
         $this->assertEquals($totalTypes, $i);
         FileSystemHelper::rmdir($dir);
+    }
+
+    public function testEmptyDirrectory()
+    {
+        $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
+        $dir = '/tmp/TmpTestData/GraphQL';
+
+        FileSystemHelper::rmdir($dir);
+
+        $this->expectExceptionMessage('Directory for models does not exist ' . $dir . ' create it manually.');
+        new CodeGeneratorBuilder(new CodeGeneratorConfig($dir, CodeGeneratorConfig::V7_4, $namespace));
     }
 
     public function dataProviderGeneratePhpCode(): iterable

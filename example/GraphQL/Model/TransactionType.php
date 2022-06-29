@@ -3,7 +3,6 @@
 declare (strict_types=1);
 namespace Axtiva\FlexibleGraphql\Example\GraphQL\Model;
 
-use Axtiva\FlexibleGraphql\Resolver\AutoGenerationInterface;
 use DateTimeImmutable;
 
 /**

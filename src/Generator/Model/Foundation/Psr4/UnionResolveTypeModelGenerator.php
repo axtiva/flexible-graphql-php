@@ -9,6 +9,7 @@ use Axtiva\FlexibleGraphql\Generator\Config\UnionResolveTypeGeneratorConfigInter
 use Axtiva\FlexibleGraphql\Generator\Exception\UnsupportedType;
 use Axtiva\FlexibleGraphql\Generator\Model\ObjectModelGeneratorInterface;
 use Axtiva\FlexibleGraphql\Generator\Model\UnionResolveTypeModelGeneratorInterface;
+use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
@@ -60,7 +61,8 @@ class UnionResolveTypeModelGenerator implements UnionResolveTypeModelGeneratorIn
             ];
         }
 
-        return $twig->render('Model/UnionResolveTypeModel.php.twig', [
+        $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/UnionResolveTypeModel.php';
+        return TemplateRender::render($template, [
             'namespace' => $this->config->getModelNamespace($type),
             'description' => $type->description,
             'short_class_name' => $this->config->getModelClassName($type),

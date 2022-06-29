@@ -6,6 +6,9 @@ class FileSystemHelper
 {
     public static function mkdir($dir): bool
     {
+        if (file_exists($dir)) {
+            return true;
+        }
         return mkdir($dir, 0777, true);
     }
 

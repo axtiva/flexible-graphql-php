@@ -3,7 +3,6 @@
 declare (strict_types=1);
 namespace Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Account;
 
-use Axtiva\FlexibleGraphql\Generator\Exception\NotImplementedResolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use Axtiva\FlexibleGraphql\Resolver\ResolverInterface;
 use Axtiva\FlexibleGraphql\Example\GraphQL\Model\AccountType;

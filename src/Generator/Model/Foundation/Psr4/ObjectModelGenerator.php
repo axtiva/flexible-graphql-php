@@ -14,13 +14,12 @@ use Axtiva\FlexibleGraphql\Generator\Model\ObjectModelGeneratorInterface;
 use Axtiva\FlexibleGraphql\Resolver\AutoGenerationInterface;
 use Axtiva\FlexibleGraphql\Resolver\TypedCustomScalarResolverInterface;
 use Axtiva\FlexibleGraphql\Utils\ObjectHelper;
+use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\BooleanType;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\EnumType;
-use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\FloatType;
 use GraphQL\Type\Definition\IDType;
-use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\IntType;
 use GraphQL\Type\Definition\ListOfType;
@@ -29,10 +28,9 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
+use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class ObjectModelGenerator implements ObjectModelGeneratorInterface
 {
@@ -73,10 +71,6 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
         }
 
         /** @var ObjectType $type */
-
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
-        $twig = new Environment($loader);
-
         $implements = [ObjectHelper::getClassShortName(AutoGenerationInterface::class)];
         foreach ($type->getInterfaces() as $implementedInterface) {
             $implements[] = $this->interfaceConfig->getModelClassName($implementedInterface);
@@ -91,10 +85,7 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
         $fields = [];
         $importClasses = [];
         foreach ($type->getFields() as $field) {
-            $fieldType = $field->getType();
-            if ($fieldType instanceof NonNull) {
-                $fieldType = $fieldType->getWrappedType();
-            }
+            $fieldType = $this->getWrappedType($field->getType());
             if (
                 (\in_array(\get_class($fieldType), [CustomScalarType::class]))
                 && !Introspection::isIntrospectionType($fieldType)
@@ -121,11 +112,15 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
                 'description' => $field->description,
                 'deprecation' => $field->deprecationReason,
                 'type' => $this->getFieldTypePHPDefinition($field->getType()),
+                'type_doc' => $this->isListType($field->getType()) ? implode('|', $this->getFieldTypeDocDefinition($field->getType())) : '',
+                'is_list' => $this->isListType($field->getType()),
+                'list_level' => $this->getListLevel($field->getType()),
                 'is_nullable' => !$field->getType() instanceof NonNull,
             ];
         }
 
-        return $twig->render('Model/ObjectModel.php.twig', [
+        $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/ObjectModel.php';
+        return TemplateRender::render($template, [
             'namespace' => $this->config->getModelNamespace($type),
             'type_name' => $type->name,
             'short_class_name' => $this->config->getModelClassName($type),
@@ -182,5 +177,85 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
         }
 
         throw new UnsupportedType($type->name);
+    }
+
+
+    private function getFieldTypeDocDefinition(Type $type): array
+    {
+        $types = [];
+        if ($type instanceof NonNull) {
+            $type = $type->getWrappedType();
+            $types = array_merge($types, array_slice($this->getFieldTypeDocDefinition($type), 1));
+        } else {
+            $types[] = 'null';
+            if ($type instanceof ListOfType) {
+                $types[] = 'iterable';
+                $types = array_merge($types, $this->getFieldTypeDocDefinition($type->getWrappedType()));
+            } elseif ($type instanceof BooleanType) {
+                $types[] = 'bool';
+            } elseif ($type instanceof IntType) {
+                $types[] = 'int';
+            } elseif ($type instanceof FloatType) {
+                $types[] = 'float';
+            } elseif (
+                $type instanceof IDType
+                || $type instanceof StringType
+            ) {
+                $types[] = 'string';
+            } elseif ($type instanceof CustomScalarType) {
+                /** @var TypedCustomScalarResolverInterface|string $scalarClass */
+                $scalarClass = $this->scalarConfig->getModelFullClassName($type);
+                if (
+                    \class_exists($scalarClass)
+                    && \in_array(TypedCustomScalarResolverInterface::class, \class_implements($scalarClass) ?: [])
+                ) {
+                    $typeName = (string) $scalarClass::getTypeName();
+                    if (! empty($typeName)) {
+                        $types[] = ObjectHelper::getClassShortName($typeName);
+                    }
+                }
+            } elseif ($type instanceof EnumType) {
+                $types[] = $this->enumConfig->getModelClassName($type);
+            }
+        }
+
+        $types = array_unique($types);
+
+        if (count($types) == 1 && $types[0] === 'null') {
+            return [];
+        }
+
+        return $types;
+    }
+
+    private function isListType(Type $type): bool
+    {
+        if ($type instanceof NonNull) {
+            $type = $type->getWrappedType();
+        }
+
+        return $type instanceof ListOfType;
+    }
+
+    private function getWrappedType(Type $type): Type
+    {
+        while($type instanceof WrappingType) {
+            $type = $type->getWrappedType();
+        }
+
+        return $type;
+    }
+
+    private function getListLevel(Type $type): int
+    {
+        $level = 0;
+        while($type instanceof WrappingType) {
+            if ($type instanceof ListOfType) {
+                $level++;
+            }
+            $type = $type->getWrappedType();
+        }
+
+        return $level;
     }
 }

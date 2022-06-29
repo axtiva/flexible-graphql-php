@@ -15,7 +15,10 @@ final class DynamicSumResolverArgs extends InputType
 {
     protected function decorate($name, $value)
     {
-        
+        if ($value === null) {
+            return null;
+        }
+
         return $value;
     }
 }

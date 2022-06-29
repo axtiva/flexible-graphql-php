@@ -351,12 +351,15 @@ class TypeRegistry
                 return new CustomScalarType([
             'name' => 'HelloWorld',
             'description' => NULL,
-            'serialize' => function($value) {return (\Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultScalarResolver::getInstance())->serialize($value);},
-            'parseValue' => function($value) {return (\Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultScalarResolver::getInstance())->parseValue($value);},
-            'parseLiteral' => function($value, $variables) {return (\Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultScalarResolver::getInstance())->parseLiteral($value, $variables);},
+
         ]);
             }
         
+
+    public function Mutation()
+    {
+        return new ObjectType(['name' => 'Mutation']);
+    }
 
 
     public function directive_uppercase()

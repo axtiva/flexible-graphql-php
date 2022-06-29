@@ -7,6 +7,7 @@ namespace Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4;
 use Axtiva\FlexibleGraphql\Generator\Config\UnionObjectGeneratorConfigInterface;
 use Axtiva\FlexibleGraphql\Generator\Exception\UnsupportedType;
 use Axtiva\FlexibleGraphql\Generator\Model\ModelGeneratorInterface;
+use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
@@ -38,10 +39,8 @@ class UnionModelGenerator implements ModelGeneratorInterface
             throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
         }
 
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
-        $twig = new Environment($loader);
-
-        return $twig->render('Model/UnionModel.php.twig', [
+        $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/UnionModel.php';
+        return TemplateRender::render($template, [
             'namespace' => $this->config->getModelNamespace($type),
             'description' => $type->description,
             'short_class_name' => $this->config->getModelClassName($type),

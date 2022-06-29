@@ -7,6 +7,7 @@ use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\CodeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\FieldResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\ContainerCallFieldResolverProvider;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\WrappedContainerCallFieldResolverProvider;
+use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
@@ -27,7 +28,10 @@ class WrappedContainerCallFieldResolverProviderTest extends TestCase
         string $expected
     ) {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
-        $dir = '/tmp/TmpTestData/GraphQL';
+        $dir = uniqid('/tmp/TmpTestData/GraphQL');
+
+        FileSystemHelper::rmdir($dir);
+        FileSystemHelper::mkdir($dir);
 
         $mainConfig = new CodeGeneratorConfig($dir, $languageLevel, $namespace);
         $fieldConfig = new FieldResolverGeneratorConfig($mainConfig);
@@ -46,6 +50,8 @@ class WrappedContainerCallFieldResolverProviderTest extends TestCase
         $this->assertNotFalse($type->hasField($fieldName));
         $field = $type->getField($fieldName);
         $this->assertEquals($expected, $generator->generate($fieldConfig, $type, $field));
+
+        FileSystemHelper::rmdir($dir);
     }
 
     public function dataProviderGeneratePhpCode(): iterable
