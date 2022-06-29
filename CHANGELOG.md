@@ -1,3 +1,10 @@
+1.1.0
+
+- make config generator friendly for users
+- remove twig dependency
+- adopt tests for parallel run
+- add type hinting for iterable properties in InputTypes
+
 1.0.4
 
 - bugfix remove default scalar resolver from generators

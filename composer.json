@@ -23,8 +23,7 @@
   "require": {
     "php": "^7.4 | ^8.0",
     "webonyx/graphql-php": "^14.0",
-    "nikic/php-parser": "^4.12",
-    "twig/twig": "^1.0 | ^2.0 | ^3.0"
+    "nikic/php-parser": "^4.12"
   },
   "require-dev": {
     "psr/container": "^1 | ^2",

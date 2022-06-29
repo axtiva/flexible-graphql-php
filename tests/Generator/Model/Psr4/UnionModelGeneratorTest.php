@@ -24,7 +24,7 @@ class UnionModelGeneratorTest extends TestCase
         string $expected
     ) {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
-        $dir = '/tmp/TmpTestData/GraphQL';
+        $dir = uniqid('/tmp/TmpTestData/GraphQL');
 
         FileSystemHelper::rmdir($dir);
         FileSystemHelper::mkdir($dir);

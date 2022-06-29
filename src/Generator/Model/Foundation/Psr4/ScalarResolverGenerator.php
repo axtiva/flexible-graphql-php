@@ -6,6 +6,7 @@ use Axtiva\FlexibleGraphql\Generator\Config\ModelGeneratorConfigInterface;
 use Axtiva\FlexibleGraphql\Generator\Config\ScalarResolverGeneratorConfigInterface;
 use Axtiva\FlexibleGraphql\Generator\Exception\UnsupportedType;
 use Axtiva\FlexibleGraphql\Generator\Model\ScalarResolverGeneratorInterface;
+use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
@@ -37,10 +38,8 @@ class ScalarResolverGenerator implements ScalarResolverGeneratorInterface
             throw new UnsupportedType(sprintf('Unsupported type %s in %s', $type->name, __CLASS__));
         }
         /** @var CustomScalarType $type */
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
-        $twig = new Environment($loader);
-
-        return $twig->render('Model/ScalarResolver.php.twig', [
+        $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/ScalarResolver.php';
+        return TemplateRender::render($template, [
             'namespace' => $this->config->getModelNamespace($type),
             'short_class_name' => $this->config->getModelClassName($type),
             'description' => $type->description,

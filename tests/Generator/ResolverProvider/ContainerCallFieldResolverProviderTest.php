@@ -5,6 +5,7 @@ namespace Axtiva\FlexibleGraphql\Tests\Generator\ResolverProvider;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\CodeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\FieldResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\ContainerCallFieldResolverProvider;
+use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
@@ -25,7 +26,10 @@ class ContainerCallFieldResolverProviderTest extends TestCase
         string $expected
     ) {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
-        $dir = '/tmp/TmpTestData/GraphQL';
+        $dir = uniqid('/tmp/TmpTestData/GraphQL');
+
+        FileSystemHelper::rmdir($dir);
+        FileSystemHelper::mkdir($dir);
 
         $mainConfig = new CodeGeneratorConfig($dir, $languageLevel, $namespace);
         $fieldConfig = new FieldResolverGeneratorConfig($mainConfig);

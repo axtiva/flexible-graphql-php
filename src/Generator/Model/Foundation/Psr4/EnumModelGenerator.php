@@ -7,12 +7,11 @@ namespace Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4;
 use Axtiva\FlexibleGraphql\Generator\Config\EnumObjectGeneratorConfigInterface;
 use Axtiva\FlexibleGraphql\Generator\Exception\UnsupportedType;
 use Axtiva\FlexibleGraphql\Generator\Model\EnumModelGeneratorInterface;
+use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class EnumModelGenerator implements EnumModelGeneratorInterface
 {
@@ -40,12 +39,11 @@ class EnumModelGenerator implements EnumModelGeneratorInterface
             throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
         }
 
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
-        $twig = new Environment($loader);
-
-        return $twig->render('Model/EnumModel.php.twig', [
+        $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/EnumModel.php';
+        return TemplateRender::render($template, [
             'namespace' => $this->config->getModelNamespace($type),
             'short_class_name' => $this->config->getModelClassName($type),
+            'enum_name' => $type->name,
             'enum_description' => $type->description,
             'enums' => array_map(
                 fn($enum) => ['value' => $enum->value, 'description' => $enum->description],

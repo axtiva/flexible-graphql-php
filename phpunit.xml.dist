@@ -13,13 +13,13 @@
         <ini name="error_reporting" value="E_ALL"/>
     </php>
     <testsuites>
-        <testsuite name="axtiva/flexible-graphql-php Builder">
+        <testsuite name="builder">
             <directory>./tests/Builder/</directory>
         </testsuite>
-        <testsuite name="axtiva/flexible-graphql-php Generator">
+        <testsuite name="generator">
             <directory>./tests/Generator/</directory>
         </testsuite>
-        <testsuite name="axtiva/flexible-graphql-php Utils">
+        <testsuite name="utils">
             <directory>./tests/Utils/</directory>
         </testsuite>
     </testsuites>

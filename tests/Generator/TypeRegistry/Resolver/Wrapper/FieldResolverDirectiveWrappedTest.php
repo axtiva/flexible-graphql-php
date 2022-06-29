@@ -15,6 +15,7 @@ use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\DefaultRes
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\Psr\Container\FieldGenerator;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\Wrapper\FieldResolverDirectiveWrapped;
+use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
@@ -35,7 +36,10 @@ class FieldResolverDirectiveWrappedTest extends TestCase
         string $expected
     ) {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
-        $dir = '/tmp/TmpTestData/GraphQL';
+        $dir = uniqid('/tmp/TmpTestData/GraphQL');
+
+        FileSystemHelper::rmdir($dir);
+        FileSystemHelper::mkdir($dir);
 
         $mainConfig = new CodeGeneratorConfig($dir, $languageLevel, $namespace);
         $fieldConfig = new FieldResolverGeneratorConfig($mainConfig);
@@ -71,6 +75,8 @@ class FieldResolverDirectiveWrappedTest extends TestCase
         $field = $type->getField($fieldName);
 
         $this->assertEquals($expected, $generator->generate($type, $field));
+
+        FileSystemHelper::rmdir($dir);
     }
 
     public function dataProviderGeneratePhpCode(): iterable

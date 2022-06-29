@@ -10,9 +10,9 @@ use Axtiva\FlexibleGraphql\Generator\Exception\UnsupportedType;
 use Axtiva\FlexibleGraphql\Generator\Model\ArgsFieldResolverModelGeneratorInterface;
 use Axtiva\FlexibleGraphql\Resolver\TypedCustomScalarResolverInterface;
 use Axtiva\FlexibleGraphql\Utils\ObjectHelper;
+use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\BooleanType;
 use GraphQL\Type\Definition\CustomScalarType;
-use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\EnumType;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\FloatType;
@@ -23,10 +23,9 @@ use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\NonNull;
 use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\WrappingType;
 use GraphQL\Type\Introspection;
 use GraphQL\Type\Schema;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGeneratorInterface
 {
@@ -63,16 +62,10 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
             throw new UnsupportedType(sprintf('Unsupported type %s.%s for %s', $type->name, $typeField->name, __CLASS__));
         }
 
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
-        $twig = new Environment($loader);
-
         $fields = [];
         $importClasses = [];
         foreach ($typeField->args as $field) {
-            $fieldType = $field->getType();
-            if ($fieldType instanceof NonNull) {
-                $fieldType = $fieldType->getWrappedType();
-            }
+            $fieldType = $this->getWrappedType($field->getType());
 
             if (
                 (\in_array(\get_class($fieldType), [InputObjectType::class, EnumType::class, CustomScalarType::class]))
@@ -102,14 +95,17 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
             $fields[] =  [
                 'name' => $field->name,
                 'description' => $field->description,
-                'type' => $this->getFieldTypePHPDefinition($field->getType()),
-                'type_name' => $this->getFieldTypeDefinition($field->getType()),
-                'is_custom' => $this->isCustomType($field->getType()),
+                'type' => $this->getFieldTypeDefinition($this->getWrappedType($field->getType())),
+                'type_doc' => implode('|', $this->getFieldTypeDocDefinition($field->getType())),
+                'is_custom' => $this->isCustomType($this->getWrappedType($field->getType())),
+                'is_list' => $this->isListType($field->getType()),
+                'list_level' => $this->getListLevel($field->getType()),
                 'is_nullable' => !$field->getType() instanceof NonNull,
             ];
         }
 
-        return $twig->render('Model/FieldArgsModel.php.twig', [
+        $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/FieldArgsModel.php';
+        return TemplateRender::render($template, [
             'namespace' => $this->config->getFieldArgsNamespace($type, $typeField),
             'type_name' => $type->name,
             'field_name' => $typeField->name,
@@ -129,17 +125,35 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
         return $type instanceof EnumType || $type instanceof InputObjectType;
     }
 
-    private function getFieldTypePHPDefinition(Type $type): string
+    private function isListType(Type $type): bool
     {
-        $nullSign = '?';
         if ($type instanceof NonNull) {
-            $nullSign = '';
             $type = $type->getWrappedType();
         }
 
-        $fieldDefinition = $this->getFieldTypeDefinition($type);
+        return $type instanceof ListOfType;
+    }
 
-        return $fieldDefinition ? $nullSign . $fieldDefinition : '';
+    private function getWrappedType(Type $type): Type
+    {
+        while($type instanceof WrappingType) {
+            $type = $type->getWrappedType();
+        }
+
+        return $type;
+    }
+
+    private function getListLevel(Type $type): int
+    {
+        $level = 0;
+        while($type instanceof WrappingType) {
+            if ($type instanceof ListOfType) {
+                $level++;
+            }
+            $type = $type->getWrappedType();
+        }
+
+        return $level;
     }
 
     private function getFieldTypeDefinition(Type $type): string
@@ -182,5 +196,55 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
         }
 
         throw new UnsupportedType($type->name);
+    }
+
+    private function getFieldTypeDocDefinition(Type $type): array
+    {
+        $types = [];
+        if ($type instanceof NonNull) {
+            $type = $type->getWrappedType();
+            $types = array_merge($types, array_slice($this->getFieldTypeDocDefinition($type), 1));
+        } else {
+            $types[] = 'null';
+            if ($type instanceof ListOfType) {
+                $types[] = 'iterable';
+                $types = array_merge($types, $this->getFieldTypeDocDefinition($type->getWrappedType()));
+            } elseif ($type instanceof BooleanType) {
+                $types[] = 'bool';
+            } elseif ($type instanceof IntType) {
+                $types[] = 'int';
+            } elseif ($type instanceof FloatType) {
+                $types[] = 'float';
+            } elseif (
+                $type instanceof IDType
+                || $type instanceof StringType
+            ) {
+                $types[] = 'string';
+            } elseif ($type instanceof CustomScalarType) {
+                /** @var TypedCustomScalarResolverInterface|string $scalarClass */
+                $scalarClass = $this->scalarConfig->getModelFullClassName($type);
+                if (
+                    \class_exists($scalarClass)
+                    && \in_array(TypedCustomScalarResolverInterface::class, \class_implements($scalarClass) ?: [])
+                ) {
+                    $typeName = (string) $scalarClass::getTypeName();
+                    if (! empty($typeName)) {
+                        $types[] = ObjectHelper::getClassShortName($typeName);
+                    }
+                }
+            } elseif ($type instanceof EnumType) {
+                $types[] = $this->enumConfig->getModelClassName($type);
+            } elseif ($type instanceof InputObjectType) {
+                $types[] = $this->inputObjectConfig->getModelClassName($type);
+            }
+        }
+
+        $types = array_unique($types);
+
+        if (count($types) == 1 && $types[0] === 'null') {
+            return [];
+        }
+
+        return $types;
     }
 }

@@ -15,6 +15,7 @@ use Axtiva\FlexibleGraphql\Generator\Exception\UnsupportedType;
 use Axtiva\FlexibleGraphql\Generator\Model\FieldResolverGeneratorInterface;
 use Axtiva\FlexibleGraphql\Resolver\TypedCustomScalarResolverInterface;
 use Axtiva\FlexibleGraphql\Utils\ObjectHelper;
+use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\BooleanType;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\EnumType;
@@ -30,8 +31,6 @@ use GraphQL\Type\Definition\StringType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class FieldResolverGenerator implements FieldResolverGeneratorInterface
 {
@@ -77,9 +76,6 @@ class FieldResolverGenerator implements FieldResolverGeneratorInterface
             throw new UnsupportedType(sprintf('Unsupported field %s for %s', $field->name, __CLASS__));
         }
 
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
-        $twig = new Environment($loader);
-
         $importClasses = [];
         $argsClass = null;
         $rootClass = null;
@@ -99,7 +95,8 @@ class FieldResolverGenerator implements FieldResolverGeneratorInterface
             $importClasses[] = $returnFullClass;
         }
 
-        return $twig->render('Model/FieldResolver.php.twig', [
+        $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/FieldResolver.php';
+        return TemplateRender::render($template, [
             'namespace' => $this->config->getFieldResolverNamespace($type, $field),
             'short_class_name' => $this->config->getFieldResolverClassName($type, $field),
             'field_description' => $field->description,

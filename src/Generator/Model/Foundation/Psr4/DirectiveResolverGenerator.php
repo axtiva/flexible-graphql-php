@@ -8,11 +8,9 @@ use Axtiva\FlexibleGraphql\Generator\Config\ArgsDirectiveResolverGeneratorConfig
 use Axtiva\FlexibleGraphql\Generator\Config\DirectiveResolverGeneratorConfigInterface;
 use Axtiva\FlexibleGraphql\Generator\Exception\UnsupportedType;
 use Axtiva\FlexibleGraphql\Generator\Model\DirectiveResolverGeneratorInterface;
+use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Schema;
-use PhpParser\BuilderFactory;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class DirectiveResolverGenerator implements DirectiveResolverGeneratorInterface
 {
@@ -50,16 +48,14 @@ class DirectiveResolverGenerator implements DirectiveResolverGeneratorInterface
             $argsClass = $this->argsDirectiveConfig->getDirectiveArgsClassName($directive);
         }
 
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
-        $twig = new Environment($loader);
-        return $twig->render('Model/DirectiveResolver.php.twig', [
+        $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/DirectiveResolver.php';
+        return TemplateRender::render($template, [
             'namespace' => $this->config->getDirectiveResolverNamespace($directive),
             'directive_description' => $directive->description,
             'directive_name' => $directive->name,
             'directive_args_class' => $argsClass,
             'import_classes' => array_unique($importClasses),
             'short_class_name' => $this->config->getDirectiveResolverClassName($directive),
-
         ]);
     }
 }
