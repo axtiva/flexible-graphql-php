@@ -10,8 +10,6 @@ use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class ScalarResolverGenerator implements ScalarResolverGeneratorInterface
 {

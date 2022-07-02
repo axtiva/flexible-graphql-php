@@ -13,8 +13,6 @@ use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class UnionResolveTypeModelGenerator implements UnionResolveTypeModelGeneratorInterface
 {
@@ -45,10 +43,6 @@ class UnionResolveTypeModelGenerator implements UnionResolveTypeModelGeneratorIn
             throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
         }
         /** @var UnionType $type */
-
-        $loader = new FilesystemLoader(__DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion());
-        $twig = new Environment($loader);
-
         $classesInUse = [];
         $models = [];
         /** @var ObjectGeneratorConfigInterface $config */
