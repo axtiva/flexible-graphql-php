@@ -11,8 +11,6 @@ use Axtiva\FlexibleGraphql\Utils\TemplateRender;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
 
 class UnionModelGenerator implements ModelGeneratorInterface
 {
