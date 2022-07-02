@@ -140,6 +140,7 @@ type Transaction {
     description
     """
     ups: String @deprecated(reason: "wat!")
+    hello: [[[HelloWorld]]]
     createdAt: [DateTime]!
     createdAtNotNull: [DateTime!] @deprecated(reason: "wat!")
     "demo description"
@@ -149,6 +150,7 @@ enum TransactionStatus {
     NEW
 }
 scalar DateTime
+scalar HelloWorld
 GQL
             )),<<<'PHP'
 <?php
@@ -175,6 +177,10 @@ description
      * @deprecation wat!
      */
     public ?string $ups = null;
+    /**
+     * @var null|iterable[][]
+     */
+    public ?iterable $hello = null;
     /**
      * @var iterable|DateTimeImmutable[]
      */

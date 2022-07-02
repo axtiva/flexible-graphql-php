@@ -179,7 +179,6 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
         throw new UnsupportedType($type->name);
     }
 
-
     private function getFieldTypeDocDefinition(Type $type): array
     {
         $types = [];

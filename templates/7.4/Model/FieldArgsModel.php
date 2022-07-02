@@ -17,7 +17,7 @@ use <?=$import_class?>;
  * <?=$type_description?>
 <?php endif ?>
 <?php foreach ($fields ?? [] as $field): ?>
- * @property <?php if (!empty($field['type_doc'])): ?><?=$field['type_doc']?><?php if ($field['is_list']): ?><?=str_repeat('[]', $field['list_level'])?><?php endif ?><?php else: ?>mixed<?php endif ?> $<?=$field['name']?><?php if ($field['is_nullable']): ?> = null<?php endif ?> <?=$field['description']?><?=PHP_EOL?>
+ * @property <?php if (!empty($field['type_doc'])): ?><?=$field['type_doc']?><?php if ($field['is_list']): ?><?=str_repeat('[]', $field['list_level'] + (substr($field['type_doc'], -8) === 'iterable' ? -1 : 0))?><?php endif ?><?php else: ?>mixed<?php endif ?> $<?=$field['name']?><?php if ($field['is_nullable']): ?> = null<?php endif ?> <?=$field['description']?><?=PHP_EOL?>
 <?php endforeach ?>
  */
 <?php $listRender = function($result, $level, $varName = 'value') use (&$listRender) {
