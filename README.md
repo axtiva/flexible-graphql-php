@@ -4,11 +4,11 @@ Schema first lib for generate php code from graphql sdl to TypeRegistry whom sup
 
 ## Features:
 
-- Schema/SDL first code generation (look at [example dir](./example/generate_type_registry.php))
+- Schema/SDL first code generation (look at [example dir](./example/generate_code.php))
 - Support all features from webonyx/graphql-php
 - Executable directives
-- Apollo Federation support by use [axtiva/graphql-federation-extension](//github.com/axtiva/graphql-federation-extension)
-- Apollo Federation code generation by use [axtiva/flexible-graphql-federation](//github.com/axtiva/flexible-graphql-federation)
+- Apollo Federation/Federation2 support by use [axtiva/graphql-federation-extension](//github.com/axtiva/graphql-federation-extension)
+- Apollo Federation/Federation2 code generation by use [axtiva/flexible-graphql-federation](//github.com/axtiva/flexible-graphql-federation)
 - Popular framework integration 
   + Symfony [axtiva/flexible-graphql-bundle](//github.com/axtiva/flexible-graphql-bundle)
 
