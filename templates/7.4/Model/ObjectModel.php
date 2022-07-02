@@ -35,7 +35,7 @@ final class <?=$short_class_name?><?=PHP_EOL?>
      * @deprecation <?=$field['deprecation']?><?=PHP_EOL?>
 <?php endif ?>
 <?php if($field['type_doc']): ?>
-     * @var <?=$field['type_doc']?><?php if ($field['is_list']): ?><?=str_repeat('[]', $field['list_level'])?><?php endif ?><?=PHP_EOL?>
+     * @var <?=$field['type_doc']?><?php if ($field['is_list']): ?><?=str_repeat('[]', $field['list_level'] + (substr($field['type_doc'], -8) === 'iterable' ? -1 : 0))?><?php endif ?><?=PHP_EOL?>
 <?php endif ?>
      */
 <?php endif ?>

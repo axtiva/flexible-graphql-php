@@ -122,7 +122,7 @@ PHP
             BuildSchema::build(Parser::parse(<<<GQL
 type NamedCurrency {
     id: ID!
-    name(x: [[[Int]]], testInput: [[[DemoInput!]!]]!, demo: DemoEnum, date: DateTime, hello: HelloScalar): String!
+    name(x: [[[Int]]], testInput: [[[DemoInput!]!]]!, demo: DemoEnum, date: DateTime, hello: HelloScalar, hello2: [[HelloScalar]]): String!
 }
 enum DemoEnum {
     A
@@ -153,6 +153,7 @@ use DateTimeImmutable;
  * @property null|DemoEnumEnum $demo = null 
  * @property null|DateTimeImmutable $date = null 
  * @property mixed $hello = null 
+ * @property null|iterable[] $hello2 = null 
  */
 final class NameResolverArgs extends InputType
 {

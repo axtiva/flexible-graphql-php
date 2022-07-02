@@ -111,7 +111,7 @@ PHP
             'sum',
             CodeGeneratorConfig::V7_4,
             BuildSchema::build(Parser::parse(<<<GQL
-directive @sum(x: [[Int]], testInput: [[[[DemoInput!]]]]!, demo: DemoEnum, date: DateTime, hello: HelloScalar) on FIELD | FIELD_DEFINITION
+directive @sum(x: [[Int]], testInput: [[[[DemoInput!]]]]!, demo: DemoEnum, date: DateTime, hello: HelloScalar, hello2: [[HelloScalar]]) on FIELD | FIELD_DEFINITION
 
 enum DemoEnum {
     A
@@ -143,6 +143,7 @@ use DateTimeImmutable;
  * @property null|DemoEnumEnum $demo = null 
  * @property null|DateTimeImmutable $date = null 
  * @property mixed $hello = null 
+ * @property null|iterable[] $hello2 = null 
  */
 final class SumDirectiveArgs extends InputType
 {
