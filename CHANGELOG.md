@@ -1,3 +1,7 @@
+1.1.1
+
+- hotfix one level iterator
+
 1.1.0
 
 - make config generator friendly for users
