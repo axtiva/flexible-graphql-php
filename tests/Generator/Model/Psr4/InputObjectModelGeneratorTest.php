@@ -160,11 +160,11 @@ final class TestInputInputType extends InputType
         }
 
         if ($name === 'demoEnum') {
-            return (function($value){ foreach($value as $v) yield ($v === null ? null : new DemoEnumEnum($v)); })($v);
+            return (function($value) {foreach($value as $v) yield ($v === null ? null : new DemoEnumEnum($v)); })($value);
         }
 
         if ($name === 'demoInput') {
-            return (function($value) {foreach($value as $v) yield (function($value){ foreach($value as $v) yield ($v === null ? null : new DemoInputInputType($v)); })($v); })($value);
+            return (function($value) {foreach($value as $v) yield (function($value) {foreach($value as $v) yield ($v === null ? null : new DemoInputInputType($v)); })($v); })($value);
         }
 
         return $value;
