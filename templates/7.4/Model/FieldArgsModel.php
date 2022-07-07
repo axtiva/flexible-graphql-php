@@ -38,7 +38,7 @@ final class <?=$short_class_name?> extends InputType
 <?php foreach ($fields ?? [] as $field): ?>
 <?php if ($field['is_list'] && $field['is_custom'] && $field['type']): ?>
         if ($name === '<?=$field['name']?>') {
-            return <?=$listRender('(function($value){ foreach($value as $v) yield ($v === null ? null : new ' . $field['type'] . '($v)); })($v);', $field['list_level'] - 1)?><?=PHP_EOL?>
+            return <?=$listRender('(function($value){ foreach($value as $v) yield ($v === null ? null : new ' . $field['type'] . '($v)); })($value);', $field['list_level'] - 1)?><?=PHP_EOL?>
         }
 
 <?php elseif ($field['is_custom'] && $field['type']): ?>
