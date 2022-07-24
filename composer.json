@@ -22,7 +22,7 @@
   },
   "require": {
     "php": "^7.4 | ^8.0",
-    "webonyx/graphql-php": "^14.0",
+    "webonyx/graphql-php": "^15.2",
     "nikic/php-parser": "^4.12"
   },
   "require-dev": {

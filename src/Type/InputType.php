@@ -26,6 +26,7 @@ abstract class InputType extends ArrayObject
         unset($this[$name]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($key)
     {
         return isset($this[$key]) ? $this->decorate($key, parent::offsetGet($key)) : null;

@@ -27,7 +27,7 @@ class PropertyNodeVisitor extends NodeVisitorAbstract implements FieldProviderIn
     }
 
     /**
-     * @var array<string, string> <variable name, variable type>
+     * @return array<string, string> <variable name, variable type>
      */
     public function getResults(): iterable
     {
