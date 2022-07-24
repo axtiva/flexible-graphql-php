@@ -13,6 +13,7 @@ use Axtiva\FlexibleGraphql\Generator\Config\FieldResolverGeneratorConfigInterfac
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\ArgsDirectiveResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\ArgsFieldResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\DirectiveResolverGeneratorConfig;
+use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\FederationFieldResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\FieldResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\ScalarResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\TypeRegistryGeneratorConfig;
@@ -59,21 +60,21 @@ use Axtiva\FlexibleGraphql\Generator\TypeRegistry\TypeRegistryGeneratorInterface
 
 class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterface
 {
-    private FieldResolverProviderInterface $wrappedContainerCallGenerator;
-    private FieldResolverProviderInterface $fieldResolverProvider;
-    private DirectiveResolverProviderInterface $directiveResolverProvider;
-    private UnionResolverProviderInterface $unionResolverProvider;
-    private ScalarResolverProviderInterface $scalarResolverProvider;
-    private ?string $defaultResolverServiceName = null;
-    private VariableSerializerInterface $serializer;
-    private TypeRegistryGeneratorConfigInterface $registryConfig;
-    private CodeGeneratorConfigInterface $config;
-    private ?FieldResolverGeneratorConfigInterface $fieldResolverGeneratorConfig = null;
-    private ?DirectiveResolverGeneratorConfigInterface $directiveResolverGeneratorConfig = null;
-    private ?UnionResolveTypeGeneratorConfigInterface $unionResolveTypeGeneratorConfig = null;
-    private ?ScalarResolverGeneratorConfigInterface $scalarResolverGeneratorConfig = null;
-    private ?ArgsDirectiveResolverGeneratorConfigInterface $argsDirectiveResolverGeneratorConfig = null;
-    private ?ArgsFieldResolverGeneratorConfigInterface $argsFieldResolverGeneratorConfig = null;
+    protected FieldResolverProviderInterface $wrappedContainerCallGenerator;
+    protected FieldResolverProviderInterface $fieldResolverProvider;
+    protected DirectiveResolverProviderInterface $directiveResolverProvider;
+    protected UnionResolverProviderInterface $unionResolverProvider;
+    protected ScalarResolverProviderInterface $scalarResolverProvider;
+    protected ?string $defaultResolverServiceName = null;
+    protected VariableSerializerInterface $serializer;
+    protected TypeRegistryGeneratorConfigInterface $registryConfig;
+    protected CodeGeneratorConfigInterface $config;
+    protected ?FieldResolverGeneratorConfigInterface $fieldResolverGeneratorConfig = null;
+    protected ?DirectiveResolverGeneratorConfigInterface $directiveResolverGeneratorConfig = null;
+    protected ?UnionResolveTypeGeneratorConfigInterface $unionResolveTypeGeneratorConfig = null;
+    protected ?ScalarResolverGeneratorConfigInterface $scalarResolverGeneratorConfig = null;
+    protected ?ArgsDirectiveResolverGeneratorConfigInterface $argsDirectiveResolverGeneratorConfig = null;
+    protected ?ArgsFieldResolverGeneratorConfigInterface $argsFieldResolverGeneratorConfig = null;
 
     public function __construct(CodeGeneratorConfigInterface $config)
     {

@@ -42,7 +42,7 @@ class FieldDefinitionGenerator implements FieldDefinitionGeneratorInterface
         if ($this->resolverGenerator->hasResolver($type, $field)) {
             $resolve = "'resolve' => {$this->resolverGenerator->generate($type, $field)},";
         }
-        return "FieldDefinition::create([
+        return "new FieldDefinition([
             'name' => {$this->serializer->serialize($field->name)},
             'description' => {$this->serializer->serialize($field->description)},
             'deprecationReason' => {$this->serializer->serialize($field->deprecationReason)},

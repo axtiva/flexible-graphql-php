@@ -14,7 +14,7 @@ class ArgsFieldResolverGeneratorConfig implements ArgsFieldResolverGeneratorConf
 {
     use GetPHPVersionFromCodeGeneratorTrait;
 
-    private CodeGeneratorConfigInterface $config;
+    protected CodeGeneratorConfigInterface $config;
 
     public function __construct(CodeGeneratorConfigInterface $config)
     {

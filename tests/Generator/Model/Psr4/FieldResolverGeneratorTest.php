@@ -119,7 +119,8 @@ type NamedCurrency {
 }
 scalar DateTime
 GQL
-            )),<<<'PHP'
+            )),
+            <<<'PHP'
 <?php
 
 declare (strict_types=1);

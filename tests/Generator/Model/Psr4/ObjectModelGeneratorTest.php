@@ -62,7 +62,8 @@ type Account implements Node {
     number: String!
 }
 GQL
-            )),<<<'PHP'
+            )),
+            <<<'PHP'
 <?php
 
 declare (strict_types=1);
@@ -102,7 +103,8 @@ enum TransactionStatus {
 }
 scalar DateTime
 GQL
-            )),<<<'PHP'
+            )),
+            <<<'PHP'
 <?php
 
 declare (strict_types=1);
@@ -152,7 +154,8 @@ enum TransactionStatus {
 scalar DateTime
 scalar HelloWorld
 GQL
-            )),<<<'PHP'
+            )),
+            <<<'PHP'
 <?php
 
 declare (strict_types=1);
