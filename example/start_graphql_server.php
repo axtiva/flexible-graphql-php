@@ -8,11 +8,9 @@ require(__DIR__ . '/../vendor/autoload.php');
 
 use Axtiva\FlexibleGraphql\Example\GraphQL\TypeRegistry;
 use Axtiva\FlexibleGraphql\Example\PsrContainerExample;
-use Axtiva\FlexibleGraphql\Resolver\ResolverInterface;
 use GraphQL\Error\DebugFlag;
 use GraphQL\Server\ServerConfig;
 use GraphQL\Server\StandardServer;
-use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Schema;
 
 /**
@@ -41,6 +39,18 @@ $container = new PsrContainerExample([
     // Service name are equal name defined at $directiveResolverMap in file example/generate_type_registry.php
     \Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective::class => new \Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective,
     \Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective::class => new \Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective,
+    \Axtiva\FlexibleGraphql\Example\GraphQL\Representation\AccountRepresentation::class => new \Axtiva\FlexibleGraphql\Example\GraphQL\Representation\AccountRepresentation,
+    \Axtiva\FlexibleGraphql\Example\GraphQL\Representation\TransactionRepresentation::class => new \Axtiva\FlexibleGraphql\Example\GraphQL\Representation\TransactionRepresentation,
+    \Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\_EntityTypeResolver::class => new \Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\_EntityTypeResolver,
+
+    \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_EntitiesResolver::class
+        => new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_EntitiesResolver(...[
+            'Account' => new \Axtiva\FlexibleGraphql\Example\GraphQL\Representation\AccountRepresentation(),
+            'Transaction' => new \Axtiva\FlexibleGraphql\Example\GraphQL\Representation\TransactionRepresentation(),
+        ]),
+    \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_ServiceResolver::class => new \Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_ServiceResolver(
+        file_get_contents(__DIR__ . '/../example/schema.graphql')
+    ),
 
 ]);
 
@@ -53,7 +63,7 @@ $typeRegistry = new TypeRegistry($container);
 $schema = new Schema([
     'query' => $typeRegistry->getType('Query'),
     'mutation' => $typeRegistry->getType('Mutation'),
-    'typeLoader' => static function(string $name) use ($typeRegistry) : GraphQL\Type\Definition\Type {
+    'typeLoader' => static function (string $name) use ($typeRegistry): GraphQL\Type\Definition\Type {
         return $typeRegistry->getType($name);
     },
 ]);

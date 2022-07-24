@@ -3,7 +3,6 @@
 namespace Axtiva\FlexibleGraphql\Tests\Generator\Model\Psr4;
 
 use Axtiva\FlexibleGraphql\Builder\Foundation\CodeGeneratorBuilder;
-use Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\CurrencyTypeResolver;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\CodeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Resolver\UnionResolveTypeInterface;
 use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
@@ -68,7 +67,8 @@ type CodedCurrency {
 }
 union Currency = NamedCurrency | CodedCurrency
 GQL
-            )),<<<'PHP'
+            )),
+            <<<'PHP'
 <?php
 
 declare (strict_types=1);

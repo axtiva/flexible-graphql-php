@@ -61,7 +61,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Definition\Directive;
-use GraphQL\Type\Definition\FieldArgument;
+use GraphQL\Type\Definition\Argument;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\InputObjectField;
 use Psr\Container\ContainerInterface;
@@ -101,7 +101,7 @@ class %s
         $string = [];
         $hasQuery = false;
         $hasMutation = false;
-        $allBuiltInTypes = array_keys(Type::getAllBuiltInTypes());
+        $allBuiltInTypes = array_keys(Type::builtInTypes());
         foreach ($schema->getTypeMap() as $type) {
             if (!in_array($type->name, $allBuiltInTypes)) {
                 $string[] = $this->typeRegistryMethodGenerator->getMethod($type);

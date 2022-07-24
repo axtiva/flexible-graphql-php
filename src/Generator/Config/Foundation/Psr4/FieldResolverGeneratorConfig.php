@@ -14,7 +14,7 @@ class FieldResolverGeneratorConfig implements FieldResolverGeneratorConfigInterf
 {
     use GetPHPVersionFromCodeGeneratorTrait;
 
-    private CodeGeneratorConfigInterface $config;
+    protected CodeGeneratorConfigInterface $config;
 
     public function __construct(CodeGeneratorConfigInterface $config)
     {

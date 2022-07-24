@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation;
 
-use GraphQL\Type\Definition\FieldArgument;
+use GraphQL\Type\Definition\Argument;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\FieldArgumentGeneratorInterface;
 use Axtiva\FlexibleGraphql\Generator\Serializer\VariableSerializerInterface;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\TypeDefinitionResolverInterface;
@@ -22,13 +22,13 @@ class FieldArgumentGenerator implements FieldArgumentGeneratorInterface
         $this->typeDefinitionResolver = $typeDefinitionResolver;
     }
 
-    public function generate(FieldArgument $type): string
+    public function generate(Argument $argument): string
     {
         return "[
-            'name' => {$this->serializer->serialize($type->name)},
-            'type' => function() { return {$this->typeDefinitionResolver->getDefinition($type->getType())}; },
-            'defaultValue' => {$this->serializer->serialize($type->defaultValue)},
-            'description' => {$this->serializer->serialize($type->description)},
+            'name' => {$this->serializer->serialize($argument->name)},
+            'type' => function() { return {$this->typeDefinitionResolver->getDefinition($argument->getType())}; },
+            'defaultValue' => {$this->serializer->serialize($argument->defaultValue)},
+            'description' => {$this->serializer->serialize($argument->description)},
         ]";
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Axtiva\FlexibleGraphql\Utils;
 
 use ReflectionClass;
@@ -11,7 +13,7 @@ class ObjectHelper
         return (new ReflectionClass($object))->getShortName();
     }
 
-    public static function isClassImplements($object, $interface): string
+    public static function isClassImplements($object, $interface): bool
     {
         return (new ReflectionClass($object))->implementsInterface($interface);
     }

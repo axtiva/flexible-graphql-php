@@ -14,6 +14,9 @@ use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\ArgsFieldResolverGen
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\CodeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\DirectiveResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\EnumModelGeneratorConfig;
+use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\FederationArgsFieldResolverGeneratorConfig;
+use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\FederationFieldResolverGeneratorConfig;
+use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\FederationRepresentationResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\FieldResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\InputObjectGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\InterfaceGeneratorConfig;
@@ -31,10 +34,13 @@ use Axtiva\FlexibleGraphql\Generator\Model\ArgsFieldResolverModelGeneratorInterf
 use Axtiva\FlexibleGraphql\Generator\Model\DirectiveResolverGeneratorInterface;
 use Axtiva\FlexibleGraphql\Generator\Model\EnumModelGeneratorInterface;
 use Axtiva\FlexibleGraphql\Generator\Model\FieldResolverGeneratorInterface;
+use Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4\_EntitiesResolverGenerator;
+use Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4\_ServiceResolverGenerator;
 use Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4\ArgsDirectiveResolverModelGenerator;
 use Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4\ArgsFieldResolverModelGenerator;
 use Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4\DirectiveResolverGenerator;
 use Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4\EnumModelGenerator;
+use Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4\FederationRepresentationResolverGenerator;
 use Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4\FieldResolverGenerator;
 use Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4\InputObjectModelGenerator;
 use Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4\InterfaceModelGenerator;
@@ -52,33 +58,33 @@ use Axtiva\FlexibleGraphql\Generator\Model\UnionResolveTypeModelGeneratorInterfa
 
 class CodeGeneratorBuilder implements CodeGeneratorBuilderInterface
 {
-    private CodeGeneratorConfigInterface $config;
+    protected CodeGeneratorConfigInterface $config;
     /**
      * @var FieldResolverGeneratorInterface[]
      */
-    private array $fieldResolverGenerators = [];
-    private ?EnumModelGeneratorInterface $enumModelGenerator = null;
-    private ?InterfaceModelGeneratorInterface $interfaceModelGenerator = null;
-    private ?ObjectModelGeneratorInterface $objectModelGenerator = null;
-    private ?ModelGeneratorInterface $unionModelGenerator = null;
-    private ?UnionResolveTypeModelGeneratorInterface $unionResolveTypeModelGenerator = null;
-    private ?ScalarResolverGeneratorInterface $scalarResolverGenerator = null;
-    private ?DirectiveResolverGeneratorInterface $directiveResolverGenerator = null;
-    private ?ArgsDirectiveResolverModelGeneratorInterface $argsDirectiveResolverGenerator = null;
-    private ?ArgsFieldResolverModelGeneratorInterface $argsFieldResolverGenerator = null;
-    private ?InputObjectModelGeneratorInterface $inputObjectModelGenerator = null;
+    protected array $fieldResolverGenerators = [];
+    protected ?EnumModelGeneratorInterface $enumModelGenerator = null;
+    protected ?InterfaceModelGeneratorInterface $interfaceModelGenerator = null;
+    protected ?ObjectModelGeneratorInterface $objectModelGenerator = null;
+    protected ?ModelGeneratorInterface $unionModelGenerator = null;
+    protected ?UnionResolveTypeModelGeneratorInterface $unionResolveTypeModelGenerator = null;
+    protected ?ScalarResolverGeneratorInterface $scalarResolverGenerator = null;
+    protected ?DirectiveResolverGeneratorInterface $directiveResolverGenerator = null;
+    protected ?ArgsDirectiveResolverModelGeneratorInterface $argsDirectiveResolverGenerator = null;
+    protected ?ArgsFieldResolverModelGeneratorInterface $argsFieldResolverGenerator = null;
+    protected ?InputObjectModelGeneratorInterface $inputObjectModelGenerator = null;
     /** @var ModelGeneratorInterface[] */
-    private array $modelGenerators = [];
-    private ObjectGeneratorConfigInterface $objectGeneratorConfig;
-    private UnionObjectGeneratorConfigInterface $unionModelConfig;
-    private UnionResolveTypeGeneratorConfigInterface $unionResolveTypeModelConfig;
-    private InterfaceGeneratorConfig $interfaceGeneratorConfig;
-    private EnumModelGeneratorConfig $enumConfig;
-    private ScalarResolverGeneratorConfigInterface $scalarConfig;
-    private DirectiveResolverGeneratorConfigInterface $directiveConfig;
-    private ArgsDirectiveResolverGeneratorConfigInterface $argsDirectiveConfig;
-    private ArgsFieldResolverGeneratorConfigInterface $argsFieldConfig;
-    private InputObjectGeneratorConfigInterface $inputObjectConfig;
+    protected array $modelGenerators = [];
+    protected ObjectGeneratorConfigInterface $objectGeneratorConfig;
+    protected UnionObjectGeneratorConfigInterface $unionModelConfig;
+    protected UnionResolveTypeGeneratorConfigInterface $unionResolveTypeModelConfig;
+    protected InterfaceGeneratorConfig $interfaceGeneratorConfig;
+    protected EnumModelGeneratorConfig $enumConfig;
+    protected ScalarResolverGeneratorConfigInterface $scalarConfig;
+    protected DirectiveResolverGeneratorConfigInterface $directiveConfig;
+    protected ArgsDirectiveResolverGeneratorConfigInterface $argsDirectiveConfig;
+    protected ArgsFieldResolverGeneratorConfigInterface $argsFieldConfig;
+    protected InputObjectGeneratorConfigInterface $inputObjectConfig;
 
     public function __construct(CodeGeneratorConfigInterface $config)
     {

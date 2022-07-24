@@ -1,15 +1,18 @@
 # Axtiva Flexible Graphql
 
-Schema first lib for generate php code from graphql sdl to TypeRegistry whom support webonyx/graphql-php
+Schema first lib for generate php code from graphql sdl to TypeRegistry whom support [webonyx/graphql-php](https://github.com/webonyx/graphql-php) with simple integrate to any controller.
+
+## TL;DR
+
+Can easy to integrate graphql to any project, all you need is controller. Fast start with [example](./example/TEST.md)
 
 ## Features:
 
 - Schema/SDL first code generation (look at [example dir](./example/generate_code.php))
-- Support all features from webonyx/graphql-php
+- Support all features from [webonyx/graphql-php](https://github.com/webonyx/graphql-php)
 - Executable directives
-- Apollo Federation/Federation2 support by use [axtiva/graphql-federation-extension](//github.com/axtiva/graphql-federation-extension)
-- Apollo Federation/Federation2 code generation by use [axtiva/flexible-graphql-federation](//github.com/axtiva/flexible-graphql-federation)
-- Popular framework integration 
+- Apollo Federation/Federation2 support
+- Popular framework integration:
   + Symfony [axtiva/flexible-graphql-bundle](//github.com/axtiva/flexible-graphql-bundle)
 
 # Setup
@@ -27,14 +30,14 @@ composer require axtiva/flexible-graphql-php
 - Generate directive resolver by Graphql Schema [example/generate_directive_resolver.php](./example/generate_directive_resolver.php)
 - Generate type field resolver by Graphql Schema [example/generate_field_resolver.php](./example/generate_field_resolver.php)
 - Create lazy loaded TypeRegistry [example/generate_type_registry.php](./example/generate_type_registry.php)
-- Setup graphql request handler with lazy loaded TypeRegistry [example/setup_graphql_server.php](./example/setup_graphql_server.php)
+- Setup graphql request handler with lazy loaded TypeRegistry [example/start_graphql_server.php](./example/start_graphql_server.php)
 
 ## Demo
 
 Up Dev server for test http Graphql requests:
 
 ```shell
-php -S localhost:8080 example/setup_graphql_server.php
+php -S localhost:8080 example/start_graphql_server.php
 ```
 
 ### Change [schema](example/schema.graphql) and run example commands
@@ -59,7 +62,7 @@ Example:
 ```
 
 and run `php example/generate_code.php`, after this you will find in [example/Resolver/CodedCurrency/CodeResolver.php](example/Resolver/CodedCurrency/CodeResolver.php).
-this is your field resolver, define him in your psr container like PsrContainerExample in [example/setup_graphql_server.php](example/setup_graphql_server.php):
+this is your field resolver, define him in your psr container like PsrContainerExample in [example/start_graphql_server.php](example/start_graphql_server.php):
 
 ```diff
 $container = new PsrContainerExample([
@@ -70,7 +73,7 @@ $container = new PsrContainerExample([
 ]);
 ```
 
-Run demo app `php -S localhost:8080 example/setup_graphql_server.php` and try request CodedCurrency.code field in query 
+Run demo app `php -S localhost:8080 example/start_graphql_server.php` and try request CodedCurrency.code field in query 
 
 ## Tests
 
