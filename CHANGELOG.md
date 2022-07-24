@@ -1,3 +1,9 @@
+2.0.0
+
+- Integrate federation directives and types without define it into sdl auto mount into main sdl
+- Support features of apollo federation v1 and v2
+- Auto feel external fields in federated representation resolver 
+
 1.1.1
 
 - hotfix one level iterator
