@@ -13,7 +13,7 @@ use GraphQL\Type\Schema;
 use GraphQL\Utils\SchemaExtender;
 use function in_array;
 
-final class FederationV1SchemaExtender
+class FederationV1SchemaExtender
 {
     public static function build(Schema $schema): Schema
     {
@@ -46,22 +46,7 @@ GRAPHQL;
         $schema = SchemaExtender::extend($schema, $documentAST);
 
         if ($schema->getAstNode() === null) { // generate ast node for _service.sdl field
-            $schemaSDL = 'schema { query: Query }';
-            $documentAST = Parser::parse($schemaSDL);
-            /** @var SchemaDefinitionNode $schemaDefinition */
-            $schemaDefinition = $documentAST->definitions[0];
-            foreach ($schema->getDirectives() as $directive) {
-                if ($directive->astNode) {
-                    $schemaDefinition->directives[] = $directive->astNode;
-                }
-            }
-            foreach (['query', 'mutation', 'subscription'] as $operation) {
-                $operation = $schema->getOperationType($operation);
-                if ($operation && $operation->astNode) {
-                    $schemaDefinition->operationTypes[] = $operation->astNode;
-                }
-            }
-            $schema->getConfig()->setAstNode($schemaDefinition);
+            $schema = self::extendSchemaAst($schema);
         }
 
         /** @var ObjectType $query */
@@ -69,6 +54,14 @@ GRAPHQL;
         if ($query->getField('_service')->resolveFn === null) {
             $query->getField('_service')->resolveFn = new _ServiceResolver(Printer::doPrint($schema->getAstNode()));
         }
+
+        $schema = self::addTypeIfNotExists($schema, 'FieldSet', 'scalar _FieldSet');
+
+        $schema = self::addDirectiveIfNotExists($schema, 'external', 'directive @external on FIELD_DEFINITION');
+        $schema = self::addDirectiveIfNotExists($schema, 'requires', 'directive @requires(fields: FieldSet!) on FIELD_DEFINITION');
+        $schema = self::addDirectiveIfNotExists($schema, 'provides', 'directive @provides(fields: FieldSet!) on FIELD_DEFINITION');
+        $schema = self::addDirectiveIfNotExists($schema, 'key', 'directive @key(fields: FieldSet!, resolvable: Boolean = true) repeatable on OBJECT | INTERFACE');
+        $schema = self::addDirectiveIfNotExists($schema, 'extends', 'directive @extends on OBJECT | INTERFACE');
 
         if (empty($entityTypeNamesList)) {
             return $schema;
@@ -88,5 +81,47 @@ GRAPHQL;
 
         $documentAST = Parser::parse($sdl);
         return SchemaExtender::extend($schema, $documentAST);
+    }
+
+    protected static function addDirectiveIfNotExists(Schema $schema, string $directiveName, string $definition): Schema
+    {
+        if ($schema->getDirective($directiveName)) {
+            return $schema;
+        }
+
+        $documentAST = Parser::parse($definition);
+        return SchemaExtender::extend($schema, $documentAST);
+    }
+
+    protected static function addTypeIfNotExists(Schema $schema, string $typeName, string $definition): Schema
+    {
+        if ($schema->getType($typeName)) {
+            return $schema;
+        }
+
+        $documentAST = Parser::parse($definition);
+        return SchemaExtender::extend($schema, $documentAST);
+    }
+
+    private static function extendSchemaAst(Schema $schema): Schema
+    {
+        $schemaSDL = 'schema { query: Query }';
+        $documentAST = Parser::parse($schemaSDL);
+        /** @var SchemaDefinitionNode $schemaDefinition */
+        $schemaDefinition = $documentAST->definitions[0];
+        foreach ($schema->getDirectives() as $directive) {
+            if ($directive->astNode) {
+                $schemaDefinition->directives[] = $directive->astNode;
+            }
+        }
+        foreach (['query', 'mutation', 'subscription'] as $operation) {
+            $operation = $schema->getOperationType($operation);
+            if ($operation && $operation->astNode) {
+                $schemaDefinition->operationTypes[] = $operation->astNode;
+            }
+        }
+        $schema->getConfig()->setAstNode($schemaDefinition);
+
+        return $schema;
     }
 }

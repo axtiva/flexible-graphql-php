@@ -6,7 +6,7 @@ Schema first lib for generate php code from graphql sdl to TypeRegistry whom sup
 
 Can easy to integrate graphql to any project, all you need is controller.
 
-- Any controller
+- Any framework with controller
 - Symfony framework
 
 ## Features:
