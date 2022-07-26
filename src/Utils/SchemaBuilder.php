@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Axtiva\FlexibleGraphql\Utils;
 
 use Axtiva\FlexibleGraphql\Exception\SchemaParserException;

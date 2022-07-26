@@ -1,14 +1,21 @@
 # Axtiva Flexible Graphql
 
-Schema first lib for generate php code from graphql sdl to TypeRegistry whom support webonyx/graphql-php
+Schema first lib for generate php code from graphql sdl to TypeRegistry whom support webonyx/graphql-php with simple integrate to any controller.
+
+## TL;DR
+
+Can easy to integrate graphql to any project, all you need is controller.
+
+- Any framework with controller
+- Symfony framework
 
 ## Features:
 
 - Schema/SDL first code generation (look at [example dir](./example/generate_code.php))
 - Support all features from webonyx/graphql-php
 - Executable directives
-- Apollo Federation/Federation2 support by use [axtiva/graphql-federation-extension](//github.com/axtiva/graphql-federation-extension)
-- Apollo Federation/Federation2 code generation by use [axtiva/flexible-graphql-federation](//github.com/axtiva/flexible-graphql-federation)
+- Apollo Federation/Federation2 support
+- Apollo Federation/Federation2 code generation
 - Popular framework integration 
   + Symfony [axtiva/flexible-graphql-bundle](//github.com/axtiva/flexible-graphql-bundle)
 
