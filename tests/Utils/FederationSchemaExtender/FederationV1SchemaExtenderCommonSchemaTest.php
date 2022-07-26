@@ -22,6 +22,12 @@ class FederationV1SchemaExtenderCommonSchemaTest extends TestCase
 
         $this->assertFalse($schemaExtended->getQueryType()->hasField('_entities'), '_entity found');
         $this->assertTrue($schemaExtended->getQueryType()->hasField('_service'), '_service found');
+        $this->assertNotNull($schemaExtended->getDirective('external'), 'external not found');
+        $this->assertNotNull($schemaExtended->getDirective('requires'), 'requires not found');
+        $this->assertNotNull($schemaExtended->getDirective('provides'), 'provides not found');
+        $this->assertNotNull($schemaExtended->getDirective('extends'), 'extends not found');
+        $this->assertNotNull($schemaExtended->getDirective('key'), 'key not found');
+
     }
 
     /**

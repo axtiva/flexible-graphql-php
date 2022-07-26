@@ -61,6 +61,66 @@ class FederationV1SchemaExtenderFederationSchemaTest extends TestCase
         }
     }
 
+
+    public function testExtendSchemaWithoutKeyDirectiveQuery()
+    {
+        $sdl = <<<'SDL'
+scalar FieldSet
+directive @isAuthenticated on FIELD | FIELD_DEFINITION
+directive @hasRole(role: String) on FIELD | FIELD_DEFINITION
+directive @pow(ex: Int!) on FIELD | FIELD_DEFINITION
+directive @uppercase on FIELD | FIELD_DEFINITION
+directive @key(fields: FieldSet!, resolvable: Boolean = true) repeatable on OBJECT | INTERFACE
+directive @extends on OBJECT | INTERFACE
+
+type Query {
+  hero: Character
+}
+
+type Character @key(fields: "id") {
+  id: ID!
+  name: String
+  friends: [Character]
+  homeWorld: Planet
+  species: Species
+}
+
+type Planet {
+  name: String
+  climate: String
+}
+
+type Species @key(fields: "id") {
+  id: ID!
+  name: String
+  lifespan: Int
+  origin: Planet
+}
+
+enum Episode {
+  NEWHOPE
+  EMPIRE
+  JEDI
+}
+
+scalar Date
+SDL;
+        $schema = BuildSchema::build(Parser::parse($sdl));
+        $schemaExtended = FederationV1SchemaExtender::build($schema);
+
+        $this->assertTrue($schemaExtended->getQueryType()->hasField('_entities'), '_entity not found');
+        $this->assertTrue($schemaExtended->getQueryType()->hasField('_service'), '_service not found');
+        $this->assertTrue($schemaExtended->hasType('_Entity'), '_Entity not found');
+        $this->assertTrue($schemaExtended->hasType('_Any'), '_Any not found');
+        $this->assertTrue($schemaExtended->hasType('_Service'), '_Service not found');
+        $this->assertNotNull($schemaExtended->getDirective('external'), 'external not found');
+        $this->assertNotNull($schemaExtended->getDirective('requires'), 'requires not found');
+        $this->assertNotNull($schemaExtended->getDirective('provides'), 'provides not found');
+        $this->assertNotNull($schemaExtended->getDirective('extends'), 'extends not found');
+        $this->assertNotNull($schemaExtended->getDirective('key'), 'key not found');
+
+    }
+
     public function dataProviderFederatedSchema(): iterable
     {
         yield [<<<'SDL'

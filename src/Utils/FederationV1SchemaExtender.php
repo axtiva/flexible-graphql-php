@@ -55,7 +55,8 @@ GRAPHQL;
             $query->getField('_service')->resolveFn = new _ServiceResolver(Printer::doPrint($schema->getAstNode()));
         }
 
-        $schema = self::addTypeIfNotExists($schema, 'FieldSet', 'scalar _FieldSet');
+        $schema = self::addTypeIfNotExists($schema, '_FieldSet', 'scalar _FieldSet');
+        $schema = self::addTypeIfNotExists($schema, 'FieldSet', 'scalar FieldSet');
 
         $schema = self::addDirectiveIfNotExists($schema, 'external', 'directive @external on FIELD_DEFINITION');
         $schema = self::addDirectiveIfNotExists($schema, 'requires', 'directive @requires(fields: FieldSet!) on FIELD_DEFINITION');
