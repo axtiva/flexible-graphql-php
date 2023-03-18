@@ -21,12 +21,22 @@ class FederationV22SchemaExtender extends FederationV1SchemaExtender
     private const INACCESSIBLE = 'directive @%s on FIELD_DEFINITION | OBJECT | INTERFACE | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION';
     private const OVERRIDE = 'directive @%s(from: String!) on FIELD_DEFINITION';
     private const TAG = 'directive @%s(name: String!) repeatable on | FIELD_DEFINITION | INTERFACE | OBJECT | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION';
+    private const EXTERNAL = 'directive @%s on FIELD_DEFINITION';
+    private const REQUIRES = 'directive @%s(fields: FieldSet!) on FIELD_DEFINITION';
+    private const PROVIDES = 'directive @%s(fields: FieldSet!) on FIELD_DEFINITION';
+    private const KEY = 'directive @%s(fields: FieldSet!, resolvable: Boolean = true) repeatable on OBJECT | INTERFACE';
+    private const EXTENDS = 'directive @extends on OBJECT | INTERFACE';
 
     private const DIRECTIVE_MAP = [
         'tag' => self::TAG,
         'shareable' => self::SHAREABLE,
         'inaccessible' => self::INACCESSIBLE,
         'override' => self::OVERRIDE,
+        'external' => self::EXTERNAL,
+        'requires' => self::REQUIRES,
+        'provides' => self::PROVIDES,
+        'key' => self::KEY,
+        'extends' => self::EXTENDS,
     ];
 
     public static function build(Schema $schema, DocumentNode $ast): Schema
@@ -80,6 +90,9 @@ GQL
                                 foreach ($argument->value->values->getIterator() as $value) {
                                     if ($value instanceof StringValueNode) {
                                         $directiveName = self::trimDirectivePrefix($value->value);
+                                        if (empty(static::DIRECTIVE_MAP[$directiveName])) {
+                                            continue;
+                                        }
                                         $schema = self::addDirectiveIfNotExists(
                                             $schema,
                                             $directiveName,
@@ -96,6 +109,9 @@ GQL
                                             if ($argument->name->value === 'as') {
                                                 $as = self::trimDirectivePrefix($argument->value->value);
                                             }
+                                        }
+                                        if (empty(static::DIRECTIVE_MAP[$name])) {
+                                            continue;
                                         }
                                         if ($name !== null && $as !== null) {
                                             $schema = self::addDirectiveIfNotExists(
@@ -131,26 +147,13 @@ GQL
 
     private static function addFederationDirectivesWithAliases(Schema $schema, string $alias): Schema
     {
-        $schema = self::addDirectiveIfNotExists(
-            $schema,
-            $alias . '__shareable',
-            sprintf(static::SHAREABLE, $alias . '__shareable')
-        );
-        $schema = self::addDirectiveIfNotExists(
-            $schema,
-            $alias . '__inaccessible',
-            sprintf(static::INACCESSIBLE, $alias . '__inaccessible')
-        );
-        $schema = self::addDirectiveIfNotExists(
-            $schema,
-            $alias . '__override',
-            sprintf(static::OVERRIDE, $alias . '__override')
-        );
-        $schema = self::addDirectiveIfNotExists(
-            $schema,
-            $alias . '__tag',
-            sprintf(static::TAG, $alias . '__tag')
-        );
+        foreach (static::DIRECTIVE_MAP as $directiveName => $directive) {
+            $schema = self::addDirectiveIfNotExists(
+                $schema,
+                $alias . '__' . $directiveName,
+                sprintf($directive, $alias . '__' . $directiveName)
+            );
+        }
 
         return $schema;
     }
