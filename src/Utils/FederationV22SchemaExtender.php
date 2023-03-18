@@ -25,7 +25,7 @@ class FederationV22SchemaExtender extends FederationV1SchemaExtender
     private const REQUIRES = 'directive @%s(fields: FieldSet!) on FIELD_DEFINITION';
     private const PROVIDES = 'directive @%s(fields: FieldSet!) on FIELD_DEFINITION';
     private const KEY = 'directive @%s(fields: FieldSet!, resolvable: Boolean = true) repeatable on OBJECT | INTERFACE';
-    private const EXTENDS = 'directive @extends on OBJECT | INTERFACE';
+    private const EXTENDS = 'directive @%s on OBJECT | INTERFACE';
 
     private const DIRECTIVE_MAP = [
         'tag' => self::TAG,
