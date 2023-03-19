@@ -20,6 +20,7 @@ class FederationArgsFieldResolverGeneratorConfig extends ArgsFieldResolverGenera
         if ($field->getName() === '_entities') {
             return '_' . ucfirst(substr($field->getName(), 1)) . 'ResolverArgs';
         }
+
         return ucfirst($field->getName()) . 'ResolverArgs';
     }
 }

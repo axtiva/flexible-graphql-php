@@ -29,6 +29,7 @@ class CodeGeneratorBuilderFederated extends CodeGeneratorBuilder
             new InputObjectGeneratorConfig($config),
         ));
 
+        $this->argsFieldConfig = new FederationArgsFieldResolverGeneratorConfig($config);
         $this->addModelGenerator(
             new FederationRepresentationResolverGenerator(
                 new FederationRepresentationResolverGeneratorConfig($config)

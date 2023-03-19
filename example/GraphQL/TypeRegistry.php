@@ -147,7 +147,7 @@ class TypeRegistry
             'description' => NULL,
             'deprecationReason' => NULL,
             'resolve' => (function ($rootValue, $args, $context, $info) {
-    
+    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\_EntitiesResolverArgs($args);
     return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_EntitiesResolver')($rootValue, $args, $context, $info);
 }),
             'type' => function() { return Type::nonNull(function() { return new ListOfType(function() { return $this->getType('_Entity'); }); }); },
@@ -778,6 +778,31 @@ class TypeRegistry
         
 
 
+    public function directive_federation__tag()
+    {
+        static $directive = null;
+        if ($directive === null) {
+            $directive = new Directive([
+            'name' => 'federation__tag',
+            'description' => NULL,
+            'isRepeatable' => true,
+            'locations' => ['FIELD_DEFINITION','INTERFACE','OBJECT','UNION','ARGUMENT_DEFINITION','SCALAR','ENUM','ENUM_VALUE','INPUT_OBJECT','INPUT_FIELD_DEFINITION'],
+            'args' => [
+                [
+            'name' => 'name',
+            'type' => function() { return Type::nonNull(function() { return Type::string(); }); },
+            'defaultValue' => NULL,
+            'description' => NULL,
+        ]
+            ],
+        ]);
+        }
+        
+        return $directive;
+    }
+        
+
+
     public function directive_federation__shareable()
     {
         static $directive = null;
@@ -843,19 +868,39 @@ class TypeRegistry
         
 
 
-    public function directive_federation__tag()
+    public function directive_federation__external()
     {
         static $directive = null;
         if ($directive === null) {
             $directive = new Directive([
-            'name' => 'federation__tag',
+            'name' => 'federation__external',
             'description' => NULL,
-            'isRepeatable' => true,
-            'locations' => ['FIELD_DEFINITION','INTERFACE','OBJECT','UNION','ARGUMENT_DEFINITION','SCALAR','ENUM','ENUM_VALUE','INPUT_OBJECT','INPUT_FIELD_DEFINITION'],
+            'isRepeatable' => false,
+            'locations' => ['FIELD_DEFINITION'],
+            'args' => [
+                
+            ],
+        ]);
+        }
+        
+        return $directive;
+    }
+        
+
+
+    public function directive_federation__requires()
+    {
+        static $directive = null;
+        if ($directive === null) {
+            $directive = new Directive([
+            'name' => 'federation__requires',
+            'description' => NULL,
+            'isRepeatable' => false,
+            'locations' => ['FIELD_DEFINITION'],
             'args' => [
                 [
-            'name' => 'name',
-            'type' => function() { return Type::nonNull(function() { return Type::string(); }); },
+            'name' => 'fields',
+            'type' => function() { return Type::nonNull(function() { return $this->getType('FieldSet'); }); },
             'defaultValue' => NULL,
             'description' => NULL,
         ]
@@ -868,9 +913,84 @@ class TypeRegistry
         
 
 
+    public function directive_federation__provides()
+    {
+        static $directive = null;
+        if ($directive === null) {
+            $directive = new Directive([
+            'name' => 'federation__provides',
+            'description' => NULL,
+            'isRepeatable' => false,
+            'locations' => ['FIELD_DEFINITION'],
+            'args' => [
+                [
+            'name' => 'fields',
+            'type' => function() { return Type::nonNull(function() { return $this->getType('FieldSet'); }); },
+            'defaultValue' => NULL,
+            'description' => NULL,
+        ]
+            ],
+        ]);
+        }
+        
+        return $directive;
+    }
+        
+
+
+    public function directive_federation__key()
+    {
+        static $directive = null;
+        if ($directive === null) {
+            $directive = new Directive([
+            'name' => 'federation__key',
+            'description' => NULL,
+            'isRepeatable' => true,
+            'locations' => ['OBJECT','INTERFACE'],
+            'args' => [
+                [
+            'name' => 'fields',
+            'type' => function() { return Type::nonNull(function() { return $this->getType('FieldSet'); }); },
+            'defaultValue' => NULL,
+            'description' => NULL,
+        ],[
+            'name' => 'resolvable',
+            'type' => function() { return Type::boolean(); },
+            'defaultValue' => true,
+            'description' => NULL,
+        ]
+            ],
+        ]);
+        }
+        
+        return $directive;
+    }
+        
+
+
+    public function directive_federation__extends()
+    {
+        static $directive = null;
+        if ($directive === null) {
+            $directive = new Directive([
+            'name' => 'federation__extends',
+            'description' => NULL,
+            'isRepeatable' => false,
+            'locations' => ['OBJECT','INTERFACE'],
+            'args' => [
+                
+            ],
+        ]);
+        }
+        
+        return $directive;
+    }
+        
+
+
     public function getDirectives()
     {
-        return [$this->directive_uppercase(),$this->directive_plusX(),$this->directive_key(),$this->directive_external(),$this->directive_requires(),$this->directive_provides(),$this->directive_extends(),$this->directive_link(),$this->directive_shareable(),$this->directive_inaccessible(),$this->directive_override(),$this->directive_tag(),$this->directive_federation__shareable(),$this->directive_federation__inaccessible(),$this->directive_federation__override(),$this->directive_federation__tag()];
+        return [$this->directive_uppercase(),$this->directive_plusX(),$this->directive_key(),$this->directive_external(),$this->directive_requires(),$this->directive_provides(),$this->directive_extends(),$this->directive_link(),$this->directive_shareable(),$this->directive_inaccessible(),$this->directive_override(),$this->directive_tag(),$this->directive_federation__tag(),$this->directive_federation__shareable(),$this->directive_federation__inaccessible(),$this->directive_federation__override(),$this->directive_federation__external(),$this->directive_federation__requires(),$this->directive_federation__provides(),$this->directive_federation__key(),$this->directive_federation__extends()];
     }
         
 
