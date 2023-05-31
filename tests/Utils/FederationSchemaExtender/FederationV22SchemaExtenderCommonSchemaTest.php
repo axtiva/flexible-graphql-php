@@ -39,6 +39,8 @@ class FederationV22SchemaExtenderCommonSchemaTest extends TestCase
         $this->assertNotNull($schemaExtended->getDirective('federation__tag'), 'federation__tag not found');
         $this->assertNotNull($schemaExtended->getDirective('override'), 'override not found');
         $this->assertNotNull($schemaExtended->getDirective('federation__override'), 'federation__override not found');
+        $this->assertNotNull($schemaExtended->getDirective('composeDirective'), 'composeDirective not found');
+        $this->assertNotNull($schemaExtended->getDirective('federation__composeDirective'), 'federation__composeDirective not found');
     }
 
     /**
@@ -116,6 +118,50 @@ type Character {
 }
 
 type Planet {
+  name: String
+  climate: String
+}
+
+type Species {
+  name: String
+  lifespan: Int
+  origin: Planet
+}
+SDL];
+        yield [<<<'SDL'
+extend schema
+@link(
+    url: "https://specs.apollo.dev/federation/v2.2",
+    import: [
+        "@composeDirective",
+        "@extends",
+        "@external",
+        "@inaccessible",
+        "@key",
+        "@override",
+        "@provides",
+        "@requires",
+        "@shareable",
+        "@tag"
+    ]
+)
+directive @isAuthenticated on FIELD | FIELD_DEFINITION
+directive @hasRole(role: String) on FIELD | FIELD_DEFINITION
+directive @pow(ex: Int!) on FIELD | FIELD_DEFINITION
+directive @uppercase on FIELD | FIELD_DEFINITION
+
+type Query @extends {
+  hero: Character
+}
+
+type Character {
+  name: String
+  friends: [Character]
+  homeWorld: Planet @external
+  species: Species @requires(fields: "homeWorld")
+}
+
+type Planet @key(fields: "name") {
   name: String
   climate: String
 }

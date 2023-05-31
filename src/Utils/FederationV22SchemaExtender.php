@@ -26,6 +26,7 @@ class FederationV22SchemaExtender extends FederationV1SchemaExtender
     private const PROVIDES = 'directive @%s(fields: FieldSet!) on FIELD_DEFINITION';
     private const KEY = 'directive @%s(fields: FieldSet!, resolvable: Boolean = true) repeatable on OBJECT | INTERFACE';
     private const EXTENDS = 'directive @%s on OBJECT | INTERFACE';
+    private const COMPOSE_DIRECTIVE = 'directive @%s(name: String!) repeatable on SCHEMA';
 
     private const DIRECTIVE_MAP = [
         'tag' => self::TAG,
@@ -37,6 +38,7 @@ class FederationV22SchemaExtender extends FederationV1SchemaExtender
         'provides' => self::PROVIDES,
         'key' => self::KEY,
         'extends' => self::EXTENDS,
+        'composeDirective' => self::COMPOSE_DIRECTIVE,
     ];
 
     public static function build(Schema $schema, DocumentNode $ast): Schema
