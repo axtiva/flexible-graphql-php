@@ -12,7 +12,7 @@ use Axtiva\FlexibleGraphql\Generator\Serializer\VariableSerializerInterface;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\ScalarTypeGeneratorInterface;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\TypeGeneratorInterface;
 
-class CustomScalarGenerator implements TypeGeneratorInterface, ScalarTypeGeneratorInterface
+class CustomScalarGenerator implements ScalarTypeGeneratorInterface
 {
     private VariableSerializerInterface $serializer;
     private ScalarResolverGeneratorInterface $resolverGenerator;

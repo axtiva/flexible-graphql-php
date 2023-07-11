@@ -1,3 +1,8 @@
+2.1.0
+
+- add support of amphp v3 as [TypeRegistryGeneratorBuilderAmphp.php](src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphp.php)
+- add support of amphp v2 as [TypeRegistryGeneratorBuilderAmphpV2.php](src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphpV2.php)
+
 2.0.0
 
 - Integrate federation directives and types without define it into sdl auto mount into main sdl
