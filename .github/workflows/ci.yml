@@ -67,3 +67,21 @@ jobs:
         run: composer install -n --prefer-dist
       - name: Run PHPUnit
         run: php ./vendor/bin/phpunit
+  php-test-8_2:
+    name: phpunit 8.2
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:v2
+          coverage: xdebug
+      - name: Validate composer.json
+        run: composer validate --strict
+      - name: Run composer install
+        run: composer install -n --prefer-dist
+      - name: Run PHPUnit
+        run: php ./vendor/bin/phpunit
