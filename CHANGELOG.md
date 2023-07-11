@@ -1,7 +1,3 @@
-2.1.1
-
-- fix type registry generator for amphp lib
-
 2.1.0
 
 - add support of amphp v3 as [TypeRegistryGeneratorBuilderAmphp.php](src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphp.php)

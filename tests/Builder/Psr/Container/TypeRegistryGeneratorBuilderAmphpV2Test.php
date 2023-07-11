@@ -126,7 +126,7 @@ class TypeRegistry
             'description' => NULL,
             'deprecationReason' => NULL,
             'resolve' => (function($rootValue, $args, $context, $info) {
-                    return \Amp\call(function() use ($rootValue, $args, $context, $info) { return function($rootValue, $args, $context, $info) {
+                    return \Amp\call(function($rootValue, $args, $context, $info) {
                         return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\SumDirective')(
                         function($rootValue, $args, $context, $info) {
                         return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective')(
@@ -144,7 +144,7 @@ class TypeRegistry
 )),
                         $rootValue, $args, $context, $info
                         );
-                    };});
+                    }, $rootValue, $args, $context, $info);
                 }),
             'type' => function() { return Type::string(); },
             'args' => ['x' => [
@@ -368,10 +368,10 @@ class TypeRegistry
             'description' => NULL,
             'deprecationReason' => NULL,
             'resolve' => (function($rootValue, $args, $context, $info) {
-                    return \Amp\call(function() use ($rootValue, $args, $context, $info) { return (function ($rootValue, $args, $context, $info) {
+                    return \Amp\call((function ($rootValue, $args, $context, $info) {
     
     return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\SumResolver')($rootValue, $args, $context, $info);
-});});
+}), $rootValue, $args, $context, $info);
                 }),
             'type' => function() { return Type::int(); },
             'args' => [],

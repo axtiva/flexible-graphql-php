@@ -24,7 +24,7 @@ class FieldResolverAmphpAsyncWrapped implements FieldResolverGeneratorInterface
     {
         $wrappedResolver = $this->wrappedGenerator->generate($type, $field);
         return "(function(\$rootValue, \$args, \$context, \$info) {
-                    return \Amp\async(function() use (\$rootValue, \$args, \$context, \$info) { return $wrappedResolver;});
+                    return \Amp\async($wrappedResolver, \$rootValue, \$args, \$context, \$info);
                 })";
     }
 }
