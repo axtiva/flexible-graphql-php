@@ -21,9 +21,9 @@ use Axtiva\FlexibleGraphql\Utils\ObjectHelper;
 use GraphQL\Type\Definition\CustomScalarType;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\FieldDefinition;
+use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\TypeWithFields;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Type\Schema;
 use PhpParser\NodeTraverser;
@@ -102,7 +102,7 @@ class CodeGenerator implements CodeGeneratorInterface
                         foreach ($collector->getResults() as $fieldName => $field) {
                             $existedFields[] = $fieldName;
                         }
-                        foreach ($type instanceof TypeWithFields ? $type->getFields() : [] as $field) {
+                        foreach (($type instanceof ObjectType || $type instanceof InterfaceType) ? $type->getFields() : [] as $field) {
                             if (!in_array($field->name, $existedFields)) {
                                 yield from $this->generateFieldResolver($type, $field, $schema);
                             }
