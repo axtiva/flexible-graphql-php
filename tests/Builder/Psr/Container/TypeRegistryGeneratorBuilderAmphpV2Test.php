@@ -150,28 +150,18 @@ class TypeRegistry
             'args' => ['x' => [
             'name' => 'x',
             'type' => function() { return Type::int(); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ],'testInput' => [
             'name' => 'testInput',
             'type' => function() { return Type::nonNull(function() { return $this->getType('DemoInput'); }); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ],'demo' => [
             'name' => 'demo',
             'type' => function() { return $this->getType('DemoEnum'); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ],'date' => [
             'name' => 'date',
             'type' => function() { return $this->getType('DateTime'); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ],'hello' => [
             'name' => 'hello',
             'type' => function() { return $this->getType('HelloScalar'); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ]],
         ])],
         ]);
@@ -208,8 +198,6 @@ class TypeRegistry
         'description' =>  NULL,
         'fields' => fn() => ['field' => [
             'name' => 'field',
-            'description' => NULL,
-            'defaultValue' => NULL,
             'type' => Type::int(),
         ]],
         ]);
@@ -264,8 +252,6 @@ class TypeRegistry
                 [
             'name' => 'x',
             'type' => function() { return Type::int(); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ]
             ],
         ]);
