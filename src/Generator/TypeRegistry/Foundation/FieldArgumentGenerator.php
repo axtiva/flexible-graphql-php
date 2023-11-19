@@ -24,11 +24,18 @@ class FieldArgumentGenerator implements FieldArgumentGeneratorInterface
 
     public function generate(Argument $argument): string
     {
+        $description = '';
+        if (isset($argument->description)) {
+            $description = "\n            'description' => {$this->serializer->serialize($argument->description)},";
+        }
+
+        $defaultValue = '';
+        if (isset($argument->defaultValue)) {
+            $defaultValue = "\n            'defaultValue' => {$this->serializer->serialize($argument->defaultValue)},";
+        }
         return "[
             'name' => {$this->serializer->serialize($argument->name)},
-            'type' => function() { return {$this->typeDefinitionResolver->getDefinition($argument->getType())}; },
-            'defaultValue' => {$this->serializer->serialize($argument->defaultValue)},
-            'description' => {$this->serializer->serialize($argument->description)},
+            'type' => function() { return {$this->typeDefinitionResolver->getDefinition($argument->getType())}; },{$description}{$defaultValue}
         ]";
     }
 

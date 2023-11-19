@@ -1,3 +1,7 @@
+2.1.1
+
+- fix bug with schema introspection [#6](https://github.com/axtiva/example-integration/issues/6)
+
 2.1.0
 
 - add support of amphp v3 as [TypeRegistryGeneratorBuilderAmphp.php](src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphp.php)

@@ -25,10 +25,18 @@ class InputObjectFieldDefinitionGenerator implements InputObjectFieldDefinitionG
 
     public function generate(Type $type, InputObjectField $field): string
     {
+        $description = '';
+        if (isset($field->description)) {
+            $description = "\n            'description' => {$this->serializer->serialize($field->description)},";
+        }
+
+        $defaultValue = '';
+        if (isset($field->defaultValue)) {
+            $defaultValue = "\n            'defaultValue' => {$this->serializer->serialize($field->defaultValue)},";
+        }
+
         return "[
-            'name' => {$this->serializer->serialize($field->name)},
-            'description' => {$this->serializer->serialize($field->description)},
-            'defaultValue' => {$this->serializer->serialize($field->defaultValue)},
+            'name' => {$this->serializer->serialize($field->name)},{$description}{$defaultValue}
             'type' => {$this->typeDefinitionResolver->getDefinition($field->getType())},
         ]";
     }

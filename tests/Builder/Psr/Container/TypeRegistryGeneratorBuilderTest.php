@@ -50,7 +50,9 @@ directive @sum(x: Int) on FIELD | FIELD_DEFINITION
 directive @uppercase on FIELD | FIELD_DEFINITION
 type NamedCurrency {
     id: ID!
-    name(x: Int, testInput: DemoInput!, demo: DemoEnum, date: DateTime, hello: HelloScalar): String @uppercase @sum(x: 2)
+    name(
+    "Description for argument"
+    x: Int = 5, testInput: DemoInput!, demo: DemoEnum, date: DateTime, hello: HelloScalar): String @uppercase @sum(x: 2)
 }
 enum DemoEnum {
     A
@@ -145,28 +147,20 @@ class TypeRegistry
             'args' => ['x' => [
             'name' => 'x',
             'type' => function() { return Type::int(); },
-            'defaultValue' => NULL,
-            'description' => NULL,
+            'description' => 'Description for argument',
+            'defaultValue' => 5,
         ],'testInput' => [
             'name' => 'testInput',
             'type' => function() { return Type::nonNull(function() { return $this->getType('DemoInput'); }); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ],'demo' => [
             'name' => 'demo',
             'type' => function() { return $this->getType('DemoEnum'); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ],'date' => [
             'name' => 'date',
             'type' => function() { return $this->getType('DateTime'); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ],'hello' => [
             'name' => 'hello',
             'type' => function() { return $this->getType('HelloScalar'); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ]],
         ])],
         ]);
@@ -203,8 +197,6 @@ class TypeRegistry
         'description' =>  NULL,
         'fields' => fn() => ['field' => [
             'name' => 'field',
-            'description' => NULL,
-            'defaultValue' => NULL,
             'type' => Type::int(),
         ]],
         ]);
@@ -259,8 +251,6 @@ class TypeRegistry
                 [
             'name' => 'x',
             'type' => function() { return Type::int(); },
-            'defaultValue' => NULL,
-            'description' => NULL,
         ]
             ],
         ]);
