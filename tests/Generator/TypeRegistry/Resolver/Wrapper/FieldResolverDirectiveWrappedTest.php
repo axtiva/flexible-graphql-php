@@ -261,5 +261,57 @@ function($rootValue, $args, $context, $info) {
                     }
 PHP,
         ];
+        require_once __DIR__ . '/../../resources/SumVariantsDirective.php';
+        require_once __DIR__ . '/../../resources/SumVariantsDirectiveArgs.php';
+        yield [
+            'NamedCurrency',
+            'name',
+            CodeGeneratorConfig::V7_4,
+            BuildSchema::build(Parser::parse(<<<GQL
+directive @sumVariants(x: Int, variants: [Int]) on FIELD | FIELD_DEFINITION
+directive @uppercase on FIELD | FIELD_DEFINITION
+type NamedCurrency {
+    id: ID!
+    name(x: Int, testInput: DemoInput!, demo: DemoEnum, date: DateTime, hello: HelloScalar): String @uppercase @sumVariants(x: 2, variants: [1,2,null,3])
+}
+enum DemoEnum {
+    A
+    B
+}
+input DemoInput {
+  field: Int
+}
+scalar DateTime
+scalar HelloScalar
+GQL)),
+            <<<'PHP'
+function($rootValue, $args, $context, $info) {
+                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\SumVariantsDirective')(
+                        function($rootValue, $args, $context, $info) {
+                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective')(
+                        (function ($rootValue, $args, $context, $info) {
+    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\NamedCurrency\NameResolverArgs($args);
+    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\NameResolver')($rootValue, $args, $context, $info);
+}), 
+                        array (
+),
+                        $rootValue, $args, $context, $info
+                        );
+                    }, 
+                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\SumVariantsDirectiveArgs(array (
+  'x' => '2',
+  'variants' => 
+  array (
+    0 => '1',
+    1 => '2',
+    2 => NULL,
+    3 => '3',
+  ),
+)),
+                        $rootValue, $args, $context, $info
+                        );
+                    }
+PHP,
+        ];
     }
 }
