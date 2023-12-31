@@ -7,6 +7,8 @@ namespace Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\Wrap
 use Axtiva\FlexibleGraphql\Generator\Config\ArgsDirectiveResolverGeneratorConfigInterface;
 use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\DirectiveNode;
+use GraphQL\Language\AST\ListValueNode;
+use GraphQL\Language\AST\NullValueNode;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\FieldDefinition;
 use GraphQL\Type\Definition\Type;
@@ -62,9 +64,15 @@ class FieldResolverDirectiveWrapped implements FieldResolverGeneratorInterface
             if ($this->directiveResolverGenerator->hasResolver($directive)) {
                 $directiveResolver = $this->directiveResolverGenerator->generate($directive);
                 $directiveArguments = [];
+                $recursive = function ($value) use (&$recursive) {
+                    if ($value instanceof ListValueNode) {
+                        return array_map($recursive, iterator_to_array($value->values->getIterator()));
+                    }
+                    return $value instanceof NullValueNode ? null : $value->value;
+                };
                 /** @var ArgumentNode $argument */
                 foreach ($directive->arguments as $argument) {
-                    $directiveArguments[$argument->name->value] = $argument->value->value;
+                    $directiveArguments[$argument->name->value] = $recursive($argument->value);
                 }
 
                 $directiveArgs = $this->serializer->serialize($directiveArguments);
