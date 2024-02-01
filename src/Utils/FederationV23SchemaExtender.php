@@ -15,7 +15,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\SchemaExtender;
 
-class FederationV22SchemaExtender extends FederationV1SchemaExtender
+class FederationV23SchemaExtender extends FederationV1SchemaExtender
 {
     private const SHAREABLE = 'directive @%s on OBJECT | FIELD_DEFINITION';
     private const INACCESSIBLE = 'directive @%s on FIELD_DEFINITION | OBJECT | INTERFACE | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION';
@@ -27,6 +27,7 @@ class FederationV22SchemaExtender extends FederationV1SchemaExtender
     private const KEY = 'directive @%s(fields: FieldSet!, resolvable: Boolean = true) repeatable on OBJECT | INTERFACE';
     private const EXTENDS = 'directive @%s on OBJECT | INTERFACE';
     private const COMPOSE_DIRECTIVE = 'directive @%s(name: String!) repeatable on SCHEMA';
+    private const INTERFACE_OBJECT = 'directive @%s on OBJECT | INTERFACE';
 
     private const DIRECTIVE_MAP = [
         'tag' => self::TAG,
@@ -39,6 +40,7 @@ class FederationV22SchemaExtender extends FederationV1SchemaExtender
         'key' => self::KEY,
         'extends' => self::EXTENDS,
         'composeDirective' => self::COMPOSE_DIRECTIVE,
+        'interfaceObject' => self::INTERFACE_OBJECT,
     ];
 
     public static function build(Schema $schema, DocumentNode $ast): Schema
@@ -65,11 +67,21 @@ scalar link__Import
 GQL
         );
 
-        $schema = self::addDirectiveIfNotExists($schema, 'shareable', sprintf(static::SHAREABLE, 'shareable'));
-        $schema = self::addDirectiveIfNotExists($schema, 'inaccessible', sprintf(static::INACCESSIBLE, 'inaccessible'));
-        $schema = self::addDirectiveIfNotExists($schema, 'override', sprintf(static::OVERRIDE, 'override'));
-        $schema = self::addDirectiveIfNotExists($schema, 'tag', sprintf(static::TAG, 'tag'));
-        $schema = self::addFederationDirectivesWithAliases($schema, 'federation');
+        foreach (static::DIRECTIVE_MAP as $directiveName => $directive) {
+            $schema = self::addDirectiveIfNotExists(
+                $schema,
+                $directiveName,
+                sprintf($directive, $directiveName)
+            );
+        }
+        $alias = 'federation';
+        foreach (static::DIRECTIVE_MAP as $directiveName => $directive) {
+            $schema = self::addDirectiveIfNotExists(
+                $schema,
+                $alias . '__' . $directiveName,
+                sprintf($directive, $alias . '__' . $directiveName)
+            );
+        }
 
         $hasLinkExtension = false;
         /** @var SchemaExtensionNode|Node $node */
@@ -139,22 +151,9 @@ GQL
 
         if (!$hasLinkExtension) {
             $documentAST = Parser::parse(
-                'extend schema @link(url: "https://specs.apollo.dev/federation/v2.2")'
+                'extend schema @link(url: "https://specs.apollo.dev/federation/v2.3")'
             );
             $schema = SchemaExtender::extend($schema, $documentAST);
-        }
-
-        return $schema;
-    }
-
-    private static function addFederationDirectivesWithAliases(Schema $schema, string $alias): Schema
-    {
-        foreach (static::DIRECTIVE_MAP as $directiveName => $directive) {
-            $schema = self::addDirectiveIfNotExists(
-                $schema,
-                $alias . '__' . $directiveName,
-                sprintf($directive, $alias . '__' . $directiveName)
-            );
         }
 
         return $schema;

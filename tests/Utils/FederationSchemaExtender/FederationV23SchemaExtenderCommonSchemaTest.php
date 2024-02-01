@@ -2,15 +2,14 @@
 
 namespace Axtiva\FlexibleGraphql\Tests\Utils\FederationSchemaExtender;
 
-use Axtiva\FlexibleGraphql\Utils\FederationV1SchemaExtender;
-use Axtiva\FlexibleGraphql\Utils\FederationV22SchemaExtender;
+use Axtiva\FlexibleGraphql\Utils\FederationV23SchemaExtender;
 use GraphQL\Error\SyntaxError;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Utils\BuildSchema;
 use PHPUnit\Framework\TestCase;
 
-class FederationV22SchemaExtenderCommonSchemaTest extends TestCase
+class FederationV23SchemaExtenderCommonSchemaTest extends TestCase
 {
     /**
      * @param string $sdl
@@ -22,7 +21,7 @@ class FederationV22SchemaExtenderCommonSchemaTest extends TestCase
     {
         $ast = Parser::parse($sdl);
         $schema = BuildSchema::build($ast);
-        $schemaExtended = FederationV22SchemaExtender::build($schema, $ast);
+        $schemaExtended = FederationV23SchemaExtender::build($schema, $ast);
 
         $this->assertFalse($schemaExtended->getQueryType()->hasField('_entities'), '_entity found');
         $this->assertTrue($schemaExtended->getQueryType()->hasField('_service'), '_service found');
@@ -41,6 +40,8 @@ class FederationV22SchemaExtenderCommonSchemaTest extends TestCase
         $this->assertNotNull($schemaExtended->getDirective('federation__override'), 'federation__override not found');
         $this->assertNotNull($schemaExtended->getDirective('composeDirective'), 'composeDirective not found');
         $this->assertNotNull($schemaExtended->getDirective('federation__composeDirective'), 'federation__composeDirective not found');
+        $this->assertNotNull($schemaExtended->getDirective('interfaceObject'), 'interfaceObject not found');
+        $this->assertNotNull($schemaExtended->getDirective('federation__interfaceObject'), 'federation__interfaceObject not found');
     }
 
     /**
@@ -53,7 +54,7 @@ class FederationV22SchemaExtenderCommonSchemaTest extends TestCase
     {
         $ast = Parser::parse($sdl);
         $schema = BuildSchema::build($ast);
-        $schemaExtended = FederationV22SchemaExtender::build($schema, $ast);
+        $schemaExtended = FederationV23SchemaExtender::build($schema, $ast);
 
         $this->assertFalse($schemaExtended->hasType('_Entity'), '_Entity found');
     }
@@ -68,7 +69,7 @@ class FederationV22SchemaExtenderCommonSchemaTest extends TestCase
     {
         $ast = Parser::parse($sdl);
         $schema = BuildSchema::build($ast);
-        $schemaExtended = FederationV22SchemaExtender::build($schema, $ast);
+        $schemaExtended = FederationV23SchemaExtender::build($schema, $ast);
 
         $this->assertFalse($schemaExtended->hasType('_Any'), '_Any found');
     }
@@ -83,7 +84,7 @@ class FederationV22SchemaExtenderCommonSchemaTest extends TestCase
     {
         $ast = Parser::parse($sdl);
         $schema = BuildSchema::build($ast);
-        $schemaExtended = FederationV22SchemaExtender::build($schema, $ast);
+        $schemaExtended = FederationV23SchemaExtender::build($schema, $ast);
 
         $this->assertTrue($schemaExtended->hasType('_Service'), '_Service not found');
         $this->assertTrue($schemaExtended->hasType('Query'), 'Query not found');
@@ -114,7 +115,7 @@ type Character {
   name: String
   friends: [Character]
   homeWorld: Planet
-  species: Species
+  species: Species 
 }
 
 type Planet {
@@ -129,14 +130,44 @@ type Species {
 }
 SDL];
         yield [<<<'SDL'
+scalar _FieldSet
+directive @isAuthenticated on FIELD | FIELD_DEFINITION
+directive @hasRole(role: String) on FIELD | FIELD_DEFINITION
+directive @pow(ex: Int!) on FIELD | FIELD_DEFINITION
+directive @uppercase on FIELD | FIELD_DEFINITION
+
+type Query @extends {
+  hero: Character
+}
+
+type Character {
+  name: String
+  friends: [Character]
+  homeWorld: Planet @external
+  species: Species @requires(fields: "homeWorld")
+}
+
+type Planet @key(fields: "name") {
+  name: String
+  climate: String
+}
+
+type Species {
+  name: String
+  lifespan: Int
+  origin: Planet
+}
+SDL];
+        yield [<<<'SDL'
 extend schema
 @link(
-    url: "https://specs.apollo.dev/federation/v2.2",
+    url: "https://specs.apollo.dev/federation/v2.3",
     import: [
         "@composeDirective",
         "@extends",
         "@external",
         "@inaccessible",
+        "@interfaceObject",
         "@key",
         "@override",
         "@provides",
@@ -172,5 +203,6 @@ type Species {
   origin: Planet
 }
 SDL];
+
     }
 }
