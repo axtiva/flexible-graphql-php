@@ -30,6 +30,26 @@ jobs:
         run: composer install -n --prefer-dist
       - name: Run PHPUnit
         run: php ./vendor/bin/phpunit
+  php-test-7_4-with-parser-4:
+    name: phpunit 7.4
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer:v2
+          coverage: xdebug2
+      - name: Validate composer.json
+        run: composer validate --strict
+      - name: Run composer install
+        run: composer install -n --prefer-dist
+      - name: Run downgrade nikic/php-parser
+        run: composer require nikic/php-parser "^4.12"
+      - name: Run PHPUnit
+        run: php ./vendor/bin/phpunit
   php-test-8_0:
     name: phpunit 8.0
     runs-on: 'ubuntu-latest'

@@ -29,6 +29,7 @@ use GraphQL\Type\Schema;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PhpParser\ParserFactory;
+use PhpParser\PhpVersion;
 
 class CodeGenerator implements CodeGeneratorInterface
 {
@@ -51,7 +52,14 @@ class CodeGenerator implements CodeGeneratorInterface
         ArgsFieldResolverModelGeneratorInterface $argsFieldResolverModelGenerator,
         ModelGeneratorInterface ...$generators
     ) {
-        $this->parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
+        $parserFactory = new ParserFactory();
+        // version of nikic/php-parser is v4
+        if (method_exists($parserFactory, 'create')) {
+            $this->parser = $parserFactory->create(ParserFactory::PREFER_PHP7);
+        } else {
+            // version of nikic/php-parser is v5
+            $this->parser = $parserFactory->createForVersion(PhpVersion::fromComponents(7, 4));
+        }
         $this->generators = $generators;
         $this->fieldResolversGenerator = $fieldResolversGenerator;
         $this->scalarResolverGenerator = $scalarResolverGenerator;
