@@ -31,7 +31,7 @@ jobs:
       - name: Run PHPUnit
         run: php ./vendor/bin/phpunit
   php-test-7_4-with-parser-4:
-    name: phpunit 7.4
+    name: phpunit 7.4 with parser v4
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v2
