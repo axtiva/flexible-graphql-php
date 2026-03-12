@@ -7,6 +7,7 @@ use GraphQL\Error\SyntaxError;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class FederationV1SchemaExtenderCommonSchemaTest extends TestCase
@@ -17,6 +18,7 @@ class FederationV1SchemaExtenderCommonSchemaTest extends TestCase
      * @dataProvider dataProviderNotFederatedSchema
      * @throws SyntaxError
      */
+#[DataProvider('dataProviderNotFederatedSchema')]
     public function testNotExtendSchemaWithoutKeyDirectiveQuery(string $sdl)
     {
         $ast = Parser::parse($sdl);
@@ -39,6 +41,7 @@ class FederationV1SchemaExtenderCommonSchemaTest extends TestCase
      * @dataProvider dataProviderNotFederatedSchema
      * @throws SyntaxError
      */
+#[DataProvider('dataProviderNotFederatedSchema')]
     public function testNotExtendSchemaWithoutKeyDirective_Entity(string $sdl)
     {
         $ast = Parser::parse($sdl);
@@ -54,6 +57,7 @@ class FederationV1SchemaExtenderCommonSchemaTest extends TestCase
      * @dataProvider dataProviderNotFederatedSchema
      * @throws SyntaxError
      */
+#[DataProvider('dataProviderNotFederatedSchema')]
     public function testNotExtendSchemaWithoutKeyDirective_Any(string $sdl)
     {
         $ast = Parser::parse($sdl);
@@ -69,6 +73,7 @@ class FederationV1SchemaExtenderCommonSchemaTest extends TestCase
      * @dataProvider dataProviderNotFederatedSchema
      * @throws SyntaxError
      */
+#[DataProvider('dataProviderNotFederatedSchema')]
     public function testNotExtendSchemaWithoutKeyDirective_Service(string $sdl)
     {
         $ast = Parser::parse($sdl);
@@ -84,7 +89,7 @@ class FederationV1SchemaExtenderCommonSchemaTest extends TestCase
 
 
 
-    public function dataProviderNotFederatedSchema(): iterable
+    public static function dataProviderNotFederatedSchema(): iterable
     {
         yield [<<<'SDL'
 scalar _FieldSet

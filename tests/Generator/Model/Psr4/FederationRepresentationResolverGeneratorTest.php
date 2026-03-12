@@ -15,6 +15,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class FederationRepresentationResolverGeneratorTest extends TestCase
@@ -23,6 +24,7 @@ class FederationRepresentationResolverGeneratorTest extends TestCase
      * @return void
      * @dataProvider dataProviderGeneratePhpCode
      */
+#[DataProvider('dataProviderGeneratePhpCode')]
     public function testGeneratePhpCode(
         string $typeName,
         string $languageLevel,
@@ -63,7 +65,7 @@ class FederationRepresentationResolverGeneratorTest extends TestCase
     }
 
 
-    public function dataProviderGeneratePhpCode(): iterable
+    public static function dataProviderGeneratePhpCode(): iterable
     {
         $ast = Parser::parse(<<<GQL
 # federation directives
@@ -81,7 +83,7 @@ GQL
         );
         yield [
             'NamedCurrency',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             FederationV1SchemaExtender::build(BuildSchema::build($ast), $ast),
             <<<'PHP'
 <?php

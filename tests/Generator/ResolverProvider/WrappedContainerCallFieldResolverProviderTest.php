@@ -12,6 +12,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class WrappedContainerCallFieldResolverProviderTest extends TestCase
@@ -20,6 +21,7 @@ class WrappedContainerCallFieldResolverProviderTest extends TestCase
      * @return void
      * @dataProvider dataProviderGeneratePhpCode
      */
+#[DataProvider('dataProviderGeneratePhpCode')]
     public function testGeneratePhpCode(
         string $typeName,
         string $fieldName,
@@ -54,12 +56,12 @@ class WrappedContainerCallFieldResolverProviderTest extends TestCase
         FileSystemHelper::rmdir($dir);
     }
 
-    public function dataProviderGeneratePhpCode(): iterable
+    public static function dataProviderGeneratePhpCode(): iterable
     {
         yield [
             'NamedCurrency',
             'demo',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 type NamedCurrency {
     id: ID!
@@ -78,7 +80,7 @@ PHP,
         yield [
             'NamedCurrency',
             'name',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 type NamedCurrency {
     id: ID!

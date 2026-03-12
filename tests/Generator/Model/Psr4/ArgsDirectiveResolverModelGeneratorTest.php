@@ -9,6 +9,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ArgsDirectiveResolverModelGeneratorTest extends TestCase
@@ -17,6 +18,7 @@ class ArgsDirectiveResolverModelGeneratorTest extends TestCase
      * @return void
      * @dataProvider dataProviderGeneratePhpCode
      */
+#[DataProvider('dataProviderGeneratePhpCode')]
     public function testGeneratePhpCode(
         string $directiveName,
         string $languageLevel,
@@ -46,12 +48,12 @@ class ArgsDirectiveResolverModelGeneratorTest extends TestCase
         FileSystemHelper::rmdir($dir);
     }
 
-    public function dataProviderGeneratePhpCode(): iterable
+    public static function dataProviderGeneratePhpCode(): iterable
     {
         require_once __DIR__ . '/resources/DateTimeScalar.php';
         yield [
             'sum',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sum(x: Int, testInput: DemoInput!, demo: DemoEnum, date: DateTime, hello: HelloScalar) on FIELD | FIELD_DEFINITION
 
@@ -109,7 +111,7 @@ PHP
             ,];
         yield [
             'sum',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sum(x: [[Int]], testInput: [[[[DemoInput!]]]]!, demo: DemoEnum, date: DateTime, hello: HelloScalar, hello2: [[HelloScalar]]) on FIELD | FIELD_DEFINITION
 
@@ -168,7 +170,7 @@ PHP
             ,];
         yield [
             'sum',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sum(x: [[Int]], testInput: [DemoInput!]!, demo: DemoEnum, date: DateTime, hello: HelloScalar, hello2: [[HelloScalar]]) on FIELD | FIELD_DEFINITION
 

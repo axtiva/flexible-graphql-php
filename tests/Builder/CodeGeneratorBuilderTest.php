@@ -9,6 +9,7 @@ use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class CodeGeneratorBuilderTest extends TestCase
@@ -17,6 +18,7 @@ class CodeGeneratorBuilderTest extends TestCase
      * @return void
      * @dataProvider dataProviderGeneratePhpCode
      */
+#[DataProvider('dataProviderGeneratePhpCode')]
     public function testGeneratePhpCode(
         string $languageLevel,
         Schema $schema,
@@ -76,10 +78,10 @@ class CodeGeneratorBuilderTest extends TestCase
     }
 
 
-    public function dataProviderGeneratePhpCode(): iterable
+    public static function dataProviderGeneratePhpCode(): iterable
     {
         yield [
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sum(x: Int) on FIELD | FIELD_DEFINITION
 directive @uppercase on FIELD | FIELD_DEFINITION
@@ -362,7 +364,7 @@ PHP
             ,];
 return;
         yield [
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 type Query {
     sum: Int
@@ -450,7 +452,7 @@ PHP
             ,];
 
         yield [
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 type Mutation {
     sum: Int

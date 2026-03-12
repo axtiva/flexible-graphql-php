@@ -53,13 +53,7 @@ class CodeGenerator implements CodeGeneratorInterface
         ModelGeneratorInterface ...$generators
     ) {
         $parserFactory = new ParserFactory();
-        // version of nikic/php-parser is v4
-        if (method_exists($parserFactory, 'create')) {
-            $this->parser = $parserFactory->create(ParserFactory::PREFER_PHP7);
-        } else {
-            // version of nikic/php-parser is v5
-            $this->parser = $parserFactory->createForVersion(PhpVersion::fromComponents(7, 4));
-        }
+        $this->parser = $parserFactory->createForVersion(PhpVersion::fromComponents(8, 3));
         $this->generators = $generators;
         $this->fieldResolversGenerator = $fieldResolversGenerator;
         $this->scalarResolverGenerator = $scalarResolverGenerator;

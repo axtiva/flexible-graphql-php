@@ -24,7 +24,7 @@ $schema = FederationV22SchemaExtender::build(
 $dir = __DIR__ . '/GraphQL';
 $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
 
-$mainConfig = new CodeGeneratorConfig($dir, LanguageLevelConfigInterface::V7_4, $namespace);
+$mainConfig = new CodeGeneratorConfig($dir, LanguageLevelConfigInterface::V8_3, $namespace);
 
 $builder = new CodeGeneratorBuilderFederated($mainConfig);
 $codeGenerator = $builder->build();
@@ -44,7 +44,7 @@ $scalar = $schema->getType('DateTime');
 $codeGenerator->generateScalarResolver($scalar, $schema);
 
 $builder = new TypeRegistryGeneratorBuilderFederated(
-    new CodeGeneratorConfig($dir, CodeGeneratorConfig::V7_4, $namespace)
+    new CodeGeneratorConfig($dir, CodeGeneratorConfig::V8_3, $namespace)
 );
 $typeRegistryGenerator = $builder->build();
 
