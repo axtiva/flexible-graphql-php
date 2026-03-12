@@ -1,0 +1,64 @@
+{
+  "name": "axtiva/flexible-graphql-php",
+  "purpose": "Schema-first PHP library that generates GraphQL models, resolvers, directive args, scalar resolvers, and a lazy TypeRegistry from GraphQL SDL for webonyx/graphql-php.",
+  "stack": {
+    "languages": [
+      "PHP"
+    ],
+    "package_manager": "Composer",
+    "libraries": [
+      "nikic/php-parser",
+      "webonyx/graphql-php"
+    ],
+    "testing": [
+      "PHPUnit"
+    ],
+    "ci": [
+      "GitHub Actions"
+    ]
+  },
+  "primary_runtime": "PHP CLI library with optional PHP built-in HTTP demo server",
+  "frameworks": [
+    "webonyx/graphql-php",
+    "PHPUnit"
+  ],
+  "root_manifests": [
+    ".github/workflows/ci.yml",
+    "composer.json",
+    "phpunit.xml.dist"
+  ],
+  "repository_style": [
+    "single Composer package",
+    "schema-first code generation",
+    "example-driven runtime demonstration",
+    "PSR-container-backed lazy TypeRegistry generation"
+  ],
+  "primary_workflows_summary": [
+    "Install dependencies with Composer and run PHPUnit for builder, generator, and utility suites.",
+    "Use example/generate_code.php or narrower example/generate_*.php scripts to regenerate example artifacts from SDL.",
+    "Run php -S localhost:8080 example/start_graphql_server.php to exercise the generated example GraphQL server."
+  ],
+  "operational_summary": {
+    "core_change_axes": [
+      "SDL and federation schema changes",
+      "generator builder and config changes",
+      "TypeRegistry resolver wiring changes",
+      "example runtime/container binding changes",
+      "golden-output and execution test updates"
+    ],
+    "important_repository_signals": [
+      "CodeGeneratorConfig currently supports only the 7.4 template set.",
+      "composer.json declares php ^7.4 | ^8.0, but CHANGELOG.md claims a 3.0.0 PHP 8.3 upgrade; treat PHP-floor assumptions carefully.",
+      "tests/Execution/QueryFieldTest.php exists, but phpunit.xml.dist only declares builder, generator, and utils suites."
+    ]
+  },
+  "evidence": [
+    "CHANGELOG.md",
+    "README.md",
+    "composer.json",
+    "example/generate_code.php",
+    "example/start_graphql_server.php",
+    "phpunit.xml.dist",
+    "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php"
+  ]
+}

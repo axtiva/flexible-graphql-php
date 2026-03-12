@@ -1,0 +1,199 @@
+{
+  "guides": [
+    {
+      "id": "fg.composer.repo_usage",
+      "framework": "Composer",
+      "workspace_id": "ws.root",
+      "detected_via": [
+        "composer.json",
+        ".github/workflows/ci.yml"
+      ],
+      "key_concepts_in_repo": [
+        "Single library package with PSR-4 autoload for src/ and autoload-dev for example/ and tests/.",
+        "Composer validation is part of CI.",
+        "No Composer scripts are defined; operational commands are documented in README and CI instead."
+      ],
+      "change_impact_notes": [
+        "composer.json changes affect CI validation and dependency assumptions.",
+        "Autoload changes can break example and test namespace resolution immediately."
+      ],
+      "related_configs": [
+        "cfg.root.composer",
+        "cfg.ci.github_actions"
+      ],
+      "related_commands": [
+        "cmd.utility.composer_install",
+        "cmd.utility.composer_validate"
+      ],
+      "related_tests": [],
+      "related_reference_ids": [
+        "ref.root.composer",
+        "ref.root.ci"
+      ],
+      "evidence": [
+        "composer.json",
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "id": "fg.graphql.webonyx_usage",
+      "framework": "webonyx/graphql-php",
+      "workspace_id": "ws.root",
+      "detected_via": [
+        "composer.json",
+        "src/Utils/SchemaBuilder.php",
+        "example/start_graphql_server.php"
+      ],
+      "key_concepts_in_repo": [
+        "Schemas are built from SDL using BuildSchema and extended with SchemaExtender.",
+        "Runtime execution uses Schema, StandardServer, GraphQL::executeQuery, FieldDefinition, Directive, and CustomScalarType APIs.",
+        "The library generates wrapper code around these primitives rather than replacing them."
+      ],
+      "change_impact_notes": [
+        "Changes to schema utility or TypeRegistry generation can affect both demo runtime and generation tests.",
+        "Federation helpers extend webonyx schemas before generation in the example full-code path."
+      ],
+      "related_configs": [
+        "cfg.example.schema",
+        "cfg.codegen.example_schema_usage"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code",
+        "cmd.run.demo_server"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ],
+      "related_reference_ids": [
+        "ref.example.server",
+        "ref.schema.builder",
+        "ref.schema.federation_v22",
+        "ref.typeregistry.generated_example"
+      ],
+      "evidence": [
+        "composer.json",
+        "example/start_graphql_server.php",
+        "src/Utils/SchemaBuilder.php",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "id": "fg.nikic_php_parser.repo_usage",
+      "framework": "nikic/php-parser",
+      "workspace_id": "ws.root",
+      "detected_via": [
+        "composer.json",
+        "src/Generator/Code/Foundation/CodeGenerator.php"
+      ],
+      "key_concepts_in_repo": [
+        "The generator supports both php-parser v4 and v5 creation APIs.",
+        "Existing object model files are parsed so custom fields can be preserved when AutoGenerationInterface is removed."
+      ],
+      "change_impact_notes": [
+        "Changes here affect overwrite safety for generated object models.",
+        "The CI compatibility job explicitly tests a downgraded parser v4 path."
+      ],
+      "related_configs": [
+        "cfg.root.composer",
+        "cfg.ci.github_actions"
+      ],
+      "related_commands": [
+        "cmd.utility.composer_require_php_parser_v4",
+        "cmd.test.phpunit"
+      ],
+      "related_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php"
+      ],
+      "related_reference_ids": [
+        "ref.codegen.core",
+        "ref.root.ci"
+      ],
+      "evidence": [
+        "composer.json",
+        "src/Generator/Code/Foundation/CodeGenerator.php",
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "id": "fg.phpunit.repo_usage",
+      "framework": "PHPUnit",
+      "workspace_id": "ws.root",
+      "detected_via": [
+        "composer.json",
+        "phpunit.xml.dist"
+      ],
+      "key_concepts_in_repo": [
+        "Configured suites cover builder, generator, and utils roots.",
+        "Tests often assert full generated PHP output via data providers and temporary directories.",
+        "Execution tests exist as a separate runtime-oriented surface."
+      ],
+      "change_impact_notes": [
+        "Changing emitted PHP code often requires updating golden strings in tests.",
+        "Changing example runtime wiring may require execution test updates beyond the configured suites."
+      ],
+      "related_configs": [
+        "cfg.root.phpunit"
+      ],
+      "related_commands": [
+        "cmd.test.phpunit"
+      ],
+      "related_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php"
+      ],
+      "related_reference_ids": [
+        "ref.root.phpunit",
+        "ref.tests.execution_queryfield",
+        "ref.tests.schema_builder"
+      ],
+      "evidence": [
+        "composer.json",
+        "phpunit.xml.dist",
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "id": "fg.psr_container.repo_usage",
+      "framework": "PSR-11 ContainerInterface",
+      "workspace_id": "ws.example",
+      "detected_via": [
+        "example/PsrContainerExample.php",
+        "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php"
+      ],
+      "key_concepts_in_repo": [
+        "Generated TypeRegistry classes expect a ContainerInterface instance.",
+        "Service ids are emitted as fully-qualified class-name strings.",
+        "Example runtime and tests both instantiate a simple array-backed container implementation."
+      ],
+      "change_impact_notes": [
+        "Changing service naming or resolver provider logic requires synchronized updates in generated output and example bindings.",
+        "Missing service bindings surface first in example runtime and execution tests."
+      ],
+      "related_configs": [
+        "cfg.codegen.type_registry_psr4"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_type_registry",
+        "cmd.run.demo_server"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ],
+      "related_reference_ids": [
+        "ref.example.server",
+        "ref.tests.example_setup",
+        "ref.typeregistry.generated_example"
+      ],
+      "evidence": [
+        "example/PsrContainerExample.php",
+        "example/start_graphql_server.php",
+        "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ]
+    }
+  ]
+}

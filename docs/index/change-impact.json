@@ -1,0 +1,223 @@
+{
+  "changes": [
+    {
+      "id": "impact.builder_to_golden_tests",
+      "trigger_paths": [
+        "src/Builder/Foundation/**"
+      ],
+      "likely_related_paths": [
+        "tests/Builder/**",
+        "example/generate_*.php",
+        "example/GraphQL/TypeRegistry.php"
+      ],
+      "related_modules": [
+        "mod.builder",
+        "mod.example",
+        "mod.type-registry"
+      ],
+      "related_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ],
+      "reason": "Builders define which generators and wrappers are composed, so output strings and example-generated artifacts shift when builder defaults change.",
+      "confidence": "high",
+      "evidence": [
+        "example/generate_code.php",
+        "src/Builder/Foundation/CodeGeneratorBuilder.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+        "tests/Builder/CodeGeneratorBuilderTest.php"
+      ]
+    },
+    {
+      "id": "impact.codegen_config_to_output_paths",
+      "trigger_paths": [
+        "src/Generator/Config/Foundation/Psr4/**"
+      ],
+      "likely_related_paths": [
+        "example/GraphQL/**",
+        "example/generate_*.php",
+        "tests/Builder/**",
+        "tests/Generator/**"
+      ],
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.type-registry"
+      ],
+      "related_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ],
+      "reason": "Config classes determine namespaces, class names, and file locations consumed by generation scripts and assertions.",
+      "confidence": "high",
+      "evidence": [
+        "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php",
+        "src/Generator/Config/Foundation/Psr4/FieldResolverGeneratorConfig.php",
+        "src/Generator/Config/Foundation/Psr4/TypeRegistryGeneratorConfig.php"
+      ]
+    },
+    {
+      "id": "impact_codegen_templates_to_expected_output",
+      "trigger_paths": [
+        "templates/7.4/Model/**",
+        "src/Utils/TemplateRender.php"
+      ],
+      "likely_related_paths": [
+        "src/Generator/Model/Foundation/Psr4/**",
+        "tests/Generator/Model/Psr4/**",
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "example/GraphQL/Model/**"
+      ],
+      "related_modules": [
+        "mod.codegen",
+        "mod.schema-utils"
+      ],
+      "related_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Generator/Model/Psr4/ObjectModelGeneratorTest.php"
+      ],
+      "reason": "TemplateRender and templates directly determine generated PHP text for models and resolver scaffolds.",
+      "confidence": "high",
+      "evidence": [
+        "src/Generator/Model/Foundation/Psr4/ObjectModelGenerator.php",
+        "src/Utils/TemplateRender.php",
+        "templates/7.4/Model/ObjectModel.php"
+      ]
+    },
+    {
+      "id": "impact_example_container_to_runtime_tests",
+      "trigger_paths": [
+        "example/start_graphql_server.php",
+        "example/PsrContainerExample.php"
+      ],
+      "likely_related_paths": [
+        "tests/Helper/ExampleSchemaSetupHelper.php",
+        "tests/Execution/QueryFieldTest.php",
+        "example/TEST.md"
+      ],
+      "related_modules": [
+        "mod.example"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "reason": "The execution helper mirrors demo server bindings, so service-wiring changes must usually be reflected in both places.",
+      "confidence": "high",
+      "evidence": [
+        "example/start_graphql_server.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "id": "impact_federation_extender_to_example_runtime",
+      "trigger_paths": [
+        "src/Utils/FederationV1SchemaExtender.php",
+        "src/Utils/FederationV22SchemaExtender.php"
+      ],
+      "likely_related_paths": [
+        "example/generate_code.php",
+        "example/GraphQL/TypeRegistry.php",
+        "tests/Utils/FederationSchemaExtender/**",
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "related_modules": [
+        "mod.example",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php"
+      ],
+      "reason": "Federation extenders influence which types, directives, and special query fields exist before code generation and runtime execution.",
+      "confidence": "high",
+      "evidence": [
+        "example/generate_code.php",
+        "src/Utils/FederationV22SchemaExtender.php",
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php"
+      ]
+    },
+    {
+      "id": "impact_schema_to_generated_artifacts",
+      "trigger_paths": [
+        "example/schema.graphql"
+      ],
+      "likely_related_paths": [
+        "example/generate_code.php",
+        "example/generate_type_registry.php",
+        "example/GraphQL/**",
+        "example/start_graphql_server.php",
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "related_modules": [
+        "mod.example",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "reason": "The example SDL is the source of truth for generated demo artifacts and runtime behavior.",
+      "confidence": "high",
+      "evidence": [
+        "README.md",
+        "example/generate_code.php",
+        "example/schema.graphql",
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "id": "impact_schema_builder_to_schema_tests",
+      "trigger_paths": [
+        "src/Utils/SchemaBuilder.php"
+      ],
+      "likely_related_paths": [
+        "example/generate_*.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ],
+      "related_modules": [
+        "mod.schema-utils"
+      ],
+      "related_tests": [
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ],
+      "reason": "All example generation scripts call SchemaBuilder, and its multi-file merge behavior is explicitly tested.",
+      "confidence": "high",
+      "evidence": [
+        "example/generate_field_resolver.php",
+        "example/generate_type_models.php",
+        "src/Utils/SchemaBuilder.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ]
+    },
+    {
+      "id": "impact_typeregistry_wrapper_to_generated_runtime",
+      "trigger_paths": [
+        "src/Generator/TypeRegistry/Foundation/Resolver/Wrapper/**",
+        "src/Generator/ResolverProvider/Foundation/**"
+      ],
+      "likely_related_paths": [
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+        "example/GraphQL/TypeRegistry.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php",
+        "tests/Generator/TypeRegistry/Resolver/Wrapper/FieldResolverDirectiveWrappedTest.php"
+      ],
+      "related_modules": [
+        "mod.builder",
+        "mod.type-registry"
+      ],
+      "related_tests": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php",
+        "tests/Generator/TypeRegistry/Resolver/Wrapper/FieldResolverDirectiveWrappedTest.php"
+      ],
+      "reason": "Resolver wrapper and provider changes alter emitted closure structure and runtime behavior in the generated TypeRegistry.",
+      "confidence": "high",
+      "evidence": [
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+        "src/Generator/TypeRegistry/Foundation/Resolver/Wrapper/FieldResolverDirectiveWrapped.php",
+        "tests/Generator/TypeRegistry/Resolver/Wrapper/FieldResolverDirectiveWrappedTest.php"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,353 @@
+{
+  "claims": [
+    {
+      "claim_id": "claim.architecture.core_style",
+      "shard": "docs/index/architecture.json",
+      "record_id": "root",
+      "evidence_paths": [
+        "example/generate_code.php",
+        "example/start_graphql_server.php",
+        "src/Builder/Foundation/CodeGeneratorBuilder.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php"
+      ]
+    },
+    {
+      "claim_id": "claim.capability.async_generation",
+      "shard": "docs/index/capabilities.json",
+      "record_id": "cap.async.type_registry_generation",
+      "evidence_paths": [
+        "CHANGELOG.md",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphp.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphpV2.php"
+      ]
+    },
+    {
+      "claim_id": "claim.capability.full_codegen",
+      "shard": "docs/index/capabilities.json",
+      "record_id": "cap.codegen.full_example",
+      "evidence_paths": [
+        "README.md",
+        "example/generate_code.php"
+      ]
+    },
+    {
+      "claim_id": "claim.capability.http_demo",
+      "shard": "docs/index/capabilities.json",
+      "record_id": "cap.runtime.http_demo",
+      "evidence_paths": [
+        "README.md",
+        "example/TEST.md",
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "claim_id": "claim.change_impact.schema_to_generated",
+      "shard": "docs/index/change-impact.json",
+      "record_id": "impact_schema_to_generated_artifacts",
+      "evidence_paths": [
+        "README.md",
+        "example/generate_code.php",
+        "example/schema.graphql"
+      ]
+    },
+    {
+      "claim_id": "claim.commands.codegen_full",
+      "shard": "docs/index/commands.json",
+      "record_id": "cmd.codegen.generate_code",
+      "evidence_paths": [
+        "README.md",
+        "example/generate_code.php"
+      ]
+    },
+    {
+      "claim_id": "claim.commands.demo_server",
+      "shard": "docs/index/commands.json",
+      "record_id": "cmd.run.demo_server",
+      "evidence_paths": [
+        "README.md",
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "claim_id": "claim.commands.phpunit",
+      "shard": "docs/index/commands.json",
+      "record_id": "cmd.test.phpunit",
+      "evidence_paths": [
+        "README.md",
+        "phpunit.xml.dist"
+      ]
+    },
+    {
+      "claim_id": "claim.config.codegen_version_gate",
+      "shard": "docs/index/configs.json",
+      "record_id": "cfg.codegen.code_psr4",
+      "evidence_paths": [
+        "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php"
+      ]
+    },
+    {
+      "claim_id": "claim.config.phpunit_suites",
+      "shard": "docs/index/configs.json",
+      "record_id": "cfg.root.phpunit",
+      "evidence_paths": [
+        "phpunit.xml.dist"
+      ]
+    },
+    {
+      "claim_id": "claim.dependencies.graphql_php",
+      "shard": "docs/index/dependencies.json",
+      "record_id": "ws.root:webonyx/graphql-php",
+      "evidence_paths": [
+        "composer.json",
+        "example/start_graphql_server.php",
+        "src/Utils/SchemaBuilder.php"
+      ]
+    },
+    {
+      "claim_id": "claim.dependencies.php_parser",
+      "shard": "docs/index/dependencies.json",
+      "record_id": "ws.root:nikic/php-parser",
+      "evidence_paths": [
+        "composer.json",
+        "src/Generator/Code/Foundation/CodeGenerator.php"
+      ]
+    },
+    {
+      "claim_id": "claim.entrypoint.generate_code",
+      "shard": "docs/index/entrypoints.json",
+      "record_id": "ep.cli.generate_code",
+      "evidence_paths": [
+        "README.md",
+        "example/generate_code.php"
+      ]
+    },
+    {
+      "claim_id": "claim.entrypoint.http_demo",
+      "shard": "docs/index/entrypoints.json",
+      "record_id": "ep.http.example_server",
+      "evidence_paths": [
+        "README.md",
+        "example/TEST.md",
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "claim_id": "claim.framework.composer",
+      "shard": "docs/index/framework-guides.json",
+      "record_id": "fg.composer.repo_usage",
+      "evidence_paths": [
+        "composer.json",
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "claim_id": "claim.framework.graphql_php",
+      "shard": "docs/index/framework-guides.json",
+      "record_id": "fg.graphql.webonyx_usage",
+      "evidence_paths": [
+        "composer.json",
+        "example/start_graphql_server.php",
+        "src/Utils/SchemaBuilder.php"
+      ]
+    },
+    {
+      "claim_id": "claim.framework.phpunit",
+      "shard": "docs/index/framework-guides.json",
+      "record_id": "fg.phpunit.repo_usage",
+      "evidence_paths": [
+        "composer.json",
+        "phpunit.xml.dist",
+        "tests/Builder/CodeGeneratorBuilderTest.php"
+      ]
+    },
+    {
+      "claim_id": "claim.module.builder",
+      "shard": "docs/index/modules.json",
+      "record_id": "mod.builder",
+      "evidence_paths": [
+        "example/generate_code.php",
+        "src/Builder/Foundation/CodeGeneratorBuilder.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php"
+      ]
+    },
+    {
+      "claim_id": "claim.module.codegen",
+      "shard": "docs/index/modules.json",
+      "record_id": "mod.codegen",
+      "evidence_paths": [
+        "README.md",
+        "src/Generator/Code/Foundation/CodeGenerator.php",
+        "src/Generator/Model/Foundation/Psr4/ObjectModelGenerator.php"
+      ]
+    },
+    {
+      "claim_id": "claim.module.example",
+      "shard": "docs/index/modules.json",
+      "record_id": "mod.example",
+      "evidence_paths": [
+        "example/TEST.md",
+        "example/start_graphql_server.php",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "claim_id": "claim.module.schema_utils",
+      "shard": "docs/index/modules.json",
+      "record_id": "mod.schema-utils",
+      "evidence_paths": [
+        "src/Utils/FederationV22SchemaExtender.php",
+        "src/Utils/SchemaBuilder.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ]
+    },
+    {
+      "claim_id": "claim.module.typeregistry",
+      "shard": "docs/index/modules.json",
+      "record_id": "mod.type-registry",
+      "evidence_paths": [
+        "example/GraphQL/TypeRegistry.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+        "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php"
+      ]
+    },
+    {
+      "claim_id": "claim.overview.purpose",
+      "shard": "docs/index/overview.json",
+      "record_id": "root",
+      "evidence_paths": [
+        "README.md",
+        "composer.json"
+      ]
+    },
+    {
+      "claim_id": "claim.pattern.schema_first",
+      "shard": "docs/index/patterns.json",
+      "record_id": "pattern.structure.schema_first",
+      "evidence_paths": [
+        "README.md",
+        "example/generate_code.php",
+        "src/Generator/Code/Foundation/CodeGenerator.php"
+      ]
+    },
+    {
+      "claim_id": "claim.reference.example_server",
+      "shard": "docs/index/reference-guides.json",
+      "record_id": "ref.example.server",
+      "evidence_paths": [
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "claim_id": "claim.reference.typeregistry_builder",
+      "shard": "docs/index/reference-guides.json",
+      "record_id": "ref.typeregistry.builder",
+      "evidence_paths": [
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php"
+      ]
+    },
+    {
+      "claim_id": "claim.runtime.ci",
+      "shard": "docs/index/runtime-surfaces.json",
+      "record_id": "surface.ci.github_actions",
+      "evidence_paths": [
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "claim_id": "claim.runtime.http_demo",
+      "shard": "docs/index/runtime-surfaces.json",
+      "record_id": "surface.http.example_server",
+      "evidence_paths": [
+        "README.md",
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "claim_id": "claim.skills.graphql_architect",
+      "shard": "docs/index/skills-registry.json",
+      "record_id": "skill.external.graphql-architect",
+      "evidence_paths": [
+        "README.md",
+        "example/schema.graphql",
+        "src/Utils/FederationV22SchemaExtender.php"
+      ]
+    },
+    {
+      "claim_id": "claim.skills.php_graphql",
+      "shard": "docs/index/skills-registry.json",
+      "record_id": "skill.external.php-graphql",
+      "evidence_paths": [
+        "README.md",
+        "composer.json",
+        "src/Utils/SchemaBuilder.php"
+      ]
+    },
+    {
+      "claim_id": "claim.skills.php_tester",
+      "shard": "docs/index/skills-registry.json",
+      "record_id": "skill.external.php-tester",
+      "evidence_paths": [
+        ".github/workflows/ci.yml",
+        "phpunit.xml.dist",
+        "tests/Builder/CodeGeneratorBuilderTest.php"
+      ]
+    },
+    {
+      "claim_id": "claim.testing.execution_extra_surface",
+      "shard": "docs/index/testing.json",
+      "record_id": "testroot.execution",
+      "evidence_paths": [
+        "phpunit.xml.dist",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "claim_id": "claim.testing.golden_output",
+      "shard": "docs/index/testing.json",
+      "record_id": "task:codegen change",
+      "evidence_paths": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ]
+    },
+    {
+      "claim_id": "claim.workflow.ci_like",
+      "shard": "docs/index/workflows.json",
+      "record_id": "wf.validation.ci_like",
+      "evidence_paths": [
+        ".github/workflows/ci.yml",
+        "phpunit.xml.dist"
+      ]
+    },
+    {
+      "claim_id": "claim.workflow.full_codegen",
+      "shard": "docs/index/workflows.json",
+      "record_id": "wf.codegen.full_example",
+      "evidence_paths": [
+        "README.md",
+        "example/generate_code.php"
+      ]
+    },
+    {
+      "claim_id": "claim.workspace.example",
+      "shard": "docs/index/workspaces.json",
+      "record_id": "ws.example",
+      "evidence_paths": [
+        "README.md",
+        "example/TEST.md",
+        "example/generate_code.php",
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "claim_id": "claim.workspace.root",
+      "shard": "docs/index/workspaces.json",
+      "record_id": "ws.root",
+      "evidence_paths": [
+        "composer.json",
+        "phpunit.xml.dist",
+        "src"
+      ]
+    }
+  ]
+}

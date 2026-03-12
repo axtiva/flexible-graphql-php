@@ -1,0 +1,197 @@
+{
+  "configs": [
+    {
+      "config_id": "cfg.ci.github_actions",
+      "path": ".github/workflows/ci.yml",
+      "kind": "ci-workflow",
+      "scope": "repository",
+      "short_purpose": "Defines PHP version matrix, Composer validation/install, PHPUnit execution, and a parser-v4 compatibility job.",
+      "sensitive": false,
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_runtime_surfaces": [
+        "surface.ci.github_actions"
+      ],
+      "evidence": [
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "config_id": "cfg.codegen.code_psr4",
+      "path": "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php",
+      "kind": "generator-config",
+      "scope": "library",
+      "short_purpose": "Validates output directory/namespace and constrains supported template PHP versions.",
+      "sensitive": false,
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example",
+        "surface.local_dev.library"
+      ],
+      "evidence": [
+        "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php"
+      ]
+    },
+    {
+      "config_id": "cfg.codegen.directive_resolver_psr4",
+      "path": "src/Generator/Config/Foundation/Psr4/DirectiveResolverGeneratorConfig.php",
+      "kind": "generator-config",
+      "scope": "library",
+      "short_purpose": "Determines namespace, class name, and file path for generated directive resolvers.",
+      "sensitive": false,
+      "related_modules": [
+        "mod.codegen"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example"
+      ],
+      "evidence": [
+        "src/Generator/Config/Foundation/Psr4/DirectiveResolverGeneratorConfig.php"
+      ]
+    },
+    {
+      "config_id": "cfg.codegen.example_schema_usage",
+      "path": "example/generate_code.php",
+      "kind": "script-config",
+      "scope": "example",
+      "short_purpose": "Pins the example code generation flow to example/schema.graphql, example/GraphQL output, federation v2.2 extension, and namespace Axtiva\\FlexibleGraphql\\Example\\GraphQL.",
+      "sensitive": false,
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.example",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example"
+      ],
+      "evidence": [
+        "example/generate_code.php"
+      ]
+    },
+    {
+      "config_id": "cfg.codegen.federation_field_psr4",
+      "path": "src/Generator/Config/Foundation/Psr4/FederationFieldResolverGeneratorConfig.php",
+      "kind": "generator-config",
+      "scope": "library",
+      "short_purpose": "Adjusts field resolver naming for federation-specific generated resolvers.",
+      "sensitive": false,
+      "related_modules": [
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example"
+      ],
+      "evidence": [
+        "src/Generator/Config/Foundation/Psr4/FederationFieldResolverGeneratorConfig.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderFederated.php"
+      ]
+    },
+    {
+      "config_id": "cfg.codegen.field_resolver_psr4",
+      "path": "src/Generator/Config/Foundation/Psr4/FieldResolverGeneratorConfig.php",
+      "kind": "generator-config",
+      "scope": "library",
+      "short_purpose": "Determines namespace, class name, and file path for generated field resolvers.",
+      "sensitive": false,
+      "related_modules": [
+        "mod.codegen",
+        "mod.type-registry"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example"
+      ],
+      "evidence": [
+        "src/Generator/Config/Foundation/Psr4/FieldResolverGeneratorConfig.php"
+      ]
+    },
+    {
+      "config_id": "cfg.codegen.type_registry_psr4",
+      "path": "src/Generator/Config/Foundation/Psr4/TypeRegistryGeneratorConfig.php",
+      "kind": "generator-config",
+      "scope": "library",
+      "short_purpose": "Determines namespace, class name, and file path of generated TypeRegistry classes.",
+      "sensitive": false,
+      "related_modules": [
+        "mod.builder",
+        "mod.type-registry"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example",
+        "surface.http.example_server"
+      ],
+      "evidence": [
+        "src/Generator/Config/Foundation/Psr4/TypeRegistryGeneratorConfig.php"
+      ]
+    },
+    {
+      "config_id": "cfg.example.schema",
+      "path": "example/schema.graphql",
+      "kind": "graphql-sdl",
+      "scope": "example",
+      "short_purpose": "Defines the example schema, executable directives, federation key usage, unions, enums, and scalars that drive generated demo artifacts.",
+      "sensitive": false,
+      "related_modules": [
+        "mod.example",
+        "mod.schema-utils"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example",
+        "surface.http.example_server"
+      ],
+      "evidence": [
+        "example/schema.graphql"
+      ]
+    },
+    {
+      "config_id": "cfg.root.composer",
+      "path": "composer.json",
+      "kind": "manifest",
+      "scope": "repository",
+      "short_purpose": "Declares package metadata, PHP/runtime dependency constraints, and PSR-4 autoloading for src/, example/, and tests/.",
+      "sensitive": false,
+      "related_modules": [
+        "mod.example",
+        "mod.resolver-contracts",
+        "mod.schema-utils"
+      ],
+      "related_runtime_surfaces": [
+        "surface.ci.github_actions",
+        "surface.local_dev.library"
+      ],
+      "evidence": [
+        "composer.json"
+      ]
+    },
+    {
+      "config_id": "cfg.root.phpunit",
+      "path": "phpunit.xml.dist",
+      "kind": "test-config",
+      "scope": "repository",
+      "short_purpose": "Defines PHPUnit bootstrap, coverage include path, and configured suites for builder, generator, and utils tests.",
+      "sensitive": false,
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_runtime_surfaces": [
+        "surface.ci.github_actions",
+        "surface.local_dev.library"
+      ],
+      "evidence": [
+        "phpunit.xml.dist"
+      ]
+    }
+  ]
+}

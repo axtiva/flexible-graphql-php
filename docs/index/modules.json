@@ -1,0 +1,332 @@
+{
+  "modules": [
+    {
+      "id": "mod.builder",
+      "name": "Builder layer",
+      "kind": "library-subsystem",
+      "paths": [
+        "src/Builder"
+      ],
+      "summary": "Composes higher-level code generator and TypeRegistry generator objects from config classes and lower-level generators.",
+      "key_symbols": [
+        "Axtiva\\FlexibleGraphql\\Builder\\Foundation\\CodeGeneratorBuilder",
+        "Axtiva\\FlexibleGraphql\\Builder\\Foundation\\CodeGeneratorBuilderFederated",
+        "Axtiva\\FlexibleGraphql\\Builder\\Foundation\\Psr\\Container\\TypeRegistryGeneratorBuilder",
+        "Axtiva\\FlexibleGraphql\\Builder\\Foundation\\Psr\\Container\\TypeRegistryGeneratorBuilderAmphp",
+        "Axtiva\\FlexibleGraphql\\Builder\\Foundation\\Psr\\Container\\TypeRegistryGeneratorBuilderFederated"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code",
+        "ep.cli.generate_type_models",
+        "ep.cli.generate_type_registry",
+        "ep.cli.generate_field_resolver",
+        "ep.cli.generate_directive_resolver",
+        "ep.cli.generate_scalar_resolver"
+      ],
+      "module_dependencies": [
+        "mod.codegen",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "paired_configs": [
+        "cfg.codegen.code_psr4",
+        "cfg.codegen.field_resolver_psr4",
+        "cfg.codegen.type_registry_psr4"
+      ],
+      "paired_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpV2Test.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ],
+      "public_surfaces": [
+        "Builder classes used directly by example CLI scripts"
+      ],
+      "internal_only": false,
+      "typical_changes": [
+        "Adjust default generator composition",
+        "Switch between regular, federated, or AMPHP TypeRegistry generation",
+        "Change default resolver wrapping behavior"
+      ],
+      "reference_priority": "high",
+      "evidence": [
+        "example/generate_code.php",
+        "example/generate_type_registry.php",
+        "src/Builder/Foundation/CodeGeneratorBuilder.php",
+        "src/Builder/Foundation/CodeGeneratorBuilderFederated.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphp.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderFederated.php"
+      ]
+    },
+    {
+      "id": "mod.codegen",
+      "name": "Code generation core",
+      "kind": "library-subsystem",
+      "paths": [
+        "src/Generator/Code",
+        "src/Generator/Model",
+        "templates/7.4/Model"
+      ],
+      "summary": "Generates PHP model classes, field resolvers, directive resolvers, scalar resolvers, and args classes from GraphQL types and directives.",
+      "key_symbols": [
+        "Axtiva\\FlexibleGraphql\\Generator\\Code\\Foundation\\CodeGenerator",
+        "Axtiva\\FlexibleGraphql\\Generator\\Model\\Foundation\\Psr4\\ObjectModelGenerator",
+        "Axtiva\\FlexibleGraphql\\Generator\\Model\\Foundation\\Psr4\\DirectiveResolverGenerator",
+        "Axtiva\\FlexibleGraphql\\Generator\\Model\\Foundation\\Psr4\\ScalarResolverGenerator"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code",
+        "ep.cli.generate_directive_resolver",
+        "ep.cli.generate_field_resolver",
+        "ep.cli.generate_scalar_resolver",
+        "ep.cli.generate_type_models"
+      ],
+      "module_dependencies": [
+        "mod.resolver-contracts",
+        "mod.schema-utils"
+      ],
+      "paired_configs": [
+        "cfg.codegen.code_psr4",
+        "cfg.codegen.directive_resolver_psr4",
+        "cfg.codegen.field_resolver_psr4"
+      ],
+      "paired_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Generator/Model/Psr4/DirectiveResolverGeneratorTest.php",
+        "tests/Generator/Model/Psr4/FieldResolverGeneratorTest.php",
+        "tests/Generator/Model/Psr4/ObjectModelGeneratorTest.php",
+        "tests/Generator/Model/Psr4/ScalarResolverGeneratorTest.php"
+      ],
+      "public_surfaces": [
+        "CodeGenerator::generateAllTypes",
+        "CodeGenerator::generateFieldResolver",
+        "CodeGenerator::generateDirectiveResolver",
+        "CodeGenerator::generateScalarResolver"
+      ],
+      "internal_only": false,
+      "typical_changes": [
+        "Modify emitted PHP code shape",
+        "Change overwrite rules for generated models",
+        "Adjust template-driven class generation"
+      ],
+      "reference_priority": "high",
+      "evidence": [
+        "README.md",
+        "src/Generator/Code/Foundation/CodeGenerator.php",
+        "src/Generator/Model/Foundation/Psr4/ObjectModelGenerator.php",
+        "templates/7.4/Model/ObjectModel.php"
+      ]
+    },
+    {
+      "id": "mod.example",
+      "name": "Example runtime and generated demo artifacts",
+      "kind": "demo-app",
+      "paths": [
+        "example",
+        "tests/Execution",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ],
+      "summary": "Runnable demo and generated example GraphQL artifacts used to show runtime behavior and back execution tests.",
+      "key_symbols": [
+        "Axtiva\\FlexibleGraphql\\Example\\PsrContainerExample",
+        "Axtiva\\FlexibleGraphql\\Example\\GraphQL\\TypeRegistry",
+        "Axtiva\\FlexibleGraphql\\Tests\\Helper\\ExampleSchemaSetupHelper"
+      ],
+      "related_entrypoints": [
+        "ep.http.example_server",
+        "ep.cli.generate_code",
+        "ep.cli.generate_type_registry",
+        "ep.cli.generate_type_models"
+      ],
+      "module_dependencies": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.resolver-contracts",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "paired_configs": [
+        "cfg.example.schema"
+      ],
+      "paired_tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "public_surfaces": [
+        "example/start_graphql_server.php demo server",
+        "example/generate_*.php scripts",
+        "example/schema.graphql SDL"
+      ],
+      "internal_only": false,
+      "typical_changes": [
+        "Update example SDL and regenerate artifacts",
+        "Bind new resolver services in demo container",
+        "Keep execution helper in sync with demo server wiring"
+      ],
+      "reference_priority": "high",
+      "evidence": [
+        "example/TEST.md",
+        "example/schema.graphql",
+        "example/start_graphql_server.php",
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ]
+    },
+    {
+      "id": "mod.resolver-contracts",
+      "name": "Resolver and type contracts",
+      "kind": "library-subsystem",
+      "paths": [
+        "src/Representation.php",
+        "src/Resolver",
+        "src/Type"
+      ],
+      "summary": "Defines interfaces and support types implemented or referenced by generated classes and runtime resolvers.",
+      "key_symbols": [
+        "Axtiva\\FlexibleGraphql\\Representation",
+        "Axtiva\\FlexibleGraphql\\Resolver\\AutoGenerationInterface",
+        "Axtiva\\FlexibleGraphql\\Resolver\\DirectiveResolverInterface",
+        "Axtiva\\FlexibleGraphql\\Resolver\\ResolverInterface",
+        "Axtiva\\FlexibleGraphql\\Resolver\\TypedCustomScalarResolverInterface"
+      ],
+      "related_entrypoints": [
+        "ep.http.example_server",
+        "ep.cli.generate_code"
+      ],
+      "module_dependencies": [],
+      "paired_configs": "Not found",
+      "paired_tests": [
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Generator/Model/Psr4/ObjectModelGeneratorTest.php"
+      ],
+      "public_surfaces": [
+        "AutoGenerationInterface overwrite contract",
+        "Resolver interfaces for generated runtime classes"
+      ],
+      "internal_only": false,
+      "typical_changes": [
+        "Introduce new resolver contract interfaces",
+        "Adjust generated-model overwrite semantics",
+        "Change custom scalar typing contracts"
+      ],
+      "reference_priority": "medium",
+      "evidence": [
+        "src/Representation.php",
+        "src/Resolver/AutoGenerationInterface.php",
+        "src/Resolver/DirectiveResolverInterface.php",
+        "src/Resolver/ResolverInterface.php",
+        "src/Resolver/TypedCustomScalarResolverInterface.php"
+      ]
+    },
+    {
+      "id": "mod.schema-utils",
+      "name": "Schema composition, federation, and rendering utilities",
+      "kind": "library-subsystem",
+      "paths": [
+        "src/Utils"
+      ],
+      "summary": "Builds schemas from SDL glob patterns, extends federation schemas, renders templates, and exposes helper utilities used across generation.",
+      "key_symbols": [
+        "Axtiva\\FlexibleGraphql\\Utils\\SchemaBuilder",
+        "Axtiva\\FlexibleGraphql\\Utils\\FederationV1SchemaExtender",
+        "Axtiva\\FlexibleGraphql\\Utils\\FederationV22SchemaExtender",
+        "Axtiva\\FlexibleGraphql\\Utils\\TemplateRender"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code",
+        "ep.cli.generate_type_models",
+        "ep.cli.generate_field_resolver",
+        "ep.cli.generate_directive_resolver",
+        "ep.cli.generate_scalar_resolver",
+        "ep.cli.generate_type_registry"
+      ],
+      "module_dependencies": [],
+      "paired_configs": [
+        "cfg.example.schema"
+      ],
+      "paired_tests": [
+        "tests/Utils/FederationSchemaExtender/FederationV1SchemaExtenderFederationSchemaTest.php",
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ],
+      "public_surfaces": [
+        "SchemaBuilder::build",
+        "FederationV22SchemaExtender::build",
+        "TemplateRender::render"
+      ],
+      "internal_only": false,
+      "typical_changes": [
+        "Adjust how multiple SDL files are merged",
+        "Change federation directive injection",
+        "Change template loading behavior"
+      ],
+      "reference_priority": "high",
+      "evidence": [
+        "example/generate_code.php",
+        "src/Utils/FederationV22SchemaExtender.php",
+        "src/Utils/SchemaBuilder.php",
+        "src/Utils/TemplateRender.php",
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ]
+    },
+    {
+      "id": "mod.type-registry",
+      "name": "TypeRegistry generation and resolver provider layer",
+      "kind": "library-subsystem",
+      "paths": [
+        "src/Generator/ResolverProvider",
+        "src/Generator/Serializer",
+        "src/Generator/TypeRegistry"
+      ],
+      "summary": "Generates lazy PSR-container-backed TypeRegistry code, field/directive resolver wrappers, and resolver provider calls.",
+      "key_symbols": [
+        "Axtiva\\FlexibleGraphql\\Generator\\TypeRegistry\\Foundation\\TypeRegistryPsrContainerGenerator",
+        "Axtiva\\FlexibleGraphql\\Generator\\TypeRegistry\\Foundation\\Resolver\\Wrapper\\FieldResolverDirectiveWrapped",
+        "Axtiva\\FlexibleGraphql\\Generator\\ResolverProvider\\Foundation\\ContainerCallFieldResolverProvider",
+        "Axtiva\\FlexibleGraphql\\Generator\\ResolverProvider\\Foundation\\WrappedContainerCallFieldResolverProvider"
+      ],
+      "related_entrypoints": [
+        "ep.http.example_server",
+        "ep.cli.generate_code",
+        "ep.cli.generate_type_registry"
+      ],
+      "module_dependencies": [
+        "mod.resolver-contracts",
+        "mod.schema-utils"
+      ],
+      "paired_configs": [
+        "cfg.codegen.field_resolver_psr4",
+        "cfg.codegen.type_registry_psr4",
+        "cfg.codegen.federation_field_psr4"
+      ],
+      "paired_tests": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpV2Test.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php",
+        "tests/Generator/ResolverProvider/ContainerCallDirectiveResolverProviderTest.php",
+        "tests/Generator/ResolverProvider/ContainerCallFieldResolverProviderTest.php",
+        "tests/Generator/TypeRegistry/Resolver/Wrapper/FieldResolverDirectiveWrappedTest.php"
+      ],
+      "public_surfaces": [
+        "TypeRegistry generator builders",
+        "Generated TypeRegistry class pattern",
+        "AMPHP async wrappers"
+      ],
+      "internal_only": false,
+      "typical_changes": [
+        "Adjust generated resolver closures",
+        "Change directive wrapping order",
+        "Introduce alternative async wrapper strategies"
+      ],
+      "reference_priority": "high",
+      "evidence": [
+        "example/GraphQL/TypeRegistry.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+        "src/Generator/TypeRegistry/Foundation/Resolver/Wrapper/FieldResolverDirectiveWrapped.php",
+        "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ]
+    }
+  ]
+}

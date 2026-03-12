@@ -1,0 +1,143 @@
+{
+  "http": [
+    {
+      "surface_id": "surface.http.example_server",
+      "type": "http",
+      "entrypoint_ids": [
+        "ep.http.example_server"
+      ],
+      "key_configs": [
+        "cfg.example.schema"
+      ],
+      "key_commands": [
+        "cmd.run.demo_server"
+      ],
+      "related_workspaces": [
+        "ws.example"
+      ],
+      "operational_notes": [
+        "This is a demo server, not a separate application package.",
+        "It depends on generated files already existing under example/GraphQL.",
+        "It constructs Schema manually from the generated TypeRegistry and a PSR container."
+      ],
+      "evidence": [
+        "README.md",
+        "example/TEST.md",
+        "example/start_graphql_server.php"
+      ]
+    }
+  ],
+  "cli": [
+    {
+      "surface_id": "surface.cli.codegen_example",
+      "type": "cli",
+      "entrypoint_ids": [
+        "ep.cli.generate_code",
+        "ep.cli.generate_directive_resolver",
+        "ep.cli.generate_field_resolver",
+        "ep.cli.generate_scalar_resolver",
+        "ep.cli.generate_type_models",
+        "ep.cli.generate_type_registry"
+      ],
+      "key_configs": [
+        "cfg.codegen.code_psr4",
+        "cfg.codegen.type_registry_psr4",
+        "cfg.example.schema"
+      ],
+      "key_commands": [
+        "cmd.codegen.generate_code",
+        "cmd.codegen.generate_directive_resolver",
+        "cmd.codegen.generate_field_resolver",
+        "cmd.codegen.generate_scalar_resolver",
+        "cmd.codegen.generate_type_models",
+        "cmd.codegen.generate_type_registry"
+      ],
+      "related_workspaces": [
+        "ws.example",
+        "ws.root"
+      ],
+      "operational_notes": [
+        "These commands mutate example/GraphQL generated files.",
+        "generate_code.php is the broadest regeneration path and includes federation handling.",
+        "Narrower generate_*.php scripts are better when only one artifact family changed."
+      ],
+      "evidence": [
+        "README.md",
+        "example/generate_code.php",
+        "example/generate_type_registry.php"
+      ]
+    }
+  ],
+  "background": "Not found",
+  "scheduler": "Not found",
+  "migrations": "Not found",
+  "ci": [
+    {
+      "surface_id": "surface.ci.github_actions",
+      "type": "ci",
+      "entrypoint_ids": [],
+      "key_configs": [
+        "cfg.ci.github_actions",
+        "cfg.root.composer",
+        "cfg.root.phpunit"
+      ],
+      "key_commands": [
+        "cmd.utility.composer_install",
+        "cmd.utility.composer_require_php_parser_v4",
+        "cmd.utility.composer_validate",
+        "cmd.test.phpunit"
+      ],
+      "related_workspaces": [
+        "ws.root"
+      ],
+      "operational_notes": [
+        "CI runs across PHP 7.4, 8.0, 8.1, and 8.2 according to the committed workflow.",
+        "One job explicitly downgrades nikic/php-parser to ^4.12 before rerunning PHPUnit."
+      ],
+      "evidence": [
+        ".github/workflows/ci.yml"
+      ]
+    }
+  ],
+  "docker": "Not found",
+  "local_dev": [
+    {
+      "surface_id": "surface.local_dev.library",
+      "type": "local-dev",
+      "entrypoint_ids": [
+        "ep.cli.generate_code",
+        "ep.http.example_server"
+      ],
+      "key_configs": [
+        "cfg.root.composer",
+        "cfg.root.phpunit",
+        "cfg.example.schema"
+      ],
+      "key_commands": [
+        "cmd.utility.composer_install",
+        "cmd.test.phpunit",
+        "cmd.run.demo_server"
+      ],
+      "related_workspaces": [
+        "ws.root",
+        "ws.example"
+      ],
+      "operational_notes": [
+        "Local work typically alternates between regeneration commands and PHPUnit validation.",
+        "The example server is optional and mainly useful for runtime tracing or manual demo verification."
+      ],
+      "evidence": [
+        "README.md",
+        "phpunit.xml.dist"
+      ]
+    }
+  ],
+  "deployment": "Not found",
+  "evidence": [
+    ".github/workflows/ci.yml",
+    "README.md",
+    "example/TEST.md",
+    "example/generate_code.php",
+    "example/start_graphql_server.php"
+  ]
+}

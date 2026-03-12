@@ -1,0 +1,232 @@
+{
+  "inferred_style": "Schema-first PHP library with layered code generation, lazy PSR-container runtime wiring, and example-driven execution flow.",
+  "layers": [
+    {
+      "id": "layer.sdl_input",
+      "name": "SDL input",
+      "paths": [
+        "example/schema.graphql"
+      ],
+      "responsibility": "Defines GraphQL types, directives, scalars, and federation-related SDL consumed by generation and demo runtime.",
+      "evidence": [
+        "example/schema.graphql"
+      ]
+    },
+    {
+      "id": "layer.schema_utils",
+      "name": "Schema composition and federation extension",
+      "paths": [
+        "src/Utils/SchemaBuilder.php",
+        "src/Utils/FederationV1SchemaExtender.php",
+        "src/Utils/FederationV22SchemaExtender.php"
+      ],
+      "responsibility": "Builds Schema objects from SDL and optionally injects federation directives, aliases, and support types.",
+      "evidence": [
+        "example/generate_code.php",
+        "src/Utils/FederationV22SchemaExtender.php",
+        "src/Utils/SchemaBuilder.php"
+      ]
+    },
+    {
+      "id": "layer.builder",
+      "name": "Generator builder layer",
+      "paths": [
+        "src/Builder"
+      ],
+      "responsibility": "Composes concrete model generators, TypeRegistry generators, resolver providers, and optional federation/AMPHP variants.",
+      "evidence": [
+        "src/Builder/Foundation/CodeGeneratorBuilder.php",
+        "src/Builder/Foundation/CodeGeneratorBuilderFederated.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php"
+      ]
+    },
+    {
+      "id": "layer.codegen",
+      "name": "Model and artifact generation",
+      "paths": [
+        "src/Generator/Code",
+        "src/Generator/Model",
+        "templates/7.4/Model"
+      ],
+      "responsibility": "Emits PHP files for models, resolvers, directive args, scalar resolvers, and generated runtime artifacts.",
+      "evidence": [
+        "src/Generator/Code/Foundation/CodeGenerator.php",
+        "src/Generator/Model/Foundation/Psr4/ObjectModelGenerator.php",
+        "templates/7.4/Model/ObjectModel.php"
+      ]
+    },
+    {
+      "id": "layer.runtime_generation",
+      "name": "Lazy runtime registry generation",
+      "paths": [
+        "src/Generator/ResolverProvider",
+        "src/Generator/TypeRegistry"
+      ],
+      "responsibility": "Generates a lazy TypeRegistry whose closures resolve services from a PSR container and can wrap resolvers with directives or async adapters.",
+      "evidence": [
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+        "src/Generator/TypeRegistry/Foundation/Resolver/Wrapper/FieldResolverDirectiveWrapped.php",
+        "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php"
+      ]
+    },
+    {
+      "id": "layer.example_runtime",
+      "name": "Example runtime and tests",
+      "paths": [
+        "example/start_graphql_server.php",
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ],
+      "responsibility": "Instantiates the generated TypeRegistry and a demo container to run HTTP and direct execution examples.",
+      "evidence": [
+        "example/start_graphql_server.php",
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ]
+    }
+  ],
+  "path_mappings": [
+    {
+      "from": "src/Builder",
+      "to": [
+        "src/Generator/Code",
+        "src/Generator/TypeRegistry"
+      ],
+      "reason": "Builders compose concrete generation services.",
+      "evidence": [
+        "src/Builder/Foundation/CodeGeneratorBuilder.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php"
+      ]
+    },
+    {
+      "from": "example/schema.graphql",
+      "to": [
+        "example/GraphQL",
+        "example/start_graphql_server.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ],
+      "reason": "SDL drives generated example artifacts and runtime execution behavior.",
+      "evidence": [
+        "README.md",
+        "example/generate_code.php",
+        "example/schema.graphql",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ]
+    }
+  ],
+  "di_service_wiring_model": {
+    "style": "PSR container injection into generated TypeRegistry",
+    "details": [
+      "Generated TypeRegistry classes accept ContainerInterface in the constructor.",
+      "Resolver provider classes emit closures that call $this->container->get(...) using generated service names.",
+      "Example runtime wires concrete resolver, directive, scalar, and representation instances in PsrContainerExample."
+    ],
+    "evidence": [
+      "example/PsrContainerExample.php",
+      "example/start_graphql_server.php",
+      "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+      "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php"
+    ]
+  },
+  "config_model": {
+    "style": "Root manifest plus PSR4 codegen config classes",
+    "details": [
+      "composer.json defines package metadata, runtime dependencies, and autoload roots.",
+      "phpunit.xml.dist defines bootstrap and suite roots.",
+      "src/Generator/Config/Foundation/Psr4/*.php determine output class names, namespaces, and directories."
+    ],
+    "evidence": [
+      "composer.json",
+      "phpunit.xml.dist",
+      "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php",
+      "src/Generator/Config/Foundation/Psr4/TypeRegistryGeneratorConfig.php"
+    ]
+  },
+  "cross_module_relationships": [
+    {
+      "from": "mod.schema-utils",
+      "to": "mod.builder",
+      "relationship": "SchemaBuilder and federation extenders produce Schema objects consumed by builder-created generators.",
+      "evidence": [
+        "example/generate_code.php",
+        "example/generate_type_registry.php"
+      ]
+    },
+    {
+      "from": "mod.builder",
+      "to": "mod.codegen",
+      "relationship": "CodeGeneratorBuilder instantiates model and resolver generators.",
+      "evidence": [
+        "src/Builder/Foundation/CodeGeneratorBuilder.php"
+      ]
+    },
+    {
+      "from": "mod.builder",
+      "to": "mod.type-registry",
+      "relationship": "TypeRegistryGeneratorBuilder composes resolver providers and TypeRegistry generation.",
+      "evidence": [
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php"
+      ]
+    },
+    {
+      "from": "mod.codegen",
+      "to": "mod.resolver-contracts",
+      "relationship": "Generated object model overwrite behavior depends on AutoGenerationInterface and typed scalar contracts.",
+      "evidence": [
+        "src/Generator/Code/Foundation/CodeGenerator.php",
+        "src/Generator/Model/Foundation/Psr4/ObjectModelGenerator.php",
+        "src/Resolver/AutoGenerationInterface.php"
+      ]
+    },
+    {
+      "from": "mod.type-registry",
+      "to": "mod.example",
+      "relationship": "The example runtime and execution tests instantiate generated TypeRegistry code.",
+      "evidence": [
+        "example/start_graphql_server.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ]
+    }
+  ],
+  "state_and_persistence_model": "Not found",
+  "integration_boundaries": [
+    {
+      "name": "webonyx/graphql-php",
+      "role": "Schema, server, execution, directive, and type definitions",
+      "evidence": [
+        "composer.json",
+        "example/start_graphql_server.php",
+        "src/Utils/SchemaBuilder.php"
+      ]
+    },
+    {
+      "name": "nikic/php-parser",
+      "role": "Preserves user-edited object models by parsing existing files before regeneration.",
+      "evidence": [
+        "composer.json",
+        "src/Generator/Code/Foundation/CodeGenerator.php"
+      ]
+    },
+    {
+      "name": "psr/container",
+      "role": "Abstracts service lookup for generated runtime closures in examples and tests.",
+      "evidence": [
+        "composer.json",
+        "example/PsrContainerExample.php",
+        "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php"
+      ]
+    }
+  ],
+  "confidence": "high",
+  "evidence": [
+    "composer.json",
+    "example/generate_code.php",
+    "example/start_graphql_server.php",
+    "src/Builder/Foundation/CodeGeneratorBuilder.php",
+    "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+    "src/Generator/Code/Foundation/CodeGenerator.php",
+    "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php",
+    "src/Utils/FederationV22SchemaExtender.php",
+    "src/Utils/SchemaBuilder.php"
+  ]
+}

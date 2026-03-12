@@ -1,0 +1,259 @@
+{
+  "build": "Not found",
+  "run": [
+    {
+      "command_id": "cmd.run.demo_server",
+      "command_text": "php -S localhost:8080 example/start_graphql_server.php",
+      "workspace_scope": "ws.example",
+      "purpose": "Start the example GraphQL HTTP server backed by the generated TypeRegistry and demo container.",
+      "source": "README.md",
+      "validation_level": "manual-runtime",
+      "safe_to_run_local": true,
+      "mutates_state": false,
+      "requires_services": [],
+      "recommended_when": [
+        "You need to inspect end-to-end HTTP execution behavior.",
+        "You want to reproduce the example/TEST.md curl requests."
+      ],
+      "avoid_when": [
+        "Generated example artifacts are stale after an SDL or generator change.",
+        "Port 8080 is unavailable."
+      ],
+      "expected_outcome": "A local HTTP server handles GraphQL POST requests using the generated example runtime.",
+      "evidence": [
+        "README.md",
+        "example/TEST.md",
+        "example/start_graphql_server.php"
+      ]
+    }
+  ],
+  "lint": "Not found",
+  "static_analysis": "Not found",
+  "test": [
+    {
+      "command_id": "cmd.test.phpunit",
+      "command_text": "php vendor/bin/phpunit",
+      "workspace_scope": "ws.root",
+      "purpose": "Run the repository PHPUnit suite configured by phpunit.xml.dist.",
+      "source": "README.md",
+      "validation_level": "full",
+      "safe_to_run_local": true,
+      "mutates_state": false,
+      "requires_services": [],
+      "recommended_when": [
+        "Validating library changes before commit.",
+        "Matching the main CI test command."
+      ],
+      "avoid_when": [
+        "Composer dependencies are not installed."
+      ],
+      "expected_outcome": "PHPUnit runs builder, generator, and utils suites with tests/bootstrap.php as bootstrap.",
+      "evidence": [
+        "README.md",
+        "phpunit.xml.dist"
+      ]
+    }
+  ],
+  "migration": "Not found",
+  "codegen": [
+    {
+      "command_id": "cmd.codegen.generate_code",
+      "command_text": "php example/generate_code.php",
+      "workspace_scope": "ws.example",
+      "purpose": "Regenerate example models, resolvers, directive artifacts, scalar resolver, and TypeRegistry from SDL with federation support.",
+      "source": "README.md",
+      "validation_level": "stateful-targeted",
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "requires_services": [],
+      "recommended_when": [
+        "example/schema.graphql changed.",
+        "Builder or generator changes need to be reflected in generated demo artifacts."
+      ],
+      "avoid_when": [
+        "You only need a single targeted artifact regenerated."
+      ],
+      "expected_outcome": "example/GraphQL generated files are updated to match current SDL and generator behavior.",
+      "evidence": [
+        "README.md",
+        "example/generate_code.php"
+      ]
+    },
+    {
+      "command_id": "cmd.codegen.generate_directive_resolver",
+      "command_text": "php example/generate_directive_resolver.php",
+      "workspace_scope": "ws.example",
+      "purpose": "Generate a directive resolver and any directive args class for the selected directive.",
+      "source": "README.md",
+      "validation_level": "targeted",
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "requires_services": [],
+      "recommended_when": [
+        "Only directive resolver output needs regeneration."
+      ],
+      "avoid_when": [
+        "A broad SDL change affects multiple artifact families."
+      ],
+      "expected_outcome": "Directive-related files under example/GraphQL are refreshed for the selected directive.",
+      "evidence": [
+        "README.md",
+        "example/generate_directive_resolver.php"
+      ]
+    },
+    {
+      "command_id": "cmd.codegen.generate_field_resolver",
+      "command_text": "php example/generate_field_resolver.php",
+      "workspace_scope": "ws.example",
+      "purpose": "Generate a field resolver and args class for a selected GraphQL field.",
+      "source": "README.md",
+      "validation_level": "targeted",
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "requires_services": [],
+      "recommended_when": [
+        "Only one field resolver needs regeneration or inspection."
+      ],
+      "avoid_when": [
+        "The change spans many types or directives."
+      ],
+      "expected_outcome": "Field resolver artifacts for the selected field are written under example/GraphQL.",
+      "evidence": [
+        "README.md",
+        "example/generate_field_resolver.php"
+      ]
+    },
+    {
+      "command_id": "cmd.codegen.generate_scalar_resolver",
+      "command_text": "php example/generate_scalar_resolver.php",
+      "workspace_scope": "ws.example",
+      "purpose": "Generate a custom scalar resolver file for the selected scalar type.",
+      "source": "README.md",
+      "validation_level": "targeted",
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "requires_services": [],
+      "recommended_when": [
+        "Only scalar runtime handling changed."
+      ],
+      "avoid_when": [
+        "SDL changes also require new models or TypeRegistry output."
+      ],
+      "expected_outcome": "The selected custom scalar resolver file exists in example/GraphQL/Scalar.",
+      "evidence": [
+        "README.md",
+        "example/generate_scalar_resolver.php"
+      ]
+    },
+    {
+      "command_id": "cmd.codegen.generate_type_models",
+      "command_text": "php example/generate_type_models.php",
+      "workspace_scope": "ws.example",
+      "purpose": "Generate all type models and related model artifacts from schema SDL.",
+      "source": "README.md",
+      "validation_level": "targeted",
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "requires_services": [],
+      "recommended_when": [
+        "You want model regeneration without TypeRegistry regeneration."
+      ],
+      "avoid_when": [
+        "Resolver wiring or directives also changed."
+      ],
+      "expected_outcome": "Model-related generated files under example/GraphQL are refreshed.",
+      "evidence": [
+        "README.md",
+        "example/generate_type_models.php"
+      ]
+    },
+    {
+      "command_id": "cmd.codegen.generate_type_registry",
+      "command_text": "php example/generate_type_registry.php",
+      "workspace_scope": "ws.example",
+      "purpose": "Generate the PSR-container-backed TypeRegistry for the example schema.",
+      "source": "README.md",
+      "validation_level": "targeted",
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "requires_services": [],
+      "recommended_when": [
+        "Only TypeRegistry output changed.",
+        "You need to inspect generated resolver closures."
+      ],
+      "avoid_when": [
+        "Models or resolver artifacts also need regeneration."
+      ],
+      "expected_outcome": "example/GraphQL/TypeRegistry.php is regenerated from the current schema and builder defaults.",
+      "evidence": [
+        "README.md",
+        "example/generate_type_registry.php"
+      ]
+    }
+  ],
+  "utility_scripts": [
+    {
+      "command_id": "cmd.utility.composer_install",
+      "command_text": "composer install -n --prefer-dist",
+      "workspace_scope": "ws.root",
+      "purpose": "Install Composer dependencies before running validation or demo commands.",
+      "source": ".github/workflows/ci.yml",
+      "validation_level": "setup",
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "requires_services": [],
+      "recommended_when": [
+        "Preparing a fresh checkout.",
+        "CI-equivalent dependency installation is needed."
+      ],
+      "avoid_when": [
+        "You intentionally do not want to modify vendor/."
+      ],
+      "expected_outcome": "Dependencies are installed from composer.json and lock resolution.",
+      "evidence": [
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "command_id": "cmd.utility.composer_require_php_parser_v4",
+      "command_text": "composer require nikic/php-parser \"^4.12\"",
+      "workspace_scope": "ws.root",
+      "purpose": "Exercise compatibility with nikic/php-parser v4 in CI.",
+      "source": ".github/workflows/ci.yml",
+      "validation_level": "ci-only-compatibility",
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "requires_services": [],
+      "recommended_when": [
+        "Reproducing the dedicated parser-v4 CI job locally."
+      ],
+      "avoid_when": [
+        "You do not want to mutate Composer dependency state."
+      ],
+      "expected_outcome": "Composer dependency state is changed to php-parser v4 compatibility before rerunning tests.",
+      "evidence": [
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "command_id": "cmd.utility.composer_validate",
+      "command_text": "composer validate --strict",
+      "workspace_scope": "ws.root",
+      "purpose": "Validate Composer manifest correctness in the same way CI does.",
+      "source": ".github/workflows/ci.yml",
+      "validation_level": "full",
+      "safe_to_run_local": true,
+      "mutates_state": false,
+      "requires_services": [],
+      "recommended_when": [
+        "composer.json changed.",
+        "Mirroring CI validation locally."
+      ],
+      "avoid_when": [],
+      "expected_outcome": "Composer reports whether composer.json is valid under strict checks.",
+      "evidence": [
+        ".github/workflows/ci.yml"
+      ]
+    }
+  ]
+}

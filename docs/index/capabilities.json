@@ -1,0 +1,297 @@
+{
+  "mcp_references": "Not found",
+  "capabilities": [
+    {
+      "capability_id": "cap.async.type_registry_generation",
+      "name": "AMPHP async TypeRegistry generation",
+      "category": "runtime-generation",
+      "workspace_scope": [
+        "ws.root"
+      ],
+      "description": "The library can generate TypeRegistry closures wrapped for AMPHP v3 or AMPHP v2 async execution using dedicated builder wrappers.",
+      "best_for_tasks": [
+        "async resolver generation changes",
+        "AMPHP compatibility review",
+        "tracing alternate generated resolver wrappers"
+      ],
+      "preconditions": [
+        "Start from the base TypeRegistryGeneratorBuilder flow before choosing an AMPHP wrapper.",
+        "Confirm the requested change actually targets async generation rather than the default synchronous path."
+      ],
+      "where_to_read_before_use": [
+        "ref.typeregistry.builder",
+        "ref.typeregistry.generator_core"
+      ],
+      "related_commands": "Not found",
+      "related_configs": [
+        "cfg.codegen.type_registry_psr4"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example"
+      ],
+      "agent_usefulness": "High for async-generation-specific tasks; low for ordinary schema or runtime work.",
+      "evidence": [
+        "CHANGELOG.md",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphp.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphpV2.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpV2Test.php"
+      ]
+    },
+    {
+      "capability_id": "cap.codegen.full_example",
+      "name": "Full example code regeneration",
+      "category": "code-generation",
+      "workspace_scope": [
+        "ws.example",
+        "ws.root"
+      ],
+      "description": "The repository can regenerate all example GraphQL artifacts from SDL, including models, resolvers, directive args, scalar resolvers, federation additions, and the TypeRegistry.",
+      "best_for_tasks": [
+        "updating generated example artifacts after SDL changes",
+        "verifying generator changes end-to-end",
+        "inspecting generated demo runtime output"
+      ],
+      "preconditions": [
+        "Composer autoload is available.",
+        "example/GraphQL output directory exists and is writable.",
+        "Understand that generation mutates tracked files under example/GraphQL."
+      ],
+      "where_to_read_before_use": [
+        "ref.example.generate_code",
+        "ref.example.schema",
+        "ref.codegen.builder"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code"
+      ],
+      "related_configs": [
+        "cfg.codegen.code_psr4",
+        "cfg.codegen.example_schema_usage",
+        "cfg.example.schema"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example",
+        "surface.local_dev.library"
+      ],
+      "agent_usefulness": "High for feature work that touches schema, generated artifacts, or end-to-end generator behavior.",
+      "evidence": [
+        "README.md",
+        "example/generate_code.php",
+        "src/Builder/Foundation/CodeGeneratorBuilderFederated.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderFederated.php"
+      ]
+    },
+    {
+      "capability_id": "cap.codegen.targeted_artifact",
+      "name": "Targeted artifact regeneration",
+      "category": "code-generation",
+      "workspace_scope": [
+        "ws.example"
+      ],
+      "description": "The example workspace exposes narrow CLI scripts for regenerating only one artifact family such as a directive resolver, field resolver, scalar resolver, type models, or TypeRegistry.",
+      "best_for_tasks": [
+        "isolated resolver regeneration",
+        "isolated TypeRegistry inspection",
+        "small debugging loops on one generated artifact family"
+      ],
+      "preconditions": [
+        "The target directive, field, scalar, or schema type is already identified.",
+        "You are intentionally not doing a full example regeneration."
+      ],
+      "where_to_read_before_use": [
+        "ref.example.generate_type_registry",
+        "ref.example.schema",
+        "ref.codegen.builder"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_directive_resolver",
+        "cmd.codegen.generate_field_resolver",
+        "cmd.codegen.generate_scalar_resolver",
+        "cmd.codegen.generate_type_models",
+        "cmd.codegen.generate_type_registry"
+      ],
+      "related_configs": [
+        "cfg.codegen.code_psr4",
+        "cfg.codegen.field_resolver_psr4",
+        "cfg.codegen.type_registry_psr4",
+        "cfg.example.schema"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example"
+      ],
+      "agent_usefulness": "Useful for minimizing mutation scope when debugging or updating a single generated artifact family.",
+      "evidence": [
+        "README.md",
+        "example/generate_directive_resolver.php",
+        "example/generate_field_resolver.php",
+        "example/generate_scalar_resolver.php",
+        "example/generate_type_models.php",
+        "example/generate_type_registry.php"
+      ]
+    },
+    {
+      "capability_id": "cap.graphql.federation_extension",
+      "name": "Apollo federation schema extension",
+      "category": "graphql",
+      "workspace_scope": [
+        "ws.root",
+        "ws.example"
+      ],
+      "description": "The repository can extend GraphQL schemas with federation v1 and v2.2 directives, aliases, support types, _service, and _entities fields.",
+      "best_for_tasks": [
+        "federation compatibility changes",
+        "schema extension debugging",
+        "generated federation resolver work"
+      ],
+      "preconditions": [
+        "The schema must already be parsed into a Schema and AST.",
+        "Choose v1 or v2.2 flow explicitly based on the target behavior."
+      ],
+      "where_to_read_before_use": [
+        "ref.schema.federation_v22",
+        "ref.example.generate_code",
+        "ref.tests.federation_v22"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code"
+      ],
+      "related_configs": [
+        "cfg.example.schema",
+        "cfg.codegen.example_schema_usage"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example",
+        "surface.http.example_server"
+      ],
+      "agent_usefulness": "High when a task mentions federation directives, _entities, _service, or federation alias handling.",
+      "evidence": [
+        "README.md",
+        "example/generate_code.php",
+        "src/Utils/FederationV1SchemaExtender.php",
+        "src/Utils/FederationV22SchemaExtender.php",
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php"
+      ]
+    },
+    {
+      "capability_id": "cap.runtime.http_demo",
+      "name": "HTTP demo runtime",
+      "category": "runtime",
+      "workspace_scope": [
+        "ws.example"
+      ],
+      "description": "The example workspace can run a local GraphQL HTTP server using StandardServer and the generated TypeRegistry.",
+      "best_for_tasks": [
+        "manual runtime debugging",
+        "reproducing example queries",
+        "validating container wiring after generation"
+      ],
+      "preconditions": [
+        "Generated example/GraphQL artifacts exist and match the current SDL.",
+        "Port 8080 is available or the invocation is adapted manually."
+      ],
+      "where_to_read_before_use": [
+        "ref.example.server",
+        "ref.example.test_doc",
+        "ref.tests.example_setup"
+      ],
+      "related_commands": [
+        "cmd.run.demo_server"
+      ],
+      "related_configs": [
+        "cfg.example.schema"
+      ],
+      "related_runtime_surfaces": [
+        "surface.http.example_server"
+      ],
+      "agent_usefulness": "High for runtime tracing and manual reproduction; lower for pure generator-internal changes.",
+      "evidence": [
+        "README.md",
+        "example/TEST.md",
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "capability_id": "cap.schema.composition",
+      "name": "Schema composition from SDL glob patterns",
+      "category": "graphql",
+      "workspace_scope": [
+        "ws.root",
+        "ws.example"
+      ],
+      "description": "SchemaBuilder can build one Schema by iterating over multiple SDL files matched by a glob and extending the initial schema with later ASTs.",
+      "best_for_tasks": [
+        "understanding SDL merge behavior",
+        "debugging schema parse errors",
+        "changing how schemas are loaded before generation"
+      ],
+      "preconditions": [
+        "The glob must match at least one file.",
+        "All matched files must parse successfully."
+      ],
+      "where_to_read_before_use": [
+        "ref.schema.builder",
+        "ref.tests.schema_builder"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code",
+        "cmd.codegen.generate_type_models",
+        "cmd.codegen.generate_type_registry"
+      ],
+      "related_configs": [
+        "cfg.example.schema"
+      ],
+      "related_runtime_surfaces": [
+        "surface.cli.codegen_example"
+      ],
+      "agent_usefulness": "Important whenever a task involves SDL parsing, split schema files, or schema assembly failures.",
+      "evidence": [
+        "src/Utils/SchemaBuilder.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ]
+    },
+    {
+      "capability_id": "cap.testing.phpunit",
+      "name": "PHPUnit validation and golden-output regression checks",
+      "category": "validation",
+      "workspace_scope": [
+        "ws.root",
+        "ws.example"
+      ],
+      "description": "The repository validates generation and utilities primarily through PHPUnit, with runtime example execution covered by an extra execution test path.",
+      "best_for_tasks": [
+        "regression testing after generator changes",
+        "CI-equivalent validation",
+        "verifying schema utility behavior"
+      ],
+      "preconditions": [
+        "Composer dependencies are installed.",
+        "If example runtime behavior changed, include execution-oriented checks in addition to configured suites."
+      ],
+      "where_to_read_before_use": [
+        "ref.root.phpunit",
+        "ref.tests.execution_queryfield",
+        "ref.root.ci"
+      ],
+      "related_commands": [
+        "cmd.test.phpunit",
+        "cmd.utility.composer_validate"
+      ],
+      "related_configs": [
+        "cfg.root.phpunit",
+        "cfg.ci.github_actions"
+      ],
+      "related_runtime_surfaces": [
+        "surface.ci.github_actions",
+        "surface.local_dev.library"
+      ],
+      "agent_usefulness": "High for almost all non-trivial changes because generator behavior is heavily tested via golden outputs.",
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "README.md",
+        "phpunit.xml.dist",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    }
+  ]
+}

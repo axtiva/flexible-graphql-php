@@ -1,0 +1,258 @@
+{
+  "repository_discovered_skills": "Not found",
+  "skills": [
+    {
+      "stable_id": "skill.external.graphql-architect",
+      "name": "graphql-architect",
+      "source_type": "home-shared",
+      "path": null,
+      "description": "Design GraphQL schemas, Apollo Federation, subscriptions, DataLoader, and query optimization patterns.",
+      "tags": [
+        "apollo",
+        "graphql",
+        "performance",
+        "schema_design"
+      ],
+      "recommended_for": [
+        "federation extension work",
+        "schema design or review",
+        "directive and scalar architecture",
+        "generated model/type layout decisions"
+      ],
+      "avoid_for": [
+        "non-GraphQL repository administration",
+        "frontend or mobile changes not present in this repository"
+      ],
+      "applicability_score": 0.93,
+      "applicability_reasoning": "Repository evidence centers on GraphQL SDL parsing, federation schema extension, and generated type/runtime design.",
+      "availability_certainty": "high",
+      "trust_level": "externally-supplied",
+      "best_fit_workspaces": [
+        "ws.root",
+        "ws.example"
+      ],
+      "best_fit_modules": [
+        "mod.codegen",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "read_before_using": [
+        "ref.example.schema",
+        "ref.schema.federation_v22",
+        "ref.codegen.builder"
+      ],
+      "paired_reference_ids": [
+        "ref.example.schema",
+        "ref.example.generate_code",
+        "ref.schema.federation_v22"
+      ],
+      "paired_recipe_ids": [
+        "recipe.graphql_schema_or_field_change",
+        "recipe.trace_demo_runtime_flow"
+      ],
+      "invocation_notes": "Use after determining whether the requested change is in SDL design, federation extension, or generated type/runtime shape.",
+      "expected_output_shape": "Schema-focused reasoning tied to repository SDL, federation helpers, and generated runtime patterns.",
+      "common_failure_modes": [
+        "Applying generic federation guidance without checking the repository's v1/v2.2 helper classes.",
+        "Ignoring that this repository generates code rather than hosting a conventional hand-written GraphQL server."
+      ],
+      "evidence": [
+        "README.md",
+        "example/schema.graphql",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderFederated.php",
+        "src/Utils/FederationV22SchemaExtender.php",
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php"
+      ]
+    },
+    {
+      "stable_id": "skill.external.php-async",
+      "name": "php-async",
+      "source_type": "home-shared",
+      "path": null,
+      "description": "Use when building PHP apps with modern PHP async features and Symfony-oriented standards.",
+      "tags": [
+        "async",
+        "php",
+        "symfony"
+      ],
+      "recommended_for": [
+        "AMPHP wrapper changes",
+        "async TypeRegistry generation review"
+      ],
+      "avoid_for": [
+        "default synchronous code generation",
+        "non-async example runtime work"
+      ],
+      "applicability_score": 0.58,
+      "applicability_reasoning": "The repository contains AMPHP-specific builder wrappers and tests, but async support is an optional path rather than the main architecture.",
+      "availability_certainty": "high",
+      "trust_level": "externally-supplied",
+      "best_fit_workspaces": [
+        "ws.root"
+      ],
+      "best_fit_modules": [
+        "mod.builder",
+        "mod.type-registry"
+      ],
+      "read_before_using": [
+        "ref.typeregistry.builder",
+        "ref.tests.builder_amphp"
+      ],
+      "paired_reference_ids": [
+        "ref.typeregistry.builder",
+        "ref.tests.builder_amphp"
+      ],
+      "paired_recipe_ids": [
+        "recipe.change_codegen_config_or_templates"
+      ],
+      "invocation_notes": "Only pick this when the task explicitly involves AMPHP or async wrapper behavior.",
+      "expected_output_shape": "Changes or analysis focused on async wrapper generation and compatibility constraints.",
+      "common_failure_modes": [
+        "Using async advice for the default TypeRegistry path.",
+        "Assuming Symfony runtime patterns that are not present in this repository."
+      ],
+      "evidence": [
+        "CHANGELOG.md",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphp.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderAmphpV2.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpTest.php"
+      ]
+    },
+    {
+      "stable_id": "skill.external.php-graphql",
+      "name": "php-graphql",
+      "source_type": "home-shared",
+      "path": null,
+      "description": "Guidance for PHP + GraphQL, including Symfony bundle flexible-graphql-bundle usage and resolver patterns.",
+      "tags": [
+        "graphql",
+        "php",
+        "resolvers",
+        "symfony"
+      ],
+      "recommended_for": [
+        "GraphQL SDL parsing",
+        "resolver and directive generation",
+        "TypeRegistry generation",
+        "webonyx/graphql-php integration"
+      ],
+      "avoid_for": [
+        "frontend-only tasks",
+        "mobile work"
+      ],
+      "applicability_score": 0.98,
+      "applicability_reasoning": "This repository is directly about PHP GraphQL generation, resolver patterns, and runtime integration with webonyx/graphql-php.",
+      "availability_certainty": "high",
+      "trust_level": "externally-supplied",
+      "best_fit_workspaces": [
+        "ws.root",
+        "ws.example"
+      ],
+      "best_fit_modules": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.example",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "read_before_using": [
+        "ref.root.readme",
+        "ref.schema.builder",
+        "ref.typeregistry.builder",
+        "ref.tests.execution_queryfield"
+      ],
+      "paired_reference_ids": [
+        "ref.root.readme",
+        "ref.example.server",
+        "ref.schema.builder",
+        "ref.typeregistry.builder"
+      ],
+      "paired_recipe_ids": [
+        "recipe.graphql_schema_or_field_change",
+        "recipe.graphql_service_wiring",
+        "recipe.trace_demo_runtime_flow"
+      ],
+      "invocation_notes": "This is the default best-fit skill for most repository tasks after the target module is known.",
+      "expected_output_shape": "Repository-aware GraphQL/PHP guidance tied to generators, resolver wiring, and runtime execution paths.",
+      "common_failure_modes": [
+        "Overfitting to bundle-specific Symfony integration that is only mentioned indirectly in README.",
+        "Ignoring generated example artifacts when analyzing runtime behavior."
+      ],
+      "evidence": [
+        "README.md",
+        "composer.json",
+        "example/start_graphql_server.php",
+        "src/Utils/SchemaBuilder.php",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "stable_id": "skill.external.php-tester",
+      "name": "php-tester",
+      "source_type": "home-shared",
+      "path": null,
+      "description": "Write PHPUnit tests for modern PHP, aiming for strong coverage and PSR/PHPStan-aware quality.",
+      "tags": [
+        "php",
+        "phpstan",
+        "phpunit",
+        "symfony",
+        "testing"
+      ],
+      "recommended_for": [
+        "adding PHPUnit coverage",
+        "golden-output regression updates",
+        "execution test additions",
+        "CI quality validation"
+      ],
+      "avoid_for": [
+        "frontend UI work",
+        "tasks unrelated to PHP testing"
+      ],
+      "applicability_score": 0.9,
+      "applicability_reasoning": "The repository has broad PHPUnit coverage, explicit CI PHPUnit jobs, and several change areas that require new regression tests.",
+      "availability_certainty": "high",
+      "trust_level": "externally-supplied",
+      "best_fit_workspaces": [
+        "ws.root",
+        "ws.example"
+      ],
+      "best_fit_modules": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.example",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "read_before_using": [
+        "ref.root.phpunit",
+        "ref.root.ci",
+        "ref.tests.execution_queryfield",
+        "ref.tests.schema_builder"
+      ],
+      "paired_reference_ids": [
+        "ref.root.phpunit",
+        "ref.root.ci",
+        "ref.tests.execution_queryfield",
+        "ref.tests.schema_builder"
+      ],
+      "paired_recipe_ids": [
+        "recipe.run_validation",
+        "recipe.update_tests_for_generation_change"
+      ],
+      "invocation_notes": "Use after change-impact.json and testing.json identify the affected module and minimum validation scope.",
+      "expected_output_shape": "Targeted PHPUnit additions or updates matched to builder, generator, utility, or runtime test patterns already in the repo.",
+      "common_failure_modes": [
+        "Adding tests only to configured suites and forgetting execution tests when runtime wiring changed.",
+        "Writing generic assertions instead of full generated-output expectations where golden tests are the convention."
+      ],
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "composer.json",
+        "phpunit.xml.dist",
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    }
+  ]
+}

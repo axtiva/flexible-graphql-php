@@ -1,0 +1,171 @@
+{
+  "workflows": [
+    {
+      "id": "wf.codegen.full_example",
+      "name": "Regenerate all example GraphQL artifacts",
+      "goal": "Refresh example-generated models, resolvers, directive args, scalar resolvers, and TypeRegistry from current SDL.",
+      "prerequisites": [
+        "Composer dependencies installed",
+        "example/GraphQL directory writable"
+      ],
+      "commands": [
+        "cmd.codegen.generate_code"
+      ],
+      "expected_outcomes": [
+        "Generated files under example/GraphQL align with current schema and builder behavior."
+      ],
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "workspace_scope": [
+        "ws.example"
+      ],
+      "related_reference_ids": [
+        "ref.example.generate_code",
+        "ref.example.schema"
+      ],
+      "evidence": [
+        "README.md",
+        "example/generate_code.php"
+      ]
+    },
+    {
+      "id": "wf.codegen.targeted_typeregistry",
+      "name": "Regenerate only the example TypeRegistry",
+      "goal": "Refresh or inspect generated runtime registry output without regenerating all example model artifacts.",
+      "prerequisites": [
+        "Composer dependencies installed",
+        "Target schema exists"
+      ],
+      "commands": [
+        "cmd.codegen.generate_type_registry"
+      ],
+      "expected_outcomes": [
+        "example/GraphQL/TypeRegistry.php matches current schema and TypeRegistry builder logic."
+      ],
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "workspace_scope": [
+        "ws.example"
+      ],
+      "related_reference_ids": [
+        "ref.example.generate_type_registry",
+        "ref.typeregistry.generated_example",
+        "ref.typeregistry.builder"
+      ],
+      "evidence": [
+        "example/generate_type_registry.php"
+      ]
+    },
+    {
+      "id": "wf.local.http_demo",
+      "name": "Run local example GraphQL server",
+      "goal": "Serve the generated example GraphQL schema over HTTP for manual testing.",
+      "prerequisites": [
+        "Composer dependencies installed",
+        "Generated example files exist",
+        "Port 8080 available"
+      ],
+      "commands": [
+        "cmd.run.demo_server"
+      ],
+      "expected_outcomes": [
+        "Local server handles GraphQL requests described in example/TEST.md."
+      ],
+      "safe_to_run_local": true,
+      "mutates_state": false,
+      "workspace_scope": [
+        "ws.example"
+      ],
+      "related_reference_ids": [
+        "ref.example.server",
+        "ref.example.test_doc"
+      ],
+      "evidence": [
+        "README.md",
+        "example/TEST.md",
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "id": "wf.setup.install_dependencies",
+      "name": "Install repository dependencies",
+      "goal": "Prepare the repository for validation and example scripts.",
+      "prerequisites": [],
+      "commands": [
+        "cmd.utility.composer_install"
+      ],
+      "expected_outcomes": [
+        "Vendor dependencies are installed for CLI scripts and PHPUnit."
+      ],
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "workspace_scope": [
+        "ws.root"
+      ],
+      "related_reference_ids": [
+        "ref.root.composer",
+        "ref.root.ci"
+      ],
+      "evidence": [
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "id": "wf.validation.ci_like",
+      "name": "Run CI-like validation locally",
+      "goal": "Mirror the committed automated validation path as closely as the repository documents.",
+      "prerequisites": [
+        "Composer dependencies installed"
+      ],
+      "commands": [
+        "cmd.utility.composer_validate",
+        "cmd.test.phpunit"
+      ],
+      "expected_outcomes": [
+        "composer.json validates under strict rules and PHPUnit succeeds for configured suites."
+      ],
+      "safe_to_run_local": true,
+      "mutates_state": false,
+      "workspace_scope": [
+        "ws.root"
+      ],
+      "related_reference_ids": [
+        "ref.root.ci",
+        "ref.root.phpunit"
+      ],
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "phpunit.xml.dist"
+      ]
+    },
+    {
+      "id": "wf.validation.parser_v4_compat",
+      "name": "Reproduce parser v4 compatibility job",
+      "goal": "Exercise the CI path that forces nikic/php-parser v4 before rerunning tests.",
+      "prerequisites": [
+        "Composer dependencies installed",
+        "Willingness to mutate dependency state"
+      ],
+      "commands": [
+        "cmd.utility.composer_require_php_parser_v4",
+        "cmd.test.phpunit"
+      ],
+      "expected_outcomes": [
+        "Repository behavior is validated against the php-parser v4 compatibility path used in CI."
+      ],
+      "safe_to_run_local": true,
+      "mutates_state": true,
+      "workspace_scope": [
+        "ws.root"
+      ],
+      "related_reference_ids": [
+        "ref.root.ci",
+        "ref.codegen.core"
+      ],
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "src/Generator/Code/Foundation/CodeGenerator.php"
+      ]
+    }
+  ]
+}

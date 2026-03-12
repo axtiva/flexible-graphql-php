@@ -1,0 +1,80 @@
+{
+  "workspaces": [
+    {
+      "id": "ws.example",
+      "root_path": "example",
+      "manifests": "Not found",
+      "language_runtime": "PHP CLI and PHP built-in server",
+      "role": "demo_app",
+      "boundaries": [
+        "Consumes the root library through Composer autoload-dev mapping.",
+        "Owns example/schema.graphql and generated example/GraphQL artifacts.",
+        "Provides runnable scripts and a demo PSR container, but no independent package manifest."
+      ],
+      "primary_commands": [
+        "cmd.codegen.generate_code",
+        "cmd.codegen.generate_directive_resolver",
+        "cmd.codegen.generate_field_resolver",
+        "cmd.codegen.generate_scalar_resolver",
+        "cmd.codegen.generate_type_models",
+        "cmd.codegen.generate_type_registry",
+        "cmd.run.demo_server"
+      ],
+      "primary_runtime_surfaces": [
+        "surface.cli.codegen_example",
+        "surface.http.example_server",
+        "surface.local_dev.library"
+      ],
+      "related_modules": [
+        "mod.example",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "evidence": [
+        "README.md",
+        "composer.json",
+        "example/TEST.md",
+        "example/generate_code.php",
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "id": "ws.root",
+      "root_path": ".",
+      "manifests": [
+        "composer.json",
+        "phpunit.xml.dist"
+      ],
+      "language_runtime": "PHP library and CLI generation",
+      "role": "library",
+      "boundaries": [
+        "Owns src/ public library code, templates/, and root Composer metadata.",
+        "Owns PHPUnit configuration and CI workflow.",
+        "Does not include a frontend, mobile app, database layer, or deployment manifests."
+      ],
+      "primary_commands": [
+        "cmd.test.phpunit",
+        "cmd.utility.composer_install",
+        "cmd.utility.composer_validate"
+      ],
+      "primary_runtime_surfaces": [
+        "surface.ci.github_actions",
+        "surface.local_dev.library"
+      ],
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.resolver-contracts",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "README.md",
+        "composer.json",
+        "phpunit.xml.dist",
+        "src"
+      ]
+    }
+  ]
+}
