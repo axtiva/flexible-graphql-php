@@ -7,6 +7,7 @@ use GraphQL\Error\SyntaxError;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\UnionType;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class FederationV1SchemaExtenderFederationSchemaTest extends TestCase
@@ -17,6 +18,7 @@ class FederationV1SchemaExtenderFederationSchemaTest extends TestCase
      * @dataProvider dataProviderFederatedSchema
      * @throws SyntaxError
      */
+#[DataProvider('dataProviderFederatedSchema')]
     public function testExtendSchema(string $sdl)
     {
         $ast = Parser::parse($sdl);
@@ -36,6 +38,7 @@ class FederationV1SchemaExtenderFederationSchemaTest extends TestCase
      * @dataProvider dataProviderFederatedSchema
      * @throws SyntaxError
      */
+#[DataProvider('dataProviderFederatedSchema')]
     public function testFederation_Entity(string $sdl)
     {
         $ast = Parser::parse($sdl);
@@ -127,7 +130,7 @@ SDL;
 
     }
 
-    public function dataProviderFederatedSchema(): iterable
+    public static function dataProviderFederatedSchema(): iterable
     {
         yield [<<<'SDL'
 scalar _FieldSet

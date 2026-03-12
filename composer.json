@@ -21,12 +21,13 @@
     }
   },
   "require": {
-    "php": "^7.4 | ^8.0",
-    "webonyx/graphql-php": "^15.2",
-    "nikic/php-parser": "^4.12 | ^5"
+    "php": "^8.3",
+    "webonyx/graphql-php": "^15.30",
+    "nikic/php-parser": "^5"
   },
   "require-dev": {
     "psr/container": "^1 | ^2",
-    "phpunit/phpunit": "^9.5"
+    "phpunit/phpunit": "^12",
+    "phpstan/phpstan": "^2.1"
   }
 }

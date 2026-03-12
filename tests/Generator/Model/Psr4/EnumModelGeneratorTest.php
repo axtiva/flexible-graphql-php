@@ -8,6 +8,7 @@ use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class EnumModelGeneratorTest extends TestCase
@@ -16,6 +17,7 @@ class EnumModelGeneratorTest extends TestCase
      * @return void
      * @dataProvider dataProviderGeneratePhpCode
      */
+#[DataProvider('dataProviderGeneratePhpCode')]
     public function testGeneratePhpCode(
         string $typeName,
         string $languageLevel,
@@ -44,11 +46,11 @@ class EnumModelGeneratorTest extends TestCase
         FileSystemHelper::rmdir($dir);
     }
 
-    public function dataProviderGeneratePhpCode(): iterable
+    public static function dataProviderGeneratePhpCode(): iterable
     {
         yield [
             'Status',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 "TRANSACTION STATUS DOC"
 enum Status {

@@ -12,96 +12,37 @@ permissions:
   contents: read
 
 jobs:
-  php-test-7_4:
-    name: php 7.4
-    runs-on: 'ubuntu-latest'
+  test:
+    name: php ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.3', '8.4', '8.5']
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
-          tools: composer:v2
-          coverage: xdebug2
-      - name: Validate composer.json
-        run: composer validate --strict
-      - name: Run composer install
-        run: composer install -n --prefer-dist
-      - name: Run PHPUnit
-        run: php ./vendor/bin/phpunit
-  php-test-7_4-with-parser-4:
-    name: php 7.4 with parser v4
-    runs-on: 'ubuntu-latest'
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '7.4'
-          tools: composer:v2
-          coverage: xdebug2
-      - name: Validate composer.json
-        run: composer validate --strict
-      - name: Run composer install
-        run: composer install -n --prefer-dist
-      - name: Run downgrade nikic/php-parser
-        run: composer require nikic/php-parser "^4.12"
-      - name: Run PHPUnit
-        run: php ./vendor/bin/phpunit
-  php-test-8_0:
-    name: php 8.0
-    runs-on: 'ubuntu-latest'
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.0'
+          php-version: ${{ matrix.php }}
           tools: composer:v2
           coverage: xdebug
+
       - name: Validate composer.json
         run: composer validate --strict
+
       - name: Run composer install
         run: composer install -n --prefer-dist
-      - name: Run PHPUnit
-        run: php ./vendor/bin/phpunit
 
-  php-test-8_1:
-    name: php 8.1
-    runs-on: 'ubuntu-latest'
-    steps:
-      - uses: actions/checkout@v2
+      - name: Run PHPUnit with coverage
+        run: php ./vendor/bin/phpunit --coverage-text
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1'
-          tools: composer:v2
-          coverage: xdebug
-      - name: Validate composer.json
-        run: composer validate --strict
-      - name: Run composer install
-        run: composer install -n --prefer-dist
-      - name: Run PHPUnit
-        run: php ./vendor/bin/phpunit
-  php-test-8_2:
-    name: php 8.2
-    runs-on: 'ubuntu-latest'
-    steps:
-      - uses: actions/checkout@v2
+      - name: Run PHPStan level 9
+        run: php ./vendor/bin/phpstan analyse -l 9 src example/GraphQL
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          tools: composer:v2
-          coverage: xdebug
-      - name: Validate composer.json
-        run: composer validate --strict
-      - name: Run composer install
-        run: composer install -n --prefer-dist
-      - name: Run PHPUnit
-        run: php ./vendor/bin/phpunit
+      - name: Verify example code generation is reproducible
+        run: php example/generate_code.php
+
+      - name: Check for unexpected generated code changes
+        run: git diff --exit-code

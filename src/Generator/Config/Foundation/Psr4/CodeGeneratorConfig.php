@@ -9,9 +9,7 @@ use Axtiva\FlexibleGraphql\Generator\Config\CodeGeneratorConfigInterface;
 class CodeGeneratorConfig implements CodeGeneratorConfigInterface
 {
     private const VERSION_SUPPORTS = [
-        self::V7_4,
-//        self::V8_0,
-//        self::V8_1
+        self::V8_3,
     ];
 
     private ?string $codeNamespace;

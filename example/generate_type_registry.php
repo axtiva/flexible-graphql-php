@@ -14,7 +14,7 @@ $schema = SchemaBuilder::build(__DIR__ . '/schema.graphql');
 $dir = __DIR__ . '/GraphQL';
 $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
 $builder = new TypeRegistryGeneratorBuilder(
-    new CodeGeneratorConfig($dir, CodeGeneratorConfig::V7_4, $namespace)
+    new CodeGeneratorConfig($dir, CodeGeneratorConfig::V8_3, $namespace)
 );
 
 $generator = $builder->build();

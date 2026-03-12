@@ -11,6 +11,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ArgsFieldResolverModelGeneratorTest extends TestCase
@@ -19,6 +20,7 @@ class ArgsFieldResolverModelGeneratorTest extends TestCase
      * @return void
      * @dataProvider dataProviderGeneratePhpCode
      */
+#[DataProvider('dataProviderGeneratePhpCode')]
     public function testGeneratePhpCode(
         string $typeName,
         string $fieldName,
@@ -52,13 +54,13 @@ class ArgsFieldResolverModelGeneratorTest extends TestCase
         FileSystemHelper::rmdir($dir);
     }
 
-    public function dataProviderGeneratePhpCode(): iterable
+    public static function dataProviderGeneratePhpCode(): iterable
     {
         require_once __DIR__ . '/resources/DateTimeScalar.php';
         yield [
             'NamedCurrency',
             'name',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 type NamedCurrency {
     id: ID!
@@ -118,7 +120,7 @@ PHP
         yield [
             'NamedCurrency',
             'name',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 type NamedCurrency {
     id: ID!
@@ -179,7 +181,7 @@ PHP
         yield [
             'NamedCurrency',
             'name',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 type NamedCurrency {
     id: ID!

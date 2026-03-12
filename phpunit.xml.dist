@@ -4,11 +4,11 @@
         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
         bootstrap="tests/bootstrap.php"
 >
-    <coverage>
+    <source>
         <include>
             <directory suffix=".php">./src</directory>
         </include>
-    </coverage>
+    </source>
     <php>
         <ini name="error_reporting" value="E_ALL"/>
     </php>
@@ -21,6 +21,9 @@
         </testsuite>
         <testsuite name="utils">
             <directory>./tests/Utils/</directory>
+        </testsuite>
+        <testsuite name="execution">
+            <directory>./tests/Execution/</directory>
         </testsuite>
     </testsuites>
 </phpunit>
