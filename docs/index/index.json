@@ -1,0 +1,212 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-03-12T00:00:00Z",
+  "generator": {
+    "name": "coder.index",
+    "mode": "reindex",
+    "model": "github-copilot/gpt-5.4",
+    "plan_id": "plan-20260312-coder-index-02"
+  },
+  "repository_summary": {
+    "name": "axtiva/flexible-graphql-php",
+    "kind": "composer-library",
+    "primary_workspace_id": "ws.root",
+    "purpose": "SDL-first PHP GraphQL code generation and TypeRegistry runtime support for webonyx/graphql-php.",
+    "evidence": [
+      "README.md",
+      "composer.json"
+    ]
+  },
+  "detected_stack_summary": {
+    "languages": [
+      "PHP"
+    ],
+    "package_manager": "Composer",
+    "graph_api": "webonyx/graphql-php",
+    "tests": [
+      "PHPUnit"
+    ],
+    "ci": [
+      "GitHub Actions"
+    ],
+    "demo_runtime": [
+      "PHP built-in server"
+    ],
+    "evidence": [
+      ".github/workflows/ci.yml",
+      "README.md",
+      "composer.json",
+      "phpunit.xml.dist"
+    ]
+  },
+  "shards": {
+    "architecture": "docs/index/architecture.json",
+    "capabilities": "docs/index/capabilities.json",
+    "change_impact": "docs/index/change-impact.json",
+    "commands": "docs/index/commands.json",
+    "configs": "docs/index/configs.json",
+    "dependencies": "docs/index/dependencies.json",
+    "entrypoints": "docs/index/entrypoints.json",
+    "evidence_map": "docs/index/evidence-map.json",
+    "framework_guides": "docs/index/framework-guides.json",
+    "manual_notes": "docs/index/manual-notes.json",
+    "manual_overrides": "docs/index/manual-overrides.json",
+    "manual_playbooks": "docs/index/manual-playbooks.json",
+    "modules": "docs/index/modules.json",
+    "navigation": "docs/index/navigation.json",
+    "overview": "docs/index/overview.json",
+    "patterns": "docs/index/patterns.json",
+    "reference_guides": "docs/index/reference-guides.json",
+    "runtime_surfaces": "docs/index/runtime-surfaces.json",
+    "skills_registry": "docs/index/skills-registry.json",
+    "task_recipes": "docs/index/task-recipes.json",
+    "testing": "docs/index/testing.json",
+    "workflows": "docs/index/workflows.json",
+    "workspaces": "docs/index/workspaces.json"
+  },
+  "navigation_root": "docs/index/navigation.json",
+  "reindex_metadata": {
+    "mode": "reindex",
+    "existing_kb_loaded": true,
+    "previous_generated_at": "2026-03-12T00:00:00Z",
+    "manual_layers_preserved": [
+      "docs/index/manual-notes.json",
+      "docs/index/manual-overrides.json",
+      "docs/index/manual-playbooks.json"
+    ]
+  },
+  "drift_summary": {
+    "added_entities": [],
+    "removed_entities": [],
+    "moved_entities": [],
+    "changed_commands": [],
+    "changed_configs": [],
+    "changed_entrypoints": [],
+    "reduced_confidence_areas": [],
+    "newly_discovered_operational_guidance": [],
+    "missing_or_weakly_supported_areas": [
+      "No repository-local skills found.",
+      "No UI or mobile runtime surfaces found.",
+      "No persistence, migration, or deployment layers found."
+    ]
+  },
+  "shard_inventory": [
+    {
+      "path": "docs/index/architecture.json",
+      "purpose": "Repository architecture and wiring model"
+    },
+    {
+      "path": "docs/index/capabilities.json",
+      "purpose": "Operational capabilities agents can invoke"
+    },
+    {
+      "path": "docs/index/change-impact.json",
+      "purpose": "Likely cross-file change relationships"
+    },
+    {
+      "path": "docs/index/commands.json",
+      "purpose": "Executable commands and when to use them"
+    },
+    {
+      "path": "docs/index/configs.json",
+      "purpose": "Configuration inventory"
+    },
+    {
+      "path": "docs/index/dependencies.json",
+      "purpose": "Architecturally significant runtime dependencies"
+    },
+    {
+      "path": "docs/index/entrypoints.json",
+      "purpose": "HTTP and CLI entrypoints"
+    },
+    {
+      "path": "docs/index/evidence-map.json",
+      "purpose": "Central claim-to-evidence registry"
+    },
+    {
+      "path": "docs/index/framework-guides.json",
+      "purpose": "Repo-specific framework and tool usage"
+    },
+    {
+      "path": "docs/index/modules.json",
+      "purpose": "Logical module boundaries"
+    },
+    {
+      "path": "docs/index/navigation.json",
+      "purpose": "Intent-based shard routing"
+    },
+    {
+      "path": "docs/index/overview.json",
+      "purpose": "Repository summary"
+    },
+    {
+      "path": "docs/index/patterns.json",
+      "purpose": "Detected repository conventions"
+    },
+    {
+      "path": "docs/index/reference-guides.json",
+      "purpose": "High-signal files and why to read them"
+    },
+    {
+      "path": "docs/index/runtime-surfaces.json",
+      "purpose": "Execution surfaces and operational notes"
+    },
+    {
+      "path": "docs/index/skills-registry.json",
+      "purpose": "Relevant external skill mapping"
+    },
+    {
+      "path": "docs/index/task-recipes.json",
+      "purpose": "Evidence-backed change recipes"
+    },
+    {
+      "path": "docs/index/testing.json",
+      "purpose": "Test topology and validation guidance"
+    },
+    {
+      "path": "docs/index/workflows.json",
+      "purpose": "Reusable repository workflows"
+    },
+    {
+      "path": "docs/index/workspaces.json",
+      "purpose": "Detected workspaces and roles"
+    }
+  ],
+  "operational_coverage_summary": {
+    "workspaces": 2,
+    "entrypoints": 7,
+    "modules": 6,
+    "commands": 11,
+    "runtime_surfaces": 4,
+    "workflows": 6,
+    "task_recipes": 6,
+    "reference_guides": 16
+  },
+  "skill_coverage_summary": {
+    "emitted_skill_ids": [
+      "skill.external.graphql-architect",
+      "skill.external.php-async",
+      "skill.external.php-graphql",
+      "skill.external.php-tester"
+    ],
+    "omitted_supplied_skill_ids": [
+      "django-expert",
+      "flux-local-best-practices",
+      "game-developer",
+      "golang-pro",
+      "javascript-patterns",
+      "javascript-testing-patterns",
+      "nodejs-backend-patterns",
+      "php-evgen",
+      "php-symfony",
+      "react-best-practices",
+      "react-composition-patterns",
+      "react-graphql",
+      "react-native-skills",
+      "react-tester",
+      "react-web",
+      "typescript-types"
+    ],
+    "repository_local_skill_count": 0
+  }
+}

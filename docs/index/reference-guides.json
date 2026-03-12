@@ -1,0 +1,675 @@
+{
+  "references": [
+    {
+      "id": "ref.codegen.builder",
+      "path": "src/Builder/Foundation/CodeGeneratorBuilder.php",
+      "kind": "framework-core",
+      "scope": "library",
+      "title": "Default code generation composition",
+      "why_read": "Shows which model/resolver generators are included by default and where their config classes come from.",
+      "when_relevant": "Read before changing generated artifact behavior or understanding why a script produces certain files.",
+      "what_you_learn": "How the repository wires field resolver, directive, scalar, enum, object, union, and args generators together.",
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code",
+        "ep.cli.generate_type_models"
+      ],
+      "related_configs": [
+        "cfg.codegen.code_psr4"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code",
+        "cmd.codegen.generate_type_models"
+      ],
+      "related_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "src/Builder/Foundation/CodeGeneratorBuilder.php"
+      ]
+    },
+    {
+      "id": "ref.codegen.config",
+      "path": "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php",
+      "kind": "config",
+      "scope": "library",
+      "title": "Core PSR4 code generation config",
+      "why_read": "Shows supported template PHP versions, output namespace handling, and directory writability checks.",
+      "when_relevant": "Read before changing output paths, namespaces, or PHP-version assumptions.",
+      "what_you_learn": "The repository currently supports only the 7.4 template set through committed code despite wider PHP signals elsewhere.",
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code",
+        "ep.cli.generate_type_models",
+        "ep.cli.generate_type_registry"
+      ],
+      "related_configs": [
+        "cfg.codegen.code_psr4"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code"
+      ],
+      "related_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php"
+      ]
+    },
+    {
+      "id": "ref.codegen.core",
+      "path": "src/Generator/Code/Foundation/CodeGenerator.php",
+      "kind": "framework-core",
+      "scope": "library",
+      "title": "Artifact generation and overwrite rules",
+      "why_read": "Contains the main generation workflow, file writing behavior, and the logic that preserves edited object models when AutoGenerationInterface is removed.",
+      "when_relevant": "Read before altering generation semantics, overwrite rules, or generated file saving behavior.",
+      "what_you_learn": "How types, directives, scalars, and fields are generated and when php-parser is used to detect existing properties.",
+      "related_modules": [
+        "mod.codegen",
+        "mod.resolver-contracts"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code"
+      ],
+      "related_configs": [
+        "cfg.codegen.code_psr4"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code"
+      ],
+      "related_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Generator/Model/Psr4/ObjectModelGeneratorTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "src/Generator/Code/Foundation/CodeGenerator.php"
+      ]
+    },
+    {
+      "id": "ref.example.generate_code",
+      "path": "example/generate_code.php",
+      "kind": "build-script",
+      "scope": "example",
+      "title": "Full example regeneration script",
+      "why_read": "This is the broadest committed example generation path and shows how federation v2.2 is combined with both code and TypeRegistry generation.",
+      "when_relevant": "Read before regenerating example artifacts or tracing how SDL feeds the demo runtime.",
+      "what_you_learn": "Which builders, schema utilities, namespace, and output directories are considered canonical for the example workspace.",
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.example",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code"
+      ],
+      "related_configs": [
+        "cfg.codegen.code_psr4",
+        "cfg.codegen.example_schema_usage",
+        "cfg.example.schema"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "example/generate_code.php"
+      ]
+    },
+    {
+      "id": "ref.example.generate_type_registry",
+      "path": "example/generate_type_registry.php",
+      "kind": "build-script",
+      "scope": "example",
+      "title": "Targeted TypeRegistry regeneration script",
+      "why_read": "It is the narrowest path to regenerate only the example TypeRegistry and inspect generated resolver closures.",
+      "when_relevant": "Read when debugging runtime wiring without changing all generated model artifacts.",
+      "what_you_learn": "How the base TypeRegistry builder is invoked for the example schema and output namespace.",
+      "related_modules": [
+        "mod.builder",
+        "mod.example",
+        "mod.type-registry"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_type_registry"
+      ],
+      "related_configs": [
+        "cfg.codegen.code_psr4",
+        "cfg.codegen.type_registry_psr4",
+        "cfg.example.schema"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_type_registry"
+      ],
+      "related_tests": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ],
+      "priority": "medium",
+      "evidence": [
+        "example/generate_type_registry.php"
+      ]
+    },
+    {
+      "id": "ref.example.schema",
+      "path": "example/schema.graphql",
+      "kind": "data-contract",
+      "scope": "example",
+      "title": "Example GraphQL SDL source of truth",
+      "why_read": "All example generation and runtime behavior begins here.",
+      "when_relevant": "Read first for feature changes expressed as schema fields, directives, unions, enums, scalars, or federation keys.",
+      "what_you_learn": "Which types and directives exist, where federation @key is used, and which fields are expected to resolve at runtime.",
+      "related_modules": [
+        "mod.example",
+        "mod.schema-utils"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code",
+        "ep.http.example_server"
+      ],
+      "related_configs": [
+        "cfg.example.schema"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code",
+        "cmd.run.demo_server"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "example/schema.graphql"
+      ]
+    },
+    {
+      "id": "ref.example.server",
+      "path": "example/start_graphql_server.php",
+      "kind": "entrypoint",
+      "scope": "example",
+      "title": "Example HTTP GraphQL server bootstrap",
+      "why_read": "Shows the full runtime path from generated TypeRegistry to StandardServer request handling.",
+      "when_relevant": "Read when tracing runtime flow, container bindings, or manual HTTP reproduction behavior.",
+      "what_you_learn": "Exactly which services are bound in the demo container, how Schema is instantiated, and how StandardServer is configured.",
+      "related_modules": [
+        "mod.example",
+        "mod.type-registry"
+      ],
+      "related_entrypoints": [
+        "ep.http.example_server"
+      ],
+      "related_configs": [
+        "cfg.example.schema"
+      ],
+      "related_commands": [
+        "cmd.run.demo_server"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "example/start_graphql_server.php"
+      ]
+    },
+    {
+      "id": "ref.example.test_doc",
+      "path": "example/TEST.md",
+      "kind": "repository-doc",
+      "scope": "example",
+      "title": "Example runtime walkthrough",
+      "why_read": "Documents concrete HTTP requests and describes which resolvers and directives execute for them.",
+      "when_relevant": "Read when reproducing runtime behavior or validating manual demo requests.",
+      "what_you_learn": "How dynamicSum and _entities requests map to example resolvers, directives, and representation classes.",
+      "related_modules": [
+        "mod.example"
+      ],
+      "related_entrypoints": [
+        "ep.http.example_server"
+      ],
+      "related_configs": [
+        "cfg.example.schema"
+      ],
+      "related_commands": [
+        "cmd.run.demo_server"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "priority": "medium",
+      "evidence": [
+        "example/TEST.md"
+      ]
+    },
+    {
+      "id": "ref.root.ci",
+      "path": ".github/workflows/ci.yml",
+      "kind": "ci",
+      "scope": "repository",
+      "title": "Canonical CI validation workflow",
+      "why_read": "Defines what the repository actually validates in automation.",
+      "when_relevant": "Read before changing Composer metadata, validation expectations, or cross-PHP compatibility behavior.",
+      "what_you_learn": "PHP version matrix, Composer validation/install commands, php-parser v4 compatibility check, and the default PHPUnit command.",
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_entrypoints": [],
+      "related_configs": [
+        "cfg.ci.github_actions",
+        "cfg.root.composer",
+        "cfg.root.phpunit"
+      ],
+      "related_commands": [
+        "cmd.utility.composer_install",
+        "cmd.utility.composer_require_php_parser_v4",
+        "cmd.utility.composer_validate",
+        "cmd.test.phpunit"
+      ],
+      "related_tests": [
+        "phpunit.xml.dist"
+      ],
+      "priority": "high",
+      "evidence": [
+        ".github/workflows/ci.yml"
+      ]
+    },
+    {
+      "id": "ref.root.composer",
+      "path": "composer.json",
+      "kind": "config",
+      "scope": "repository",
+      "title": "Root package manifest",
+      "why_read": "It is the canonical source for dependency, package type, and autoloading information.",
+      "when_relevant": "Read before making assumptions about supported runtimes, namespaces, or dependencies.",
+      "what_you_learn": "The package is a Composer library, uses webonyx/graphql-php and nikic/php-parser, and autoloads src/, example/, and tests/.",
+      "related_modules": [
+        "mod.example",
+        "mod.resolver-contracts",
+        "mod.schema-utils"
+      ],
+      "related_entrypoints": [],
+      "related_configs": [
+        "cfg.root.composer"
+      ],
+      "related_commands": [
+        "cmd.utility.composer_install",
+        "cmd.utility.composer_validate"
+      ],
+      "related_tests": [],
+      "priority": "high",
+      "evidence": [
+        "composer.json"
+      ]
+    },
+    {
+      "id": "ref.root.phpunit",
+      "path": "phpunit.xml.dist",
+      "kind": "config",
+      "scope": "repository",
+      "title": "PHPUnit suite configuration",
+      "why_read": "Determines which tests run by default and which paths are covered in configured suites.",
+      "when_relevant": "Read before choosing validation scope or adding new tests.",
+      "what_you_learn": "Bootstrap path, coverage include path, and that configured suites cover builder, generator, and utils directories only.",
+      "related_modules": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_entrypoints": [],
+      "related_configs": [
+        "cfg.root.phpunit"
+      ],
+      "related_commands": [
+        "cmd.test.phpunit"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "phpunit.xml.dist"
+      ]
+    },
+    {
+      "id": "ref.root.readme",
+      "path": "README.md",
+      "kind": "repository-doc",
+      "scope": "repository",
+      "title": "Repository usage overview",
+      "why_read": "Provides the highest-level explanation of purpose, example commands, and the AutoGenerationInterface customization rule.",
+      "when_relevant": "Read first when you need broad context or user-facing usage expectations.",
+      "what_you_learn": "Main features, demo commands, code generation commands, and how removing AutoGenerationInterface leads to field resolver generation.",
+      "related_modules": [
+        "mod.codegen",
+        "mod.example",
+        "mod.resolver-contracts"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code",
+        "ep.http.example_server"
+      ],
+      "related_configs": [
+        "cfg.root.composer"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code",
+        "cmd.run.demo_server",
+        "cmd.test.phpunit"
+      ],
+      "related_tests": [],
+      "priority": "high",
+      "evidence": [
+        "README.md"
+      ]
+    },
+    {
+      "id": "ref.schema.builder",
+      "path": "src/Utils/SchemaBuilder.php",
+      "kind": "framework-core",
+      "scope": "library",
+      "title": "SDL glob-to-Schema builder",
+      "why_read": "This is the canonical schema loading entrypoint used by generation scripts.",
+      "when_relevant": "Read before changing schema loading, split SDL behavior, or schema parse error handling.",
+      "what_you_learn": "How glob() results are parsed and merged with BuildSchema and SchemaExtender, and how failures become SchemaParserException.",
+      "related_modules": [
+        "mod.schema-utils"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code",
+        "ep.cli.generate_type_models",
+        "ep.cli.generate_type_registry"
+      ],
+      "related_configs": [
+        "cfg.example.schema"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code",
+        "cmd.codegen.generate_type_models",
+        "cmd.codegen.generate_type_registry"
+      ],
+      "related_tests": [
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "src/Utils/SchemaBuilder.php"
+      ]
+    },
+    {
+      "id": "ref.schema.federation_v22",
+      "path": "src/Utils/FederationV22SchemaExtender.php",
+      "kind": "framework-core",
+      "scope": "library",
+      "title": "Federation v2.2 schema extender",
+      "why_read": "Contains the actual federation aliasing and link-extension logic used by full example code generation.",
+      "when_relevant": "Read before changing federation behavior or debugging _service/_entities and directive alias generation.",
+      "what_you_learn": "How link, shareable, inaccessible, override, tag, and federation__* directives are added and when schema @link is injected automatically.",
+      "related_modules": [
+        "mod.schema-utils"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code"
+      ],
+      "related_configs": [
+        "cfg.codegen.example_schema_usage"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code"
+      ],
+      "related_tests": [
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "src/Utils/FederationV22SchemaExtender.php"
+      ]
+    },
+    {
+      "id": "ref.tests.builder_amphp",
+      "path": "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpTest.php",
+      "kind": "test",
+      "scope": "repository",
+      "title": "AMPHP TypeRegistry generation golden test",
+      "why_read": "Shows exactly how async wrapping changes emitted TypeRegistry code.",
+      "when_relevant": "Read before modifying AMPHP builder wrappers or generated async closures.",
+      "what_you_learn": "Expected emitted code differences for the async builder path compared with the default path.",
+      "related_modules": [
+        "mod.builder",
+        "mod.type-registry"
+      ],
+      "related_entrypoints": [],
+      "related_configs": [
+        "cfg.codegen.type_registry_psr4"
+      ],
+      "related_commands": [
+        "cmd.test.phpunit"
+      ],
+      "related_tests": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpV2Test.php"
+      ],
+      "priority": "medium",
+      "evidence": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpTest.php"
+      ]
+    },
+    {
+      "id": "ref.tests.example_setup",
+      "path": "tests/Helper/ExampleSchemaSetupHelper.php",
+      "kind": "fixture",
+      "scope": "example",
+      "title": "Execution-test schema and container setup",
+      "why_read": "Mirrors the example runtime wiring without the HTTP server.",
+      "when_relevant": "Read when keeping runtime tests aligned with example/start_graphql_server.php or when adding execution coverage.",
+      "what_you_learn": "Which resolver, directive, scalar, representation, and union resolver services must be bound for the example schema to execute.",
+      "related_modules": [
+        "mod.example"
+      ],
+      "related_entrypoints": [
+        "ep.http.example_server"
+      ],
+      "related_configs": [
+        "cfg.example.schema"
+      ],
+      "related_commands": [
+        "cmd.test.phpunit"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ]
+    },
+    {
+      "id": "ref.tests.execution_queryfield",
+      "path": "tests/Execution/QueryFieldTest.php",
+      "kind": "test",
+      "scope": "example",
+      "title": "Example runtime execution coverage",
+      "why_read": "This is the shortest executable proof of the demo runtime flow for dynamicSum and federation representations.",
+      "when_relevant": "Read when tracing end-to-end runtime behavior or adding runtime-focused regression tests.",
+      "what_you_learn": "Which queries are already asserted and how GraphQL::executeQuery is used directly against the example schema.",
+      "related_modules": [
+        "mod.example"
+      ],
+      "related_entrypoints": [
+        "ep.http.example_server"
+      ],
+      "related_configs": [
+        "cfg.example.schema"
+      ],
+      "related_commands": [
+        "cmd.test.phpunit",
+        "cmd.run.demo_server"
+      ],
+      "related_tests": [
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "id": "ref.tests.federation_v22",
+      "path": "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php",
+      "kind": "test",
+      "scope": "repository",
+      "title": "Federation v2.2 behavior assertions",
+      "why_read": "Captures expected directive and _service/_entities behavior after schema extension.",
+      "when_relevant": "Read before modifying federation helper logic or interpreting what extension behavior is intentional.",
+      "what_you_learn": "Which directives and support types must exist after extension, including federation__ aliases.",
+      "related_modules": [
+        "mod.schema-utils"
+      ],
+      "related_entrypoints": [],
+      "related_configs": [],
+      "related_commands": [
+        "cmd.test.phpunit"
+      ],
+      "related_tests": [],
+      "priority": "high",
+      "evidence": [
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php"
+      ]
+    },
+    {
+      "id": "ref.tests.schema_builder",
+      "path": "tests/Utils/SchemaBuilder/SchemaBuilderTest.php",
+      "kind": "test",
+      "scope": "repository",
+      "title": "SchemaBuilder merge behavior test",
+      "why_read": "Provides the clearest proof that multiple SDL files are merged by glob iteration.",
+      "when_relevant": "Read before changing SchemaBuilder or relying on split-schema behavior.",
+      "what_you_learn": "What successful multi-file schema composition looks like in current tests.",
+      "related_modules": [
+        "mod.schema-utils"
+      ],
+      "related_entrypoints": [],
+      "related_configs": [],
+      "related_commands": [
+        "cmd.test.phpunit"
+      ],
+      "related_tests": [],
+      "priority": "medium",
+      "evidence": [
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ]
+    },
+    {
+      "id": "ref.typeregistry.builder",
+      "path": "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+      "kind": "framework-core",
+      "scope": "library",
+      "title": "TypeRegistry builder and resolver wrapper composition",
+      "why_read": "This is the canonical place where resolver providers, directive wrapping, serializers, and default field resolvers are wired together.",
+      "when_relevant": "Read before changing generated runtime closures, resolver lookup behavior, or directive wrapping.",
+      "what_you_learn": "How the generated TypeRegistry runtime is composed and where federation/AMPHP variants hook in.",
+      "related_modules": [
+        "mod.builder",
+        "mod.type-registry"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_code",
+        "ep.cli.generate_type_registry"
+      ],
+      "related_configs": [
+        "cfg.codegen.field_resolver_psr4",
+        "cfg.codegen.type_registry_psr4"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_code",
+        "cmd.codegen.generate_type_registry"
+      ],
+      "related_tests": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php",
+        "tests/Generator/TypeRegistry/Resolver/Wrapper/FieldResolverDirectiveWrappedTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php"
+      ]
+    },
+    {
+      "id": "ref.typeregistry.generated_example",
+      "path": "example/GraphQL/TypeRegistry.php",
+      "kind": "entrypoint",
+      "scope": "example",
+      "title": "Generated example TypeRegistry output",
+      "why_read": "It is the easiest place to inspect actual emitted runtime closures, directive wrapping order, and service lookups.",
+      "when_relevant": "Read after understanding the builder when you need to see the concrete generated result.",
+      "what_you_learn": "How fields, directives, union resolvers, scalar callbacks, _service, and _entities are encoded in generated PHP.",
+      "related_modules": [
+        "mod.example",
+        "mod.type-registry"
+      ],
+      "related_entrypoints": [
+        "ep.http.example_server",
+        "ep.cli.generate_type_registry"
+      ],
+      "related_configs": [
+        "cfg.codegen.type_registry_psr4",
+        "cfg.example.schema"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_type_registry",
+        "cmd.run.demo_server"
+      ],
+      "related_tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "example/GraphQL/TypeRegistry.php"
+      ]
+    },
+    {
+      "id": "ref.typeregistry.generator_core",
+      "path": "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php",
+      "kind": "framework-core",
+      "scope": "library",
+      "title": "TypeRegistry class emitter",
+      "why_read": "Defines the top-level generated class shape, getType cache behavior, and directive aggregation method.",
+      "when_relevant": "Read before changing the outer TypeRegistry file structure or lazy caching behavior.",
+      "what_you_learn": "How non-built-in types and directives become methods and what fallback Query/Mutation generation exists.",
+      "related_modules": [
+        "mod.type-registry"
+      ],
+      "related_entrypoints": [
+        "ep.cli.generate_type_registry"
+      ],
+      "related_configs": [
+        "cfg.codegen.type_registry_psr4"
+      ],
+      "related_commands": [
+        "cmd.codegen.generate_type_registry"
+      ],
+      "related_tests": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ],
+      "priority": "high",
+      "evidence": [
+        "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php"
+      ]
+    }
+  ]
+}

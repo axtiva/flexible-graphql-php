@@ -1,0 +1,190 @@
+{
+  "http": [
+    {
+      "id": "ep.http.example_server",
+      "type": "http",
+      "framework": "webonyx/graphql-php StandardServer",
+      "file_path": "example/start_graphql_server.php",
+      "symbol": null,
+      "binding_source": "php -S localhost:8080 example/start_graphql_server.php",
+      "related_module_ids": [
+        "mod.example",
+        "mod.type-registry",
+        "mod.resolver-contracts"
+      ],
+      "related_config_ids": [
+        "cfg.example.schema"
+      ],
+      "related_runtime_surface_ids": [
+        "surface.http.example_server"
+      ],
+      "evidence": [
+        "README.md",
+        "example/TEST.md",
+        "example/start_graphql_server.php"
+      ],
+      "confidence": "high"
+    }
+  ],
+  "cli": [
+    {
+      "id": "ep.cli.generate_code",
+      "type": "cli",
+      "framework": "PHP CLI",
+      "file_path": "example/generate_code.php",
+      "symbol": null,
+      "binding_source": "php example/generate_code.php",
+      "related_module_ids": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_config_ids": [
+        "cfg.example.schema",
+        "cfg.codegen.code_psr4"
+      ],
+      "related_runtime_surface_ids": [
+        "surface.cli.codegen_example"
+      ],
+      "evidence": [
+        "README.md",
+        "example/generate_code.php"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "ep.cli.generate_directive_resolver",
+      "type": "cli",
+      "framework": "PHP CLI",
+      "file_path": "example/generate_directive_resolver.php",
+      "symbol": null,
+      "binding_source": "php example/generate_directive_resolver.php",
+      "related_module_ids": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.schema-utils"
+      ],
+      "related_config_ids": [
+        "cfg.example.schema",
+        "cfg.codegen.code_psr4",
+        "cfg.codegen.directive_resolver_psr4"
+      ],
+      "related_runtime_surface_ids": [
+        "surface.cli.codegen_example"
+      ],
+      "evidence": [
+        "README.md",
+        "example/generate_directive_resolver.php"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "ep.cli.generate_field_resolver",
+      "type": "cli",
+      "framework": "PHP CLI",
+      "file_path": "example/generate_field_resolver.php",
+      "symbol": null,
+      "binding_source": "php example/generate_field_resolver.php",
+      "related_module_ids": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.schema-utils"
+      ],
+      "related_config_ids": [
+        "cfg.example.schema",
+        "cfg.codegen.code_psr4",
+        "cfg.codegen.field_resolver_psr4"
+      ],
+      "related_runtime_surface_ids": [
+        "surface.cli.codegen_example"
+      ],
+      "evidence": [
+        "README.md",
+        "example/generate_field_resolver.php"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "ep.cli.generate_scalar_resolver",
+      "type": "cli",
+      "framework": "PHP CLI",
+      "file_path": "example/generate_scalar_resolver.php",
+      "symbol": null,
+      "binding_source": "php example/generate_scalar_resolver.php",
+      "related_module_ids": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.schema-utils"
+      ],
+      "related_config_ids": [
+        "cfg.example.schema",
+        "cfg.codegen.code_psr4"
+      ],
+      "related_runtime_surface_ids": [
+        "surface.cli.codegen_example"
+      ],
+      "evidence": [
+        "README.md",
+        "example/generate_scalar_resolver.php"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "ep.cli.generate_type_models",
+      "type": "cli",
+      "framework": "PHP CLI",
+      "file_path": "example/generate_type_models.php",
+      "symbol": null,
+      "binding_source": "php example/generate_type_models.php",
+      "related_module_ids": [
+        "mod.builder",
+        "mod.codegen",
+        "mod.schema-utils"
+      ],
+      "related_config_ids": [
+        "cfg.example.schema",
+        "cfg.codegen.code_psr4"
+      ],
+      "related_runtime_surface_ids": [
+        "surface.cli.codegen_example"
+      ],
+      "evidence": [
+        "README.md",
+        "example/generate_type_models.php"
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "ep.cli.generate_type_registry",
+      "type": "cli",
+      "framework": "PHP CLI",
+      "file_path": "example/generate_type_registry.php",
+      "symbol": null,
+      "binding_source": "php example/generate_type_registry.php",
+      "related_module_ids": [
+        "mod.builder",
+        "mod.schema-utils",
+        "mod.type-registry"
+      ],
+      "related_config_ids": [
+        "cfg.example.schema",
+        "cfg.codegen.code_psr4",
+        "cfg.codegen.type_registry_psr4"
+      ],
+      "related_runtime_surface_ids": [
+        "surface.cli.codegen_example"
+      ],
+      "evidence": [
+        "README.md",
+        "example/generate_type_registry.php"
+      ],
+      "confidence": "high"
+    }
+  ],
+  "workers": "Not found",
+  "schedulers": "Not found",
+  "ui_bootstraps": "Not found",
+  "webhooks": "Not found",
+  "integration_receivers": "Not found"
+}

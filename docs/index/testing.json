@@ -1,0 +1,282 @@
+{
+  "test_roots": [
+    {
+      "id": "testroot.builder",
+      "path": "tests/Builder",
+      "purpose": "Builder-level golden-output tests for CodeGeneratorBuilder and TypeRegistryGeneratorBuilder variants.",
+      "evidence": [
+        "phpunit.xml.dist",
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ]
+    },
+    {
+      "id": "testroot.execution",
+      "path": "tests/Execution",
+      "purpose": "Direct runtime execution checks against the example schema and generated TypeRegistry.",
+      "evidence": [
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "id": "testroot.generator",
+      "path": "tests/Generator",
+      "purpose": "Generator, resolver provider, and generated-model behavior tests.",
+      "evidence": [
+        "phpunit.xml.dist",
+        "tests/Generator/Model/Psr4/ObjectModelGeneratorTest.php"
+      ]
+    },
+    {
+      "id": "testroot.utils",
+      "path": "tests/Utils",
+      "purpose": "SchemaBuilder and federation schema extension tests.",
+      "evidence": [
+        "phpunit.xml.dist",
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ]
+    }
+  ],
+  "test_types": [
+    "golden-output generation tests",
+    "schema utility tests",
+    "runtime execution tests",
+    "resolver provider unit tests"
+  ],
+  "runners": [
+    {
+      "name": "PHPUnit",
+      "config": "cfg.root.phpunit",
+      "evidence": [
+        "composer.json",
+        "phpunit.xml.dist"
+      ]
+    }
+  ],
+  "configs": [
+    "cfg.root.phpunit"
+  ],
+  "fixtures_factories_base_classes": [
+    {
+      "path": "tests/Helper/ExampleSchemaSetupHelper.php",
+      "kind": "runtime-helper",
+      "relevance": "Recreates the demo container and Schema for execution tests.",
+      "evidence": [
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ]
+    },
+    {
+      "path": "tests/Helper/FileSystemHelper.php",
+      "kind": "filesystem-helper",
+      "relevance": "Creates and cleans temporary directories used by golden-output tests.",
+      "evidence": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Helper/FileSystemHelper.php"
+      ]
+    },
+    {
+      "path": "tests/**/resources",
+      "kind": "fixture-directory",
+      "relevance": "Stores schema, resolver, directive, and model resource files loaded by tests.",
+      "evidence": [
+        "tests/Generator/ResolverProvider/resources/NameResolverArgs.php",
+        "tests/Utils/SchemaBuilder/resources/schema1.graphql"
+      ]
+    }
+  ],
+  "conventions": [
+    "Many builder and generator tests use data providers that assert full emitted PHP strings.",
+    "Temporary directories under /tmp are created and removed during generation tests.",
+    "Execution tests bypass the HTTP server and call GraphQL::executeQuery directly.",
+    "tests/Execution exists but is not listed in phpunit.xml.dist test suites; treat it as an extra validation surface."
+  ],
+  "workspace_mapping": [
+    {
+      "workspace_id": "ws.root",
+      "test_root_ids": [
+        "testroot.builder",
+        "testroot.generator",
+        "testroot.utils"
+      ],
+      "evidence": [
+        "phpunit.xml.dist"
+      ]
+    },
+    {
+      "workspace_id": "ws.example",
+      "test_root_ids": [
+        "testroot.execution"
+      ],
+      "evidence": [
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    }
+  ],
+  "task_to_test_recommendations": [
+    {
+      "task": "builder or TypeRegistry wiring change",
+      "recommended_tests": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpV2Test.php"
+      ],
+      "evidence": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ]
+    },
+    {
+      "task": "code generation or overwrite behavior change",
+      "recommended_tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Generator/Model/Psr4/ObjectModelGeneratorTest.php",
+        "tests/Generator/Model/Psr4/FieldResolverGeneratorTest.php"
+      ],
+      "evidence": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Generator/Model/Psr4/ObjectModelGeneratorTest.php"
+      ]
+    },
+    {
+      "task": "schema merge or federation extension change",
+      "recommended_tests": [
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php",
+        "tests/Utils/FederationSchemaExtender/FederationV1SchemaExtenderFederationSchemaTest.php",
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php"
+      ],
+      "evidence": [
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ]
+    },
+    {
+      "task": "example runtime or resolver binding change",
+      "recommended_tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "evidence": [
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ]
+    }
+  ],
+  "module_to_test_mappings": [
+    {
+      "module_id": "mod.builder",
+      "tests": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ],
+      "evidence": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ]
+    },
+    {
+      "module_id": "mod.codegen",
+      "tests": [
+        "tests/Generator/Model/Psr4/DirectiveResolverGeneratorTest.php",
+        "tests/Generator/Model/Psr4/FieldResolverGeneratorTest.php",
+        "tests/Generator/Model/Psr4/ObjectModelGeneratorTest.php"
+      ],
+      "evidence": [
+        "tests/Generator/Model/Psr4/DirectiveResolverGeneratorTest.php",
+        "tests/Generator/Model/Psr4/ObjectModelGeneratorTest.php"
+      ]
+    },
+    {
+      "module_id": "mod.example",
+      "tests": [
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "evidence": [
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "module_id": "mod.schema-utils",
+      "tests": [
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ],
+      "evidence": [
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php",
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ]
+    },
+    {
+      "module_id": "mod.type-registry",
+      "tests": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpTest.php",
+        "tests/Generator/TypeRegistry/Resolver/Wrapper/FieldResolverDirectiveWrappedTest.php"
+      ],
+      "evidence": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderAmphpTest.php",
+        "tests/Generator/TypeRegistry/Resolver/Wrapper/FieldResolverDirectiveWrappedTest.php"
+      ]
+    }
+  ],
+  "validation_scope_levels": [
+    {
+      "level": "targeted",
+      "when_to_use": "Single subsystem change with clear module ownership.",
+      "recommended_commands": [
+        "cmd.test.phpunit"
+      ],
+      "notes": "phpunit.xml.dist covers builder, generator, and utils suites; add manual execution checks if the example runtime changed.",
+      "evidence": [
+        "phpunit.xml.dist",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "level": "runtime-extra",
+      "when_to_use": "Changes touch example/start_graphql_server.php, generated example/GraphQL, or container wiring.",
+      "recommended_commands": [
+        "cmd.run.demo_server"
+      ],
+      "notes": "Use execution test logic or example/TEST.md requests to confirm runtime wiring after codegen.",
+      "evidence": [
+        "example/TEST.md",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "level": "full",
+      "when_to_use": "Before finalizing non-trivial library changes or when reproducing CI.",
+      "recommended_commands": [
+        "cmd.utility.composer_validate",
+        "cmd.test.phpunit"
+      ],
+      "notes": "CI also installs dependencies and includes a parser-v4 compatibility job.",
+      "evidence": [
+        ".github/workflows/ci.yml"
+      ]
+    }
+  ],
+  "fixture_and_factory_relevance": [
+    {
+      "path": "tests/Generator/TypeRegistry/resources",
+      "relevance": "Provides resolver and directive classes used to build expected TypeRegistry output in tests.",
+      "evidence": [
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ]
+    },
+    {
+      "path": "tests/Utils/SchemaBuilder/resources",
+      "relevance": "Provides multiple SDL files proving SchemaBuilder glob merge behavior.",
+      "evidence": [
+        "tests/Utils/SchemaBuilder/SchemaBuilderTest.php"
+      ]
+    }
+  ],
+  "evidence": [
+    "composer.json",
+    "phpunit.xml.dist",
+    "tests/Builder/CodeGeneratorBuilderTest.php",
+    "tests/Execution/QueryFieldTest.php",
+    "tests/Helper/ExampleSchemaSetupHelper.php",
+    "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php"
+  ]
+}

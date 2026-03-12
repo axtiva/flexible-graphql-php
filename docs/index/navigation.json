@@ -1,0 +1,396 @@
+{
+  "default_read_sequence": [
+    "docs/index/overview.json",
+    "docs/index/workspaces.json",
+    "docs/index/reference-guides.json"
+  ],
+  "lazy_traversal_rules": [
+    "Read index.json, docs/index/index.json, and docs/index/navigation.json before any repository scan.",
+    "Prefer shard reads over source scans; only read source files referenced by reference-guides or recipes.",
+    "Stop early when workspaces.json or entrypoints.json shows the requested surface does not exist.",
+    "Use change-impact.json and testing.json before selecting validation scope."
+  ],
+  "fallback_scan_policy": [
+    "If a needed detail is missing from shards, read the referenced file from reference-guides.json before broad source traversal.",
+    "Do not broad-scan src/ or tests/ until reference-guides.json and task-recipes.json have been checked.",
+    "Treat example/ as the primary runtime demonstration surface when tracing execution."
+  ],
+  "do_not_broad_scan_before_reading_index_files": true,
+  "execution_aware_routing": [
+    "For runtime tracing, go from runtime-surfaces.json to entrypoints.json to reference-guides.json to tests/Execution guidance.",
+    "For code generation changes, go from modules.json to task-recipes.json to commands.json to testing.json.",
+    "For skill choice, read skills-registry.json after confirming target module and workspace."
+  ],
+  "intents": {
+    "add_backend_feature": {
+      "read_sequence": [
+        "docs/index/overview.json",
+        "docs/index/modules.json",
+        "docs/index/entrypoints.json",
+        "docs/index/task-recipes.json",
+        "docs/index/reference-guides.json",
+        "docs/index/testing.json"
+      ],
+      "minimum_required_shards": [
+        "docs/index/modules.json",
+        "docs/index/task-recipes.json",
+        "docs/index/testing.json"
+      ],
+      "recipe_ids": [
+        "recipe.graphql_schema_or_field_change",
+        "recipe.graphql_service_wiring"
+      ],
+      "preferred_reference_kinds": [
+        "data-contract",
+        "entrypoint",
+        "framework-core",
+        "test"
+      ],
+      "prechecks": [
+        "Confirm the target is a GraphQL schema/runtime change, not UI or mobile work.",
+        "Check whether the change belongs to generated example code or generator internals.",
+        "Check whether federation helpers are involved before choosing non-federated vs federated paths."
+      ],
+      "common_pitfalls": [
+        "Changing SDL without regenerating example/GraphQL artifacts.",
+        "Adding a resolver but not binding the service in the PSR container example or execution helper.",
+        "Forgetting that generated object models are only overwritten while they still implement AutoGenerationInterface."
+      ],
+      "do_not_broad_scan_until": [
+        "docs/index/task-recipes.json",
+        "docs/index/reference-guides.json"
+      ],
+      "optional_followups": [
+        "docs/index/skills-registry.json",
+        "docs/index/change-impact.json"
+      ],
+      "stop_conditions": [
+        "Stop once the relevant recipe, reference guides, and validation scope are identified.",
+        "Stop scanning if the request is actually about generator configuration rather than runtime behavior."
+      ]
+    },
+    "change_mobile_feature": {
+      "read_sequence": [
+        "docs/index/overview.json",
+        "docs/index/workspaces.json",
+        "docs/index/entrypoints.json"
+      ],
+      "minimum_required_shards": [
+        "docs/index/workspaces.json"
+      ],
+      "recipe_ids": "Not found",
+      "preferred_reference_kinds": "Not found",
+      "prechecks": [
+        "Confirm whether any mobile workspace or mobile bootstrap exists; current evidence shows none."
+      ],
+      "common_pitfalls": [
+        "Broad-scanning for React Native files even though the repository is PHP-only."
+      ],
+      "do_not_broad_scan_until": [
+        "docs/index/workspaces.json"
+      ],
+      "optional_followups": "Not found",
+      "stop_conditions": [
+        "Stop after workspaces.json and entrypoints.json confirm there is no mobile surface."
+      ]
+    },
+    "change_ui_feature": {
+      "read_sequence": [
+        "docs/index/overview.json",
+        "docs/index/workspaces.json",
+        "docs/index/entrypoints.json"
+      ],
+      "minimum_required_shards": [
+        "docs/index/workspaces.json"
+      ],
+      "recipe_ids": "Not found",
+      "preferred_reference_kinds": "Not found",
+      "prechecks": [
+        "Confirm whether any UI bootstrap exists; current evidence shows none."
+      ],
+      "common_pitfalls": [
+        "Assuming example/start_graphql_server.php is a browser UI rather than a PHP GraphQL server demo."
+      ],
+      "do_not_broad_scan_until": [
+        "docs/index/workspaces.json"
+      ],
+      "optional_followups": "Not found",
+      "stop_conditions": [
+        "Stop after workspaces.json and entrypoints.json confirm there is no UI surface."
+      ]
+    },
+    "choose_relevant_skills": {
+      "read_sequence": [
+        "docs/index/overview.json",
+        "docs/index/modules.json",
+        "docs/index/skills-registry.json",
+        "docs/index/reference-guides.json"
+      ],
+      "minimum_required_shards": [
+        "docs/index/modules.json",
+        "docs/index/skills-registry.json"
+      ],
+      "recipe_ids": [
+        "recipe.trace_demo_runtime_flow",
+        "recipe.update_tests_for_generation_change"
+      ],
+      "preferred_reference_kinds": [
+        "framework-core",
+        "repository-doc",
+        "test"
+      ],
+      "prechecks": [
+        "Identify the target module or workflow first.",
+        "Prefer PHP and GraphQL specific skills over generic multi-language skills."
+      ],
+      "common_pitfalls": [
+        "Selecting Symfony or frontend skills even though the repository does not contain those runtimes.",
+        "Using async-focused skills for non-AMPHP changes."
+      ],
+      "do_not_broad_scan_until": [
+        "docs/index/skills-registry.json"
+      ],
+      "optional_followups": [
+        "docs/index/framework-guides.json"
+      ],
+      "stop_conditions": [
+        "Stop once a best-fit skill and its read-before-using references are identified."
+      ]
+    },
+    "identify_entrypoints": {
+      "read_sequence": [
+        "docs/index/workspaces.json",
+        "docs/index/entrypoints.json",
+        "docs/index/runtime-surfaces.json",
+        "docs/index/reference-guides.json"
+      ],
+      "minimum_required_shards": [
+        "docs/index/entrypoints.json",
+        "docs/index/runtime-surfaces.json"
+      ],
+      "recipe_ids": [
+        "recipe.trace_demo_runtime_flow"
+      ],
+      "preferred_reference_kinds": [
+        "entrypoint",
+        "repository-doc"
+      ],
+      "prechecks": [
+        "Decide whether the target surface is HTTP demo, CLI code generation, or CI validation."
+      ],
+      "common_pitfalls": [
+        "Treating generated example/GraphQL/TypeRegistry.php as an entrypoint instead of a runtime dependency."
+      ],
+      "do_not_broad_scan_until": [
+        "docs/index/entrypoints.json"
+      ],
+      "optional_followups": [
+        "docs/index/modules.json"
+      ],
+      "stop_conditions": [
+        "Stop once the surface-specific entrypoint records and reference guides are collected."
+      ]
+    },
+    "implement_user_story": {
+      "read_sequence": [
+        "docs/index/overview.json",
+        "docs/index/workspaces.json",
+        "docs/index/modules.json",
+        "docs/index/task-recipes.json",
+        "docs/index/change-impact.json",
+        "docs/index/testing.json"
+      ],
+      "minimum_required_shards": [
+        "docs/index/modules.json",
+        "docs/index/task-recipes.json",
+        "docs/index/change-impact.json",
+        "docs/index/testing.json"
+      ],
+      "recipe_ids": [
+        "recipe.graphql_schema_or_field_change",
+        "recipe.graphql_service_wiring",
+        "recipe.update_tests_for_generation_change"
+      ],
+      "preferred_reference_kinds": [
+        "framework-core",
+        "data-contract",
+        "test"
+      ],
+      "prechecks": [
+        "Classify the story as generator-internal, example runtime, or testing/config work.",
+        "Check whether the story needs generated artifact regeneration."
+      ],
+      "common_pitfalls": [
+        "Reading too much of src/ before narrowing to the right module.",
+        "Missing cross-file impacts between SDL, generated files, container bindings, and tests."
+      ],
+      "do_not_broad_scan_until": [
+        "docs/index/change-impact.json",
+        "docs/index/reference-guides.json"
+      ],
+      "optional_followups": [
+        "docs/index/skills-registry.json",
+        "docs/index/framework-guides.json"
+      ],
+      "stop_conditions": [
+        "Stop once touchpoints, validation scope, and relevant references are known."
+      ]
+    },
+    "investigate_config": {
+      "read_sequence": [
+        "docs/index/overview.json",
+        "docs/index/configs.json",
+        "docs/index/framework-guides.json",
+        "docs/index/reference-guides.json"
+      ],
+      "minimum_required_shards": [
+        "docs/index/configs.json"
+      ],
+      "recipe_ids": [
+        "recipe.change_codegen_config_or_templates"
+      ],
+      "preferred_reference_kinds": [
+        "config",
+        "framework-core",
+        "ci"
+      ],
+      "prechecks": [
+        "Separate root manifest config from generator config classes and example schema config.",
+        "Check the PHP-version signal conflict before assuming the supported floor."
+      ],
+      "common_pitfalls": [
+        "Assuming CHANGELOG.md and composer.json express the same PHP support floor.",
+        "Changing generator config without checking template support in CodeGeneratorConfig."
+      ],
+      "do_not_broad_scan_until": [
+        "docs/index/configs.json",
+        "docs/index/framework-guides.json"
+      ],
+      "optional_followups": [
+        "docs/index/change-impact.json",
+        "docs/index/testing.json"
+      ],
+      "stop_conditions": [
+        "Stop once the relevant config file or config class family is identified."
+      ]
+    },
+    "plan_testing_scope": {
+      "read_sequence": [
+        "docs/index/testing.json",
+        "docs/index/change-impact.json",
+        "docs/index/modules.json",
+        "docs/index/reference-guides.json"
+      ],
+      "minimum_required_shards": [
+        "docs/index/testing.json",
+        "docs/index/change-impact.json"
+      ],
+      "recipe_ids": [
+        "recipe.run_validation",
+        "recipe.update_tests_for_generation_change"
+      ],
+      "preferred_reference_kinds": [
+        "test",
+        "framework-core",
+        "ci"
+      ],
+      "prechecks": [
+        "Check whether the change affects configured PHPUnit suites only or also non-suite execution tests.",
+        "Check whether the change is in generator internals, federation utilities, or example runtime code."
+      ],
+      "common_pitfalls": [
+        "Assuming tests/Execution/QueryFieldTest.php runs in the default phpunit.xml.dist suites.",
+        "Running only builder tests after changing schema utilities or federation extenders."
+      ],
+      "do_not_broad_scan_until": [
+        "docs/index/testing.json",
+        "docs/index/change-impact.json"
+      ],
+      "optional_followups": [
+        "docs/index/commands.json"
+      ],
+      "stop_conditions": [
+        "Stop once minimum relevant tests and any out-of-suite checks are known."
+      ]
+    },
+    "run_build_or_tests": {
+      "read_sequence": [
+        "docs/index/commands.json",
+        "docs/index/testing.json",
+        "docs/index/workflows.json",
+        "docs/index/runtime-surfaces.json"
+      ],
+      "minimum_required_shards": [
+        "docs/index/commands.json",
+        "docs/index/workflows.json"
+      ],
+      "recipe_ids": [
+        "recipe.run_validation"
+      ],
+      "preferred_reference_kinds": [
+        "ci",
+        "config",
+        "test"
+      ],
+      "prechecks": [
+        "Ensure Composer dependencies are installed before running phpunit or demo scripts.",
+        "Decide whether you need full validation or generation/demo commands."
+      ],
+      "common_pitfalls": [
+        "Treating code generation as read-only even though scripts write to example/GraphQL.",
+        "Assuming there is a documented build or lint command beyond Composer validation and PHPUnit."
+      ],
+      "do_not_broad_scan_until": [
+        "docs/index/commands.json"
+      ],
+      "optional_followups": [
+        "docs/index/reference-guides.json"
+      ],
+      "stop_conditions": [
+        "Stop once the exact command set and side effects are identified."
+      ]
+    },
+    "trace_runtime_flow": {
+      "read_sequence": [
+        "docs/index/runtime-surfaces.json",
+        "docs/index/entrypoints.json",
+        "docs/index/reference-guides.json",
+        "docs/index/task-recipes.json",
+        "docs/index/testing.json"
+      ],
+      "minimum_required_shards": [
+        "docs/index/runtime-surfaces.json",
+        "docs/index/entrypoints.json",
+        "docs/index/reference-guides.json"
+      ],
+      "recipe_ids": [
+        "recipe.trace_demo_runtime_flow"
+      ],
+      "preferred_reference_kinds": [
+        "entrypoint",
+        "framework-core",
+        "test",
+        "repository-doc"
+      ],
+      "prechecks": [
+        "Choose HTTP demo flow or direct execution-test flow.",
+        "Check whether the target issue is resolver wiring, directive wrapping, or schema extension."
+      ],
+      "common_pitfalls": [
+        "Tracing only start_graphql_server.php and missing generated TypeRegistry closures.",
+        "Missing the execution helper that mirrors container bindings used by runtime tests."
+      ],
+      "do_not_broad_scan_until": [
+        "docs/index/reference-guides.json",
+        "docs/index/task-recipes.json"
+      ],
+      "optional_followups": [
+        "docs/index/framework-guides.json",
+        "docs/index/change-impact.json"
+      ],
+      "stop_conditions": [
+        "Stop once the flow from entrypoint to container to generated resolver closure is mapped."
+      ]
+    }
+  }
+}

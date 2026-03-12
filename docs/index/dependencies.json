@@ -1,0 +1,42 @@
+{
+  "workspaces": [
+    {
+      "workspace_id": "ws.root",
+      "dependencies": [
+        {
+          "package_name": "nikic/php-parser",
+          "version": "^4.12 | ^5",
+          "ecosystem": "composer",
+          "why_relevant": "Used to parse existing generated object model files so user-edited models can retain custom fields when AutoGenerationInterface is removed.",
+          "linked_capabilities": [
+            "cap.codegen.full_example"
+          ],
+          "evidence": [
+            "composer.json",
+            "src/Generator/Code/Foundation/CodeGenerator.php"
+          ]
+        },
+        {
+          "package_name": "webonyx/graphql-php",
+          "version": "^15.2",
+          "ecosystem": "composer",
+          "why_relevant": "Provides GraphQL schema building, execution, server runtime, directives, and type definitions that the library wraps and generates for.",
+          "linked_capabilities": [
+            "cap.graphql.federation_extension",
+            "cap.runtime.http_demo",
+            "cap.schema.composition"
+          ],
+          "evidence": [
+            "composer.json",
+            "example/start_graphql_server.php",
+            "src/Utils/SchemaBuilder.php"
+          ]
+        }
+      ]
+    },
+    {
+      "workspace_id": "ws.example",
+      "dependencies": "Not found"
+    }
+  ]
+}

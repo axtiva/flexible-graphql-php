@@ -1,0 +1,327 @@
+{
+  "recipes": [
+    {
+      "id": "recipe.change_codegen_config_or_templates",
+      "intent": "investigate_config",
+      "title": "Change code generation config or templates",
+      "applies_when": [
+        "Output namespace, path, naming, or generated file shape must change.",
+        "A task mentions templates, generated PHP version support, or builder defaults."
+      ],
+      "read_first": [
+        "ref.codegen.config",
+        "ref.codegen.builder",
+        "ref.codegen.core",
+        "ref.typeregistry.builder"
+      ],
+      "likely_touchpoints": [
+        "src/Generator/Config/Foundation/Psr4/*.php",
+        "src/Builder/Foundation/*.php",
+        "src/Generator/Code/Foundation/CodeGenerator.php",
+        "templates/7.4/Model/*.php"
+      ],
+      "workflow": [
+        "Identify whether the change is naming/path config, builder composition, or template output structure.",
+        "Update the relevant PSR4 config class, builder, or template file.",
+        "Regenerate example artifacts if the change affects emitted files.",
+        "Run generation-related PHPUnit coverage and compare generated output changes."
+      ],
+      "required_checks": [
+        "cmd.test.phpunit",
+        "cmd.codegen.generate_code"
+      ],
+      "related_reference_ids": [
+        "ref.codegen.builder",
+        "ref.codegen.config",
+        "ref.codegen.core",
+        "ref.typeregistry.generated_example",
+        "ref.typeregistry.generator_core"
+      ],
+      "related_skill_ids": [
+        "skill.external.php-graphql",
+        "skill.external.php-tester"
+      ],
+      "common_pitfalls": [
+        "Changing CodeGeneratorConfig without checking template support constraints.",
+        "Updating template output but not the golden-output tests.",
+        "Forgetting that generated example files need regeneration to reflect config changes."
+      ],
+      "expected_result": "Generator configuration and emitted output stay aligned, and generation tests continue to pass.",
+      "evidence": [
+        "src/Builder/Foundation/CodeGeneratorBuilder.php",
+        "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php",
+        "src/Generator/Code/Foundation/CodeGenerator.php",
+        "templates/7.4/Model/ObjectModel.php",
+        "tests/Builder/CodeGeneratorBuilderTest.php"
+      ]
+    },
+    {
+      "id": "recipe.graphql_schema_or_field_change",
+      "intent": "add_backend_feature",
+      "title": "Change GraphQL schema, generated artifacts, or field behavior",
+      "applies_when": [
+        "A request adds or changes a GraphQL type, field, directive, scalar, enum, or union.",
+        "A request mentions _service, _entities, federation directives, or example schema behavior."
+      ],
+      "read_first": [
+        "ref.example.schema",
+        "ref.example.generate_code",
+        "ref.example.server",
+        "ref.typeregistry.generated_example"
+      ],
+      "likely_touchpoints": [
+        "example/schema.graphql",
+        "example/generate_code.php",
+        "example/GraphQL/**",
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ],
+      "workflow": [
+        "Update example/schema.graphql or the targeted GraphQL concept source.",
+        "Run either full or targeted generation depending on artifact scope.",
+        "If new runtime services are needed, update demo container wiring and helper wiring.",
+        "Re-run relevant PHPUnit coverage and runtime checks."
+      ],
+      "required_checks": [
+        "cmd.codegen.generate_code",
+        "cmd.test.phpunit"
+      ],
+      "related_reference_ids": [
+        "ref.example.generate_code",
+        "ref.example.schema",
+        "ref.example.server",
+        "ref.tests.example_setup",
+        "ref.tests.execution_queryfield"
+      ],
+      "related_skill_ids": [
+        "skill.external.graphql-architect",
+        "skill.external.php-graphql",
+        "skill.external.php-tester"
+      ],
+      "common_pitfalls": [
+        "Changing SDL without regenerating example/GraphQL artifacts.",
+        "Adding a field resolver expectation without binding the matching service in example runtime setup.",
+        "Missing federation helper implications when the schema uses @key or federation directives."
+      ],
+      "expected_result": "Schema, generated files, runtime container bindings, and tests all agree on the new GraphQL behavior.",
+      "evidence": [
+        "README.md",
+        "example/generate_code.php",
+        "example/schema.graphql",
+        "example/start_graphql_server.php",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "id": "recipe.graphql_service_wiring",
+      "intent": "add_backend_feature",
+      "title": "Change resolver or directive service wiring",
+      "applies_when": [
+        "A new resolver, directive, scalar, union resolver, or representation handler must be instantiated.",
+        "Runtime failures suggest the generated TypeRegistry references an unbound container service."
+      ],
+      "read_first": [
+        "ref.typeregistry.generated_example",
+        "ref.example.server",
+        "ref.tests.example_setup",
+        "ref.typeregistry.builder"
+      ],
+      "likely_touchpoints": [
+        "example/start_graphql_server.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php",
+        "example/PsrContainerExample.php",
+        "example/GraphQL/TypeRegistry.php"
+      ],
+      "workflow": [
+        "Inspect the generated TypeRegistry to determine the exact service id being requested.",
+        "Bind that service in example/start_graphql_server.php and, if tests rely on it, in ExampleSchemaSetupHelper as well.",
+        "If the service id shape itself is wrong, trace back to builder or config classes rather than editing generated code manually.",
+        "Run execution-focused validation after wiring changes."
+      ],
+      "required_checks": [
+        "cmd.test.phpunit",
+        "cmd.run.demo_server"
+      ],
+      "related_reference_ids": [
+        "ref.example.server",
+        "ref.tests.example_setup",
+        "ref.typeregistry.builder",
+        "ref.typeregistry.generated_example"
+      ],
+      "related_skill_ids": [
+        "skill.external.php-graphql",
+        "skill.external.php-tester"
+      ],
+      "common_pitfalls": [
+        "Editing generated service ids in the TypeRegistry instead of fixing generation or container bindings.",
+        "Updating only the HTTP demo container and forgetting the execution helper."
+      ],
+      "expected_result": "Generated closures resolve successfully in both the HTTP demo path and execution tests.",
+      "evidence": [
+        "example/start_graphql_server.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php",
+        "example/GraphQL/TypeRegistry.php"
+      ]
+    },
+    {
+      "id": "recipe.run_validation",
+      "intent": "run_build_or_tests",
+      "title": "Run repository validation with correct scope",
+      "applies_when": [
+        "A change needs local verification.",
+        "You need to reproduce the committed CI behavior."
+      ],
+      "read_first": [
+        "ref.root.phpunit",
+        "ref.root.ci",
+        "ref.tests.execution_queryfield"
+      ],
+      "likely_touchpoints": [
+        "phpunit.xml.dist",
+        ".github/workflows/ci.yml",
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "workflow": [
+        "Run Composer installation if dependencies are missing.",
+        "Use composer validate --strict when manifest changes or CI reproduction is needed.",
+        "Run php vendor/bin/phpunit for configured suites.",
+        "If the example runtime or generated example artifacts changed, add execution or manual HTTP checks because tests/Execution is not declared in phpunit.xml.dist."
+      ],
+      "required_checks": [
+        "cmd.utility.composer_validate",
+        "cmd.test.phpunit"
+      ],
+      "related_reference_ids": [
+        "ref.root.ci",
+        "ref.root.phpunit",
+        "ref.tests.execution_queryfield"
+      ],
+      "related_skill_ids": [
+        "skill.external.php-tester"
+      ],
+      "common_pitfalls": [
+        "Assuming phpunit.xml.dist includes the execution test directory.",
+        "Skipping regeneration before validating runtime changes."
+      ],
+      "expected_result": "Validation scope matches the repository's actual automated and runtime surfaces.",
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "phpunit.xml.dist",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "id": "recipe.trace_demo_runtime_flow",
+      "intent": "trace_runtime_flow",
+      "title": "Trace the example runtime from HTTP request to resolver execution",
+      "applies_when": [
+        "A task asks how a query is resolved.",
+        "A runtime bug likely involves generated closures, directive wrapping, or container wiring."
+      ],
+      "read_first": [
+        "ref.example.test_doc",
+        "ref.example.server",
+        "ref.typeregistry.generated_example",
+        "ref.tests.execution_queryfield"
+      ],
+      "likely_touchpoints": [
+        "example/start_graphql_server.php",
+        "example/GraphQL/TypeRegistry.php",
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php",
+        "example/schema.graphql"
+      ],
+      "workflow": [
+        "Start from either example/TEST.md or QueryFieldTest to choose a concrete query.",
+        "Follow the bootstrap in start_graphql_server.php or ExampleSchemaSetupHelper to the generated TypeRegistry.",
+        "Locate the generated field closure and note any directive wrapping or args class conversion.",
+        "Map the container->get(...) target back to the bound service implementation."
+      ],
+      "required_checks": [
+        "cmd.run.demo_server"
+      ],
+      "related_reference_ids": [
+        "ref.example.server",
+        "ref.example.test_doc",
+        "ref.tests.example_setup",
+        "ref.tests.execution_queryfield",
+        "ref.typeregistry.generated_example"
+      ],
+      "related_skill_ids": [
+        "skill.external.graphql-architect",
+        "skill.external.php-graphql"
+      ],
+      "common_pitfalls": [
+        "Stopping at the HTTP bootstrap and not reading the generated TypeRegistry closure.",
+        "Ignoring directive wrapping layers around the core field resolver."
+      ],
+      "expected_result": "You can explain the full path from request to generated closure to container service invocation.",
+      "evidence": [
+        "example/TEST.md",
+        "example/start_graphql_server.php",
+        "example/GraphQL/TypeRegistry.php",
+        "tests/Execution/QueryFieldTest.php"
+      ]
+    },
+    {
+      "id": "recipe.update_tests_for_generation_change",
+      "intent": "plan_testing_scope",
+      "title": "Update tests after changing generation or schema behavior",
+      "applies_when": [
+        "A change modifies generated output text, SDL handling, federation behavior, or runtime query results.",
+        "Existing tests fail because expected emitted PHP or runtime output changed."
+      ],
+      "read_first": [
+        "ref.root.phpunit",
+        "ref.tests.schema_builder",
+        "ref.tests.federation_v22",
+        "ref.tests.execution_queryfield"
+      ],
+      "likely_touchpoints": [
+        "tests/Builder/**/*.php",
+        "tests/Generator/**/*.php",
+        "tests/Utils/**/*.php",
+        "tests/Execution/QueryFieldTest.php"
+      ],
+      "workflow": [
+        "Map the changed subsystem to the matching test root and existing conventions.",
+        "For generator output changes, update full expected PHP strings or fixture resources rather than adding partial assertions.",
+        "For runtime changes, update execution tests and any helper wiring needed to construct the schema.",
+        "Run the validation scope that matches the touched modules."
+      ],
+      "required_checks": [
+        "cmd.test.phpunit"
+      ],
+      "related_reference_ids": [
+        "ref.root.phpunit",
+        "ref.tests.builder_amphp",
+        "ref.tests.execution_queryfield",
+        "ref.tests.federation_v22",
+        "ref.tests.schema_builder"
+      ],
+      "related_skill_ids": [
+        "skill.external.php-tester"
+      ],
+      "common_pitfalls": [
+        "Using narrow assertions where the repository convention is full emitted-code comparison.",
+        "Updating configured suite tests but forgetting execution tests when runtime behavior changed."
+      ],
+      "expected_result": "Regression coverage reflects the new generated output or runtime behavior using existing repository test styles.",
+      "evidence": [
+        "phpunit.xml.dist",
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Utils/FederationSchemaExtender/FederationV22SchemaExtenderCommonSchemaTest.php"
+      ]
+    }
+  ],
+  "unsupported_topics": {
+    "add_backend_endpoint": "Not found",
+    "add_migration": "Not found",
+    "add_or_change_persistence_layer": "Not found",
+    "adjust_docker_or_local_dev_setup": "Not found",
+    "change_frontend_component": "Not found",
+    "update_integration_receiver": "Not found",
+    "update_reference_driven_assets_or_charts": "Not found"
+  }
+}

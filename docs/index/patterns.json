@@ -1,0 +1,147 @@
+{
+  "naming_patterns": [
+    {
+      "id": "pattern.naming.generator_suffix",
+      "summary": "Classes that emit code or runtime definitions use *Generator naming, often grouped under Foundation or Psr4 namespaces.",
+      "evidence": [
+        "src/Builder/Foundation/CodeGeneratorBuilder.php",
+        "src/Generator/Model/Foundation/Psr4/ObjectModelGenerator.php",
+        "src/Generator/TypeRegistry/Foundation/TypeRegistryPsrContainerGenerator.php"
+      ]
+    },
+    {
+      "id": "pattern.naming.example_graphql_layout",
+      "summary": "Generated example code is grouped by GraphQL concern under example/GraphQL (Model, Resolver, ResolverArgs, Scalar, Directive, UnionResolveType, Representation).",
+      "evidence": [
+        "example/GraphQL/TypeRegistry.php",
+        "example/GraphQL/Model/AccountType.php",
+        "example/GraphQL/Resolver/Query/AccountResolver.php"
+      ]
+    }
+  ],
+  "feature_structure_patterns": [
+    {
+      "id": "pattern.structure.schema_first",
+      "summary": "Schema SDL is the source of truth; generators derive models, args, and runtime registry code from schema types, fields, directives, and scalars.",
+      "evidence": [
+        "README.md",
+        "example/generate_code.php",
+        "src/Generator/Code/Foundation/CodeGenerator.php"
+      ]
+    },
+    {
+      "id": "pattern.structure.builder_to_generator",
+      "summary": "Entry scripts instantiate builder classes rather than lower-level generators directly, so composition defaults live in src/Builder.",
+      "evidence": [
+        "example/generate_code.php",
+        "example/generate_type_models.php",
+        "example/generate_type_registry.php"
+      ]
+    }
+  ],
+  "error_handling_patterns": [
+    {
+      "id": "pattern.errors.wrap_throwable",
+      "summary": "SchemaBuilder catches Throwable and rethrows repository-specific SchemaParserException to normalize schema parsing errors.",
+      "evidence": [
+        "src/Utils/SchemaBuilder.php",
+        "src/Exception/SchemaParserException.php"
+      ]
+    },
+    {
+      "id": "pattern.errors_codegen_exceptions",
+      "summary": "Code generation failures use dedicated exceptions such as FilesystemException and UnsupportedType rather than silent skips.",
+      "evidence": [
+        "src/Generator/Code/Foundation/CodeGenerator.php",
+        "src/Generator/Exception/FilesystemException.php",
+        "src/Generator/Exception/UnsupportedType.php"
+      ]
+    }
+  ],
+  "formatting_tooling_patterns": [
+    {
+      "id": "pattern.tooling.strict_types",
+      "summary": "Most src/ files declare strict_types=1; generated templates target PHP 7.4 syntax through templates/7.4.",
+      "evidence": [
+        "src/Utils/SchemaBuilder.php",
+        "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php",
+        "templates/7.4/Model/ObjectModel.php"
+      ]
+    },
+    {
+      "id": "pattern.tooling_ci_minimal",
+      "summary": "The repository exposes Composer validation and PHPUnit in CI; no committed formatter or lint config files were found.",
+      "evidence": [
+        ".github/workflows/ci.yml",
+        "composer.json"
+      ]
+    }
+  ],
+  "dependency_usage_patterns": [
+    {
+      "id": "pattern.deps_psr_container_service_names",
+      "summary": "Generated resolver closures look up resolver services by fully-qualified class-name strings from a ContainerInterface instance.",
+      "evidence": [
+        "example/GraphQL/TypeRegistry.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php"
+      ]
+    },
+    {
+      "id": "pattern.deps_php_parser_preserve_models",
+      "summary": "nikic/php-parser is used to inspect existing object model properties when a file no longer implements AutoGenerationInterface.",
+      "evidence": [
+        "composer.json",
+        "src/Generator/Code/Foundation/CodeGenerator.php"
+      ]
+    }
+  ],
+  "testing_patterns": [
+    {
+      "id": "pattern.testing_golden_output",
+      "summary": "Builder and generator tests compare full emitted PHP strings against expected output using data providers and temporary directories.",
+      "evidence": [
+        "tests/Builder/CodeGeneratorBuilderTest.php",
+        "tests/Builder/Psr/Container/TypeRegistryGeneratorBuilderTest.php"
+      ]
+    },
+    {
+      "id": "pattern.testing_runtime_example",
+      "summary": "Runtime behavior is tested by building the example schema and executing GraphQL queries directly with GraphQL::executeQuery.",
+      "evidence": [
+        "tests/Execution/QueryFieldTest.php",
+        "tests/Helper/ExampleSchemaSetupHelper.php"
+      ]
+    }
+  ],
+  "configuration_patterns": [
+    {
+      "id": "pattern.config_psr4_output_mapping",
+      "summary": "Output paths and class names are determined through dedicated Psr4 config classes rather than ad hoc string concatenation in scripts.",
+      "evidence": [
+        "src/Generator/Config/Foundation/Psr4/CodeGeneratorConfig.php",
+        "src/Generator/Config/Foundation/Psr4/FieldResolverGeneratorConfig.php",
+        "src/Generator/Config/Foundation/Psr4/TypeRegistryGeneratorConfig.php"
+      ]
+    },
+    {
+      "id": "pattern.config_federated_variants",
+      "summary": "Federated generation uses dedicated config subclasses and builder variants instead of flags on the base builder.",
+      "evidence": [
+        "example/generate_code.php",
+        "src/Builder/Foundation/CodeGeneratorBuilderFederated.php",
+        "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilderFederated.php"
+      ]
+    }
+  ],
+  "evidence": [
+    "README.md",
+    "example/generate_code.php",
+    "example/GraphQL/TypeRegistry.php",
+    "src/Builder/Foundation/CodeGeneratorBuilder.php",
+    "src/Builder/Foundation/Psr/Container/TypeRegistryGeneratorBuilder.php",
+    "src/Generator/Code/Foundation/CodeGenerator.php",
+    "src/Utils/SchemaBuilder.php",
+    "tests/Builder/CodeGeneratorBuilderTest.php",
+    "tests/Execution/QueryFieldTest.php"
+  ]
+}
