@@ -3,3 +3,7 @@ vendor
 composer.lock
 phpunit.xml
 .phpunit.result.cache
+docs/index
+index.json
+AGENTS.md
+docs/retro.md
