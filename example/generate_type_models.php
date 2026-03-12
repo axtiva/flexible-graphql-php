@@ -13,7 +13,7 @@ $dir = __DIR__ . '/GraphQL';
 $schema = SchemaBuilder::build(__DIR__ . '/schema.graphql');
 $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
 
-$builder = new CodeGeneratorBuilder(new CodeGeneratorConfig($dir, CodeGeneratorConfig::V7_4, $namespace));
+$builder = new CodeGeneratorBuilder(new CodeGeneratorConfig($dir, CodeGeneratorConfig::V8_3, $namespace));
 
 $generator = $builder->build();
 

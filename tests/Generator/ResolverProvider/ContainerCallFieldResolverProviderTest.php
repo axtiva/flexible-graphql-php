@@ -10,6 +10,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ContainerCallFieldResolverProviderTest extends TestCase
@@ -18,6 +19,7 @@ class ContainerCallFieldResolverProviderTest extends TestCase
      * @return void
      * @dataProvider dataProviderGeneratePhpCode
      */
+#[DataProvider('dataProviderGeneratePhpCode')]
     public function testGeneratePhpCode(
         string $typeName,
         string $fieldName,
@@ -45,12 +47,12 @@ class ContainerCallFieldResolverProviderTest extends TestCase
         $this->assertEquals($expected, $generator->generate($fieldConfig, $type, $field));
     }
 
-    public function dataProviderGeneratePhpCode(): iterable
+    public static function dataProviderGeneratePhpCode(): iterable
     {
         yield [
             'NamedCurrency',
             'id',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 type NamedCurrency {
     id: ID!

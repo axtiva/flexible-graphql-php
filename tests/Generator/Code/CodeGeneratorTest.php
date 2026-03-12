@@ -8,6 +8,7 @@ use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class CodeGeneratorTest extends TestCase
@@ -16,6 +17,7 @@ class CodeGeneratorTest extends TestCase
      * @return void
      * @dataProvider dataProviderGeneratePhpCode
      */
+#[DataProvider('dataProviderGeneratePhpCode')]
     public function testQuantityOfTypes(int $totalTypes, Schema $schema)
     {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
@@ -24,7 +26,7 @@ class CodeGeneratorTest extends TestCase
         FileSystemHelper::rmdir($dir);
         FileSystemHelper::mkdir($dir);
 
-        $builder = new CodeGeneratorBuilder(new CodeGeneratorConfig($dir, CodeGeneratorConfig::V7_4, $namespace));
+        $builder = new CodeGeneratorBuilder(new CodeGeneratorConfig($dir, CodeGeneratorConfig::V8_3, $namespace));
 
         $generator = $builder->build();
 
@@ -44,10 +46,10 @@ class CodeGeneratorTest extends TestCase
         FileSystemHelper::rmdir($dir);
 
         $this->expectExceptionMessage('Directory for models does not exist ' . $dir . ' create it manually.');
-        new CodeGeneratorBuilder(new CodeGeneratorConfig($dir, CodeGeneratorConfig::V7_4, $namespace));
+        new CodeGeneratorBuilder(new CodeGeneratorConfig($dir, CodeGeneratorConfig::V8_3, $namespace));
     }
 
-    public function dataProviderGeneratePhpCode(): iterable
+    public static function dataProviderGeneratePhpCode(): iterable
     {
         yield [
             4, // NamedCurrency Node Query.number Query.numberArgs

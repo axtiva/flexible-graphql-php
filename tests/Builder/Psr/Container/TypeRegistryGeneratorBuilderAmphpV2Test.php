@@ -10,6 +10,7 @@ use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class TypeRegistryGeneratorBuilderAmphpV2Test extends TestCase
@@ -18,6 +19,7 @@ class TypeRegistryGeneratorBuilderAmphpV2Test extends TestCase
      * @return void
      * @dataProvider dataProviderGeneratePhpCode
      */
+#[DataProvider('dataProviderGeneratePhpCode')]
     public function testGeneratePhpCode(
         string $languageLevel,
         Schema $schema,
@@ -40,14 +42,14 @@ class TypeRegistryGeneratorBuilderAmphpV2Test extends TestCase
         FileSystemHelper::rmdir($dir);
     }
 
-    public function dataProviderGeneratePhpCode(): iterable
+    public static function dataProviderGeneratePhpCode(): iterable
     {
         require_once __DIR__ . '/../../../Generator/ResolverProvider/resources/NameResolverArgs.php';
         require_once __DIR__ . '/../../../Generator/TypeRegistry/resources/NameResolver.php';
         require_once __DIR__ . '/../../../Generator/TypeRegistry/resources/SumDirective.php';
         require_once __DIR__ . '/../../../Generator/TypeRegistry/resources/SumDirectiveArgs.php';
         yield [
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sum(x: Int) on FIELD | FIELD_DEFINITION
 directive @uppercase on FIELD | FIELD_DEFINITION
@@ -294,7 +296,7 @@ PHP
             ,];
 
         yield [
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 type Query {
     sum: Int
@@ -384,7 +386,7 @@ PHP
             ,];
 
         yield [
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 type Mutation {
     sum: Int

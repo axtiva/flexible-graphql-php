@@ -20,6 +20,7 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class FieldResolverDirectiveWrappedTest extends TestCase
@@ -28,6 +29,7 @@ class FieldResolverDirectiveWrappedTest extends TestCase
      * @return void
      * @dataProvider dataProviderGeneratePhpCode
      */
+#[DataProvider('dataProviderGeneratePhpCode')]
     public function testGeneratePhpCode(
         string $typeName,
         string $fieldName,
@@ -79,7 +81,7 @@ class FieldResolverDirectiveWrappedTest extends TestCase
         FileSystemHelper::rmdir($dir);
     }
 
-    public function dataProviderGeneratePhpCode(): iterable
+    public static function dataProviderGeneratePhpCode(): iterable
     {
 
         require_once __DIR__ . '/../../../ResolverProvider/resources/NameResolverArgs.php';
@@ -87,7 +89,7 @@ class FieldResolverDirectiveWrappedTest extends TestCase
         yield [
             'NamedCurrency',
             'hello',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sum(x: Int) on FIELD | FIELD_DEFINITION
 directive @uppercase on FIELD | FIELD_DEFINITION
@@ -122,7 +124,7 @@ PHP,
         yield [
             'NamedCurrency',
             'name',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sum(x: Int) on FIELD | FIELD_DEFINITION
 directive @uppercase on FIELD | FIELD_DEFINITION
@@ -151,7 +153,7 @@ PHP,
         yield [
             'NamedCurrency',
             'demo',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sum(x: Int) on FIELD | FIELD_DEFINITION
 directive @uppercase on FIELD | FIELD_DEFINITION
@@ -181,7 +183,7 @@ PHP,
         yield [
             'NamedCurrency',
             'name',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sum(x: Int) on FIELD | FIELD_DEFINITION
 type NamedCurrency {
@@ -221,7 +223,7 @@ PHP,
         yield [
             'NamedCurrency',
             'name',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sum(x: Int) on FIELD | FIELD_DEFINITION
 directive @uppercase on FIELD | FIELD_DEFINITION
@@ -266,7 +268,7 @@ PHP,
         yield [
             'NamedCurrency',
             'name',
-            CodeGeneratorConfig::V7_4,
+            CodeGeneratorConfig::V8_3,
             BuildSchema::build(Parser::parse(<<<GQL
 directive @sumVariants(x: Int, variants: [Int]) on FIELD | FIELD_DEFINITION
 directive @uppercase on FIELD | FIELD_DEFINITION
