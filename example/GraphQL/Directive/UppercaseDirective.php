@@ -4,6 +4,7 @@ declare (strict_types=1);
 namespace Axtiva\FlexibleGraphql\Example\GraphQL\Directive;
 
 use Axtiva\FlexibleGraphql\Resolver\DirectiveResolverInterface;
+use ArrayAccess;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
@@ -13,16 +14,7 @@ use GraphQL\Type\Definition\ResolveInfo;
  */
 final class UppercaseDirective implements DirectiveResolverInterface
 {
-    /**
-     * @param callable $next
-     * @param $directiveArgs
-     * @param $rootValue
-     * @param $args
-     * @param $context
-     * @param ResolveInfo $info
-     * @return mixed
-     */
-    public function __invoke(callable $next, $directiveArgs, $rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(callable $next, array|ArrayAccess|null $directiveArgs, mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
         return mb_strtoupper($next($rootValue, $args, $context, $info));
     }

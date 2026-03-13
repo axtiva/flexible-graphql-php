@@ -136,25 +136,30 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
     public function getFieldResolverGenerator(): FieldResolverGeneratorInterface
     {
         if (empty($this->fieldResolverGenerator)) {
-            $wrappedContainerCallGenerator ??= new WrappedContainerCallFieldResolverProvider(
+            $fieldResolverGeneratorConfig = $this->fieldResolverGeneratorConfig ?? new FieldResolverGeneratorConfig($this->config);
+            $argsFieldResolverGeneratorConfig = $this->argsFieldResolverGeneratorConfig ?? new ArgsFieldResolverGeneratorConfig($this->config);
+            $directiveResolverGeneratorConfig = $this->directiveResolverGeneratorConfig ?? new DirectiveResolverGeneratorConfig($this->config);
+            $argsDirectiveResolverGeneratorConfig = $this->argsDirectiveResolverGeneratorConfig ?? new ArgsDirectiveResolverGeneratorConfig($this->config);
+
+            $wrappedContainerCallGenerator = new WrappedContainerCallFieldResolverProvider(
                 $this->fieldResolverProvider,
-                $this->argsFieldResolverGeneratorConfig
+                $argsFieldResolverGeneratorConfig
             );
 
             $directiveResolver = new Resolver\Psr\Container\DirectiveGenerator(
-                $this->directiveResolverGeneratorConfig,
+                $directiveResolverGeneratorConfig,
                 $this->directiveResolverProvider
             );
 
             $this->fieldResolverGenerator = new Resolver\Wrapper\FieldResolverDirectiveWrapped(
                 $this->serializer,
                 new Resolver\Psr\Container\FieldGenerator(
-                    $this->fieldResolverGeneratorConfig,
+                    $fieldResolverGeneratorConfig,
                     $wrappedContainerCallGenerator,
                 ),
                 $this->getDefaultFieldResolver(),
                 $directiveResolver,
-                $this->argsDirectiveResolverGeneratorConfig
+                $argsDirectiveResolverGeneratorConfig
             );
         }
 
@@ -169,8 +174,10 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
     public function getCustomScalarGenerator(): ScalarTypeGeneratorInterface
     {
         if (empty($this->customScalarGenerator)) {
+            $scalarResolverGeneratorConfig = $this->scalarResolverGeneratorConfig ?? new ScalarResolverGeneratorConfig($this->config);
+
             $scalarResolver = new Resolver\Psr\Container\ScalarGenerator(
-                $this->scalarResolverGeneratorConfig,
+                $scalarResolverGeneratorConfig,
                 $this->scalarResolverProvider,
             );
 
@@ -191,7 +198,16 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
     public function setDefaultFieldResolverServiceName(string $defaultResolverServiceName): void
     {
         $this->defaultResolver = new Resolver\Psr\Container\DefaultFieldGenerator(
-            sprintf('$this->container->get(\'%s\')', $defaultResolverServiceName)
+            sprintf(<<<'PHP'
+(function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('%s');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Default resolver service is not callable: %s');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})
+PHP, $defaultResolverServiceName, $defaultResolverServiceName)
         );
     }
 
@@ -202,48 +218,54 @@ class TypeRegistryGeneratorBuilder implements TypeRegistryGeneratorBuilderInterf
 
     public function getDefaultFieldResolver(): FieldResolverGeneratorInterface
     {
+        if ($this->defaultResolver === null) {
+            $this->defaultResolver = new Resolver\DefaultResolver\FieldGenerator();
+        }
+
         return $this->defaultResolver;
     }
 
-    public function setFieldResolverGeneratorConfig(FieldResolverGeneratorConfigInterface $config)
+    public function setFieldResolverGeneratorConfig(FieldResolverGeneratorConfigInterface $config): void
     {
         $this->fieldResolverGeneratorConfig = $config;
     }
 
-    public function setDirectiveResolverGeneratorConfig(DirectiveResolverGeneratorConfigInterface $config)
+    public function setDirectiveResolverGeneratorConfig(DirectiveResolverGeneratorConfigInterface $config): void
     {
         $this->directiveResolverGeneratorConfig = $config;
     }
 
-    public function setUnionResolveGeneratorConfig(UnionResolveTypeGeneratorConfigInterface $config)
+    public function setUnionResolveGeneratorConfig(UnionResolveTypeGeneratorConfigInterface $config): void
     {
         $this->unionResolveTypeGeneratorConfig = $config;
     }
 
-    public function setScalarResolveGeneratorConfig(ScalarResolverGeneratorConfigInterface $config)
+    public function setScalarResolveGeneratorConfig(ScalarResolverGeneratorConfigInterface $config): void
     {
         $this->scalarResolverGeneratorConfig = $config;
     }
 
-    public function setArgsDirectiveResolveGeneratorConfig(ArgsDirectiveResolverGeneratorConfigInterface $config)
+    public function setArgsDirectiveResolveGeneratorConfig(ArgsDirectiveResolverGeneratorConfigInterface $config): void
     {
         $this->argsDirectiveResolverGeneratorConfig = $config;
     }
 
-    public function setArgsFieldResolveGeneratorConfig(ArgsFieldResolverGeneratorConfigInterface $config)
+    public function setArgsFieldResolveGeneratorConfig(ArgsFieldResolverGeneratorConfigInterface $config): void
     {
         $this->argsFieldResolverGeneratorConfig = $config;
     }
 
     public function build(): TypeRegistryGeneratorInterface
     {
+        $unionResolveTypeGeneratorConfig = $this->unionResolveTypeGeneratorConfig ?? new UnionResolveTypeGeneratorConfig($this->config);
+
         $unionTypeResolver = new Resolver\Psr\Container\UnionTypeGenerator(
-            $this->unionResolveTypeGeneratorConfig,
+            $unionResolveTypeGeneratorConfig,
             $this->unionResolverProvider
         );
 
         $typeRegistryMethodNameGenerator = new TypeRegistryMethodNameGenerator();
-        $typeRegistryMethodCallGenerator = new TypeRegistryMethodCallGenerator($this->serializer);
+        $typeRegistryMethodCallGenerator = new TypeRegistryMethodCallGenerator($typeRegistryMethodNameGenerator);
 
         $scalarTypeGenerator = new CompositeScalarTypeGenerator(
             new BooleanGenerator(),

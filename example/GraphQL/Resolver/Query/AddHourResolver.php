@@ -5,6 +5,7 @@ namespace Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query;
 
 use Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\AddHourResolverArgs;
 use Axtiva\FlexibleGraphql\Resolver\ResolverInterface;
+use ArrayAccess;
 use DateTimeImmutable;
 use GraphQL\Type\Definition\ResolveInfo;
 
@@ -14,15 +15,12 @@ use GraphQL\Type\Definition\ResolveInfo;
  */
 final class AddHourResolver implements ResolverInterface
 {
-    /**
-     * @param $rootValue
-     * @param AddHourResolverArgs $args
-     * @param $context
-     * @param ResolveInfo $info
-     * @return ?DateTimeImmutable
-     */
-    public function __invoke($rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
+        if (!$args instanceof AddHourResolverArgs) {
+            return null;
+        }
+
         return $args->date->add(new \DateInterval('PT1H'));
     }
 }

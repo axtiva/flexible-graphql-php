@@ -5,6 +5,7 @@ namespace Axtiva\FlexibleGraphql\Example\GraphQL\Scalar;
 
 use Axtiva\FlexibleGraphql\Resolver\TypedCustomScalarResolverInterface;
 use DateTimeImmutable;
+use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\Node;
 
 /**
@@ -18,18 +19,30 @@ final class DateTimeScalar implements TypedCustomScalarResolverInterface
         return DateTimeImmutable::class;
     }
 
-    function serialize($value)
+    public function serialize(mixed $value): mixed
     {
+        if (!$value instanceof DateTimeImmutable) {
+            return null;
+        }
+
         return $value->format(DateTimeImmutable::ISO8601);
     }
 
-    function parseValue($value)
+    public function parseValue(mixed $value): mixed
     {
-        return $value ? new DateTimeImmutable($value) : null;
+        if (!is_string($value) || $value === '') {
+            return null;
+        }
+
+        return new DateTimeImmutable($value);
     }
 
-    function parseLiteral(Node $value, ?array $variables = null)
+    public function parseLiteral(Node $value, ?array $variables = null): mixed
     {
-        return $value->value ? new DateTimeImmutable((string) $value->value) : null;
+        if (!$value instanceof StringValueNode || $value->value === '') {
+            return null;
+        }
+
+        return new DateTimeImmutable($value->value);
     }
 }

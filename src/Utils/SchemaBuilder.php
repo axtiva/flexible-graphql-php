@@ -51,7 +51,12 @@ class SchemaBuilder
         try {
             foreach ($files as $fsElement) {
                 if (is_file($fsElement)) {
-                    yield Parser::parse(file_get_contents($fsElement));
+                    $schemaContent = file_get_contents($fsElement);
+                    if ($schemaContent === false) {
+                        continue;
+                    }
+
+                    yield Parser::parse($schemaContent);
                 }
             }
         } catch (Throwable $e) {

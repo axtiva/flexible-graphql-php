@@ -14,9 +14,9 @@ use Axtiva\FlexibleGraphql\Example\GraphQL\Model\TransactionType;
  */
 final class _EntityTypeResolver implements UnionResolveTypeInterface
 {
-    public function __invoke($model, $context, ResolveInfo $info)
+    public function __invoke(mixed $model, mixed $context, ResolveInfo $info): mixed
     {
-        if (isset($model)) {
+        if (is_object($model)) {
             switch (get_class($model)) {
                 case AccountType::class:
                     return $info->schema->getType('Account');

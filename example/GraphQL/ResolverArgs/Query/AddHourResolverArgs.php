@@ -13,7 +13,7 @@ use DateTimeImmutable;
  */
 final class AddHourResolverArgs extends InputType
 {
-    protected function decorate($name, $value)
+    protected function decorate(string $name, mixed $value): mixed
     {
         if ($value === null) {
             return null;

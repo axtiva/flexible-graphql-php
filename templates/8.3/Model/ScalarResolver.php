@@ -20,27 +20,27 @@ final class <?=$short_class_name?> implements TypedCustomScalarResolverInterface
 {
     public static function getTypeName(): ?string
     {
-        return null;
+        return '<?=$type_name?>';
         // Return type name of scalar for support autocompleate and type checking,
         // use class name or any scalar name like array, string, int, ...
         // Example: return \DateTimeImmutable::class;
     }
 
-    public function serialize($value)
+    public function serialize(mixed $value): mixed
     {
         throw new NotImplementedResolver('Not implemented field resolver ' . __CLASS__);
         // Not implemented. Return here string representation of your scalar value or null if it is empty
         // Example: return $value->format(DateTimeImmutable::ISO8601);
     }
 
-    public function parseValue($value)
+    public function parseValue(mixed $value): mixed
     {
         throw new NotImplementedResolver('Not implemented field resolver ' . __CLASS__);
         // Not implemented. Return here Code representation of your scalar value or null if it is empty
         // Example: return $value ? new DateTimeImmutable($value) : null;
     }
 
-    public function parseLiteral(Node $value, ?array $variables = null)
+    public function parseLiteral(Node $value, ?array $variables = null): mixed
     {
         throw new NotImplementedResolver('Not implemented field resolver ' . __CLASS__);
         // Not implemented. Return here Code representation of your scalar value or null if it is empty

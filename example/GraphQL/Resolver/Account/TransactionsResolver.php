@@ -6,6 +6,7 @@ namespace Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Account;
 use Axtiva\FlexibleGraphql\Example\GraphQL\Model\AccountType;
 use Axtiva\FlexibleGraphql\Example\GraphQL\Model\TransactionType;
 use Axtiva\FlexibleGraphql\Resolver\ResolverInterface;
+use ArrayAccess;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
@@ -14,15 +15,12 @@ use GraphQL\Type\Definition\ResolveInfo;
  */
 final class TransactionsResolver implements ResolverInterface
 {
-    /**
-     * @param AccountType $rootValue
-     * @param $args
-     * @param $context
-     * @param ResolveInfo $info
-     * @return TransactionType[]
-     */
-    public function __invoke($rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
+        if (!$rootValue instanceof AccountType) {
+            return [];
+        }
+
         $transaction1 = new TransactionType();
         $transaction1->id = 'asdf';
         $transaction1->amount = 323;

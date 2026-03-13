@@ -34,9 +34,9 @@ class TypeDefinitionResolver implements TypeDefinitionResolverInterface
         } elseif ($type instanceof WrappingType) {
             switch (get_class($type)) {
                 case NonNull::class:
-                    return sprintf('Type::nonNull(function() { return %s; })', $this->getDefinition($type->getWrappedType()));
+                    return sprintf('Type::nonNull(%s)', $this->getDefinition($type->getWrappedType()));
                 case ListOfType::class:
-                    return sprintf('new ListOfType(function() { return %s; })', $this->getDefinition($type->getWrappedType()));
+                    return sprintf('new ListOfType(%s)', $this->getDefinition($type->getWrappedType()));
             }
 
             throw new UnsupportedType(get_class($type));

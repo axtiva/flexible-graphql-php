@@ -33,7 +33,10 @@ use PhpParser\PhpVersion;
 
 class CodeGenerator implements CodeGeneratorInterface
 {
-    private iterable $generators;
+    /**
+     * @var list<ModelGeneratorInterface>
+     */
+    private array $generators;
     /**
      * @var FieldResolverGeneratorInterface[]
      */
@@ -44,6 +47,10 @@ class CodeGenerator implements CodeGeneratorInterface
     private ArgsDirectiveResolverModelGeneratorInterface $argsDirectiveResolverGenerator;
     private ArgsFieldResolverModelGeneratorInterface $argsFieldResolverModelGenerator;
 
+    /**
+     * @param list<FieldResolverGeneratorInterface> $fieldResolversGenerator
+     * @param ModelGeneratorInterface ...$generators
+     */
     public function __construct(
         array $fieldResolversGenerator,
         ScalarResolverGeneratorInterface $scalarResolverGenerator,
@@ -54,7 +61,9 @@ class CodeGenerator implements CodeGeneratorInterface
     ) {
         $parserFactory = new ParserFactory();
         $this->parser = $parserFactory->createForVersion(PhpVersion::fromComponents(8, 3));
-        $this->generators = $generators;
+        /** @var list<ModelGeneratorInterface> $generatorsList */
+        $generatorsList = array_values($generators);
+        $this->generators = $generatorsList;
         $this->fieldResolversGenerator = $fieldResolversGenerator;
         $this->scalarResolverGenerator = $scalarResolverGenerator;
         $this->directiveResolverGenerator = $directiveResolverGenerator;
@@ -72,7 +81,7 @@ class CodeGenerator implements CodeGeneratorInterface
 
     public function generateType(Type $type, Schema $schema): iterable
     {
-        if ($type->name === 'Query' || $type->name === 'Mutation') {
+        if ($type instanceof ObjectType && ($type->toString() === 'Query' || $type->toString() === 'Mutation')) {
             foreach ($type->getFields() as $field) {
                 yield from $this->generateFieldResolver($type, $field, $schema);
             }
@@ -95,7 +104,12 @@ class CodeGenerator implements CodeGeneratorInterface
                         $this->saveFile($code, $filename);
                         yield new GeneratedCode($classname, $filename);
                     } else {
-                        $stmts = $this->parser->parse(file_get_contents($filename));
+                        $code = file_get_contents($filename);
+                        if ($code === false) {
+                            throw new FilesystemException($filename);
+                        }
+
+                        $stmts = $this->parser->parse($code) ?? [];
                         $traverser = new NodeTraverser();
                         $collector = new PropertyNodeVisitor();
                         $traverser->addVisitor($collector);
@@ -105,7 +119,7 @@ class CodeGenerator implements CodeGeneratorInterface
                             $existedFields[] = $fieldName;
                         }
                         foreach (($type instanceof ObjectType || $type instanceof InterfaceType) ? $type->getFields() : [] as $field) {
-                            if (!in_array($field->name, $existedFields)) {
+                            if (!in_array($field->name, $existedFields, true)) {
                                 yield from $this->generateFieldResolver($type, $field, $schema);
                             }
                         }
@@ -197,8 +211,7 @@ class CodeGenerator implements CodeGeneratorInterface
     }
 
     /**
-     * @param Type $type
-     * @return ModelGeneratorInterface[]
+     * @return iterable<ModelGeneratorInterface>
      */
     private function getGenerators(Type $type): iterable
     {
@@ -215,7 +228,7 @@ class CodeGenerator implements CodeGeneratorInterface
         }
     }
 
-    private function saveFile(string $code, $filename): void
+    private function saveFile(string $code, string $filename): void
     {
         $dirName = dirname($filename);
         if (!file_exists($dirName)) {

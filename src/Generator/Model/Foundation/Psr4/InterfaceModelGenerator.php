@@ -34,14 +34,16 @@ class InterfaceModelGenerator implements InterfaceModelGeneratorInterface
     public function generate(Type $type, Schema $schema): string
     {
         if (false === $this->isSupportedType($type)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->toString(), __CLASS__));
         }
+
+        /** @var InterfaceType $type */
 
         $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/InterfaceModel.php';
         return TemplateRender::render($template, [
             'namespace' => $this->config->getModelNamespace($type),
             'short_class_name' => $this->config->getModelClassName($type),
-            'interface_name' => $type->name,
+            'interface_name' => $type->toString(),
             'interface_description' => $type->description,
             'implements' => array_map(
                 fn($element) => $this->config->getModelClassName($element),

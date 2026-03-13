@@ -26,11 +26,26 @@ class TypeRegistryMethodGenerator implements TypeRegistryMethodGeneratorInterfac
     public function getMethod(Type $type): string
     {
         if (false === $this->typeGenerator->isSupportedType($type)) {
-            throw new UnsupportedType($type->name);
+            throw new UnsupportedType($type->toString());
+        }
+
+        $returnType = 'Type';
+        if ($type instanceof \GraphQL\Type\Definition\InputObjectType) {
+            $returnType = 'InputObjectType';
+        } elseif ($type instanceof \GraphQL\Type\Definition\InterfaceType) {
+            $returnType = 'InterfaceType';
+        } elseif ($type instanceof \GraphQL\Type\Definition\ObjectType) {
+            $returnType = 'ObjectType';
+        } elseif ($type instanceof \GraphQL\Type\Definition\UnionType) {
+            $returnType = 'UnionType';
+        } elseif ($type instanceof \GraphQL\Type\Definition\CustomScalarType) {
+            $returnType = 'CustomScalarType';
+        } elseif ($type instanceof \GraphQL\Type\Definition\EnumType) {
+            $returnType = 'EnumType';
         }
 
         return "
-            public function {$this->nameGenerator->getMethodName($type)}()
+            public function {$this->nameGenerator->getMethodName($type)}(): {$returnType}
             {
                 return {$this->typeGenerator->generate($type)};
             }

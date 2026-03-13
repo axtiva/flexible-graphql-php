@@ -33,7 +33,7 @@ class ScalarResolverGenerator implements ScalarResolverGeneratorInterface
     public function generate(Type $type, Schema $schema): string
     {
         if (false === $this->isSupportedType($type)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s in %s', $type->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s in %s', $type->toString(), __CLASS__));
         }
         /** @var CustomScalarType $type */
         $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/ScalarResolver.php';
@@ -41,7 +41,7 @@ class ScalarResolverGenerator implements ScalarResolverGeneratorInterface
             'namespace' => $this->config->getModelNamespace($type),
             'short_class_name' => $this->config->getModelClassName($type),
             'description' => $type->description,
-            'type_name' => $type->name,
+            'type_name' => $type->toString(),
         ]);
     }
 }

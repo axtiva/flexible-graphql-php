@@ -12,7 +12,7 @@ use Axtiva\FlexibleGraphql\Type\InputType;
  */
 final class PlusXDirectiveArgs extends InputType
 {
-    protected function decorate($name, $value)
+    protected function decorate(string $name, mixed $value): mixed
     {
         if ($value === null) {
             return null;

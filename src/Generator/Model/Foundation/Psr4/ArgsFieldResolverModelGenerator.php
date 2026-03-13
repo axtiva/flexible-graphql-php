@@ -59,7 +59,7 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
     public function generate(Type $type, FieldDefinition $typeField, Schema $schema): string
     {
         if (false === $this->isSupportedType($type, $typeField)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s.%s for %s', $type->name, $typeField->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s.%s for %s', $type->toString(), $typeField->name, __CLASS__));
         }
 
         $fields = [];
@@ -68,7 +68,7 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
             $fieldType = $this->getWrappedType($field->getType());
 
             if (
-                (\in_array(\get_class($fieldType), [InputObjectType::class, EnumType::class, CustomScalarType::class]))
+                ($fieldType instanceof InputObjectType || $fieldType instanceof EnumType || $fieldType instanceof CustomScalarType)
                 && !Introspection::isIntrospectionType($fieldType)
             ) {
                 if ($fieldType instanceof InputObjectType) {
@@ -76,7 +76,6 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
                 } elseif ($fieldType instanceof EnumType) {
                     $importClasses[] = $this->enumConfig->getModelFullClassName($fieldType);
                 } elseif ($fieldType instanceof CustomScalarType) {
-                    /** @var TypedCustomScalarResolverInterface|string $scalarClass */
                     $scalarClass = $this->scalarConfig->getModelFullClassName($fieldType);
                     if (
                         \class_exists($scalarClass)
@@ -88,7 +87,7 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
                         }
                     }
                 } else {
-                    throw new UnsupportedType($fieldType->name);
+                    throw new UnsupportedType($fieldType::class);
                 }
             }
 
@@ -107,7 +106,7 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
         $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/FieldArgsModel.php';
         return TemplateRender::render($template, [
             'namespace' => $this->config->getFieldArgsNamespace($type, $typeField),
-            'type_name' => $type->name,
+            'type_name' => $type->toString(),
             'field_name' => $typeField->name,
             'short_class_name' => $this->config->getFieldArgsClassName($type, $typeField),
             'type_description' => $typeField->description,
@@ -177,7 +176,6 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
         ) {
             return 'string';
         } elseif ($type instanceof CustomScalarType) {
-            /** @var TypedCustomScalarResolverInterface|string $scalarClass */
             $scalarClass = $this->scalarConfig->getModelFullClassName($type);
             if (
                 \class_exists($scalarClass)
@@ -195,9 +193,12 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
             return $this->inputObjectConfig->getModelClassName($type);
         }
 
-        throw new UnsupportedType($type->name);
+        throw new UnsupportedType($type->toString());
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function getFieldTypeDocDefinition(Type $type): array
     {
         $types = [];
@@ -221,7 +222,6 @@ class ArgsFieldResolverModelGenerator implements ArgsFieldResolverModelGenerator
             ) {
                 $types[] = 'string';
             } elseif ($type instanceof CustomScalarType) {
-                /** @var TypedCustomScalarResolverInterface|string $scalarClass */
                 $scalarClass = $this->scalarConfig->getModelFullClassName($type);
                 if (
                     \class_exists($scalarClass)

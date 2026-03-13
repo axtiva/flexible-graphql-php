@@ -8,13 +8,44 @@ use ReflectionClass;
 
 class ObjectHelper
 {
-    public static function getClassShortName($object): string
+    /**
+     * @param string|object $object
+     */
+    public static function getClassShortName(string|object $object): string
     {
-        return (new ReflectionClass($object))->getShortName();
+        if (
+            is_string($object)
+            && !class_exists($object)
+            && !interface_exists($object)
+            && !trait_exists($object)
+        ) {
+            return $object;
+        }
+
+        /** @var class-string|object $reflectionTarget */
+        $reflectionTarget = $object;
+
+        return (new ReflectionClass($reflectionTarget))->getShortName();
     }
 
-    public static function isClassImplements($object, $interface): bool
+    /**
+     * @param string|object $object
+     * @param string $interface
+     */
+    public static function isClassImplements(string|object $object, string $interface): bool
     {
-        return (new ReflectionClass($object))->implementsInterface($interface);
+        if (
+            is_string($object)
+            && !class_exists($object)
+            && !interface_exists($object)
+            && !trait_exists($object)
+        ) {
+            return false;
+        }
+
+        /** @var class-string|object $reflectionTarget */
+        $reflectionTarget = $object;
+
+        return (new ReflectionClass($reflectionTarget))->implementsInterface($interface);
     }
 }

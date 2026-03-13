@@ -14,9 +14,9 @@ use Axtiva\FlexibleGraphql\Example\GraphQL\Model\CodedCurrencyType;
  */
 final class CurrencyTypeResolver implements UnionResolveTypeInterface
 {
-    public function __invoke($model, $context, ResolveInfo $info)
+    public function __invoke(mixed $model, mixed $context, ResolveInfo $info): mixed
     {
-        if (isset($model)) {
+        if (is_object($model)) {
             switch (get_class($model)) {
                 case NamedCurrencyType::class:
                     return $info->schema->getType('NamedCurrency');

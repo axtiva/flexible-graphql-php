@@ -31,8 +31,10 @@ class EnumGenerator implements TypeGeneratorInterface
     public function generate(Type $type): string
     {
         if (false === $this->isSupportedType($type)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->toString(), __CLASS__));
         }
+
+        /** @var EnumType $type */
 
         $values = [];
         foreach ($type->getValues() as $value) {
@@ -46,7 +48,7 @@ class EnumGenerator implements TypeGeneratorInterface
 
         $values = implode("," . PHP_EOL, $values);
         return "new EnumType([
-        'name' => {$this->serializer->serialize($type->name)},
+        'name' => {$this->serializer->serialize($type->toString())},
         'description' => {$this->serializer->serialize($type->description)},
         'values' => [{$values}],
         ])";
