@@ -5,6 +5,7 @@ namespace Axtiva\FlexibleGraphql\Tests\Generator\ResolverProvider;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\CodeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\FieldResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\ContainerCallFieldResolverProvider;
+use Axtiva\FlexibleGraphql\Tests\Helper\FixtureLoader;
 use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
@@ -25,7 +26,7 @@ class ContainerCallFieldResolverProviderTest extends TestCase
         string $fieldName,
         string $languageLevel,
         Schema $schema,
-        string $expected
+        string $expectedFixturePath
     ) {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
         $dir = uniqid('/tmp/TmpTestData/GraphQL');
@@ -45,10 +46,13 @@ class ContainerCallFieldResolverProviderTest extends TestCase
         $field = $type->getField($fieldName);
 
         $generated = $generator->generate($fieldConfig, $type, $field);
-        $this->assertStringContainsString('$this->getService', $generated);
-        $this->assertStringContainsString('Resolver service is not callable', $generated);
+        $expected = FixtureLoader::load($expectedFixturePath);
+        $this->assertSame($expected, FixtureLoader::normalizeLineEndings($generated));
     }
 
+    /**
+     * @return iterable<int, array<int, mixed>>
+     */
     public static function dataProviderGeneratePhpCode(): iterable
     {
         yield [
@@ -60,9 +64,7 @@ type NamedCurrency {
     id: ID!
 }
 GQL)),
-            <<<'PHP'
-$this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\IdResolver')
-PHP,
+            __DIR__ . '/fixtures/ContainerCallFieldResolverProviderTest/case-1.php.txt',
         ];
     }
 }

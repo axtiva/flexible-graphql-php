@@ -1,0 +1,14 @@
+function(mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
+                        return (function (callable $next, $directiveArgs, $rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Directive resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective');
+    }
+
+    return $resolver($next, $directiveArgs, $rootValue, $args, $context, $info);
+})(
+                        \Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultResolver::getInstance(), 
+                        [],
+                        $rootValue, $args, $context, $info
+                        );
+                    }

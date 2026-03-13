@@ -15,6 +15,7 @@ use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\DefaultRes
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\Psr\Container\FieldGenerator;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation\Resolver\Wrapper\FieldResolverDirectiveWrapped;
+use Axtiva\FlexibleGraphql\Tests\Helper\FixtureLoader;
 use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
@@ -35,7 +36,7 @@ class FieldResolverDirectiveWrappedTest extends TestCase
         string $fieldName,
         string $languageLevel,
         Schema $schema,
-        string $expected
+        string $expectedFixturePath
     ) {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
         $dir = uniqid('/tmp/TmpTestData/GraphQL');
@@ -77,14 +78,15 @@ class FieldResolverDirectiveWrappedTest extends TestCase
         $field = $type->getField($fieldName);
 
         $generated = $generator->generate($type, $field);
-        $this->assertNotSame('', $generated);
-        if ($fieldName !== 'demo') {
-            $this->assertStringContainsString('GraphQL\\Type\\Definition\\ResolveInfo', $generated);
-        }
+        $expected = FixtureLoader::load($expectedFixturePath);
+        $this->assertSame($expected, FixtureLoader::normalizeLineEndings($generated));
 
         FileSystemHelper::rmdir($dir);
     }
 
+    /**
+     * @return iterable<int, array<int, mixed>>
+     */
     public static function dataProviderGeneratePhpCode(): iterable
     {
 
@@ -111,16 +113,7 @@ input DemoInput {
 scalar DateTime
 scalar HelloScalar
 GQL)),
-            <<<'PHP'
-function($rootValue, $args, $context, $info) {
-                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective')(
-                        \Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultResolver::getInstance(), 
-                        array (
-),
-                        $rootValue, $args, $context, $info
-                        );
-                    }
-PHP,
+            __DIR__ . '/fixtures/FieldResolverDirectiveWrappedTest/case-1.php.txt',
         ];
 
         require_once __DIR__ . '/../../../ResolverProvider/resources/NameResolverArgs.php';
@@ -146,12 +139,7 @@ input DemoInput {
 scalar DateTime
 scalar HelloScalar
 GQL)),
-            <<<'PHP'
-(function ($rootValue, $args, $context, $info) {
-    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\NamedCurrency\NameResolverArgs($args);
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\NameResolver')($rootValue, $args, $context, $info);
-})
-PHP,
+            __DIR__ . '/fixtures/FieldResolverDirectiveWrappedTest/case-2.php.txt',
         ];
 
         yield [
@@ -175,9 +163,7 @@ input DemoInput {
 scalar DateTime
 scalar HelloScalar
 GQL)),
-            <<<'PHP'
-\Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultResolver::getInstance()
-PHP,
+            __DIR__ . '/fixtures/FieldResolverDirectiveWrappedTest/case-3.php.txt',
         ];
 
         require_once __DIR__ . '/../../../ResolverProvider/resources/NameResolverArgs.php';
@@ -204,20 +190,7 @@ input DemoInput {
 scalar DateTime
 scalar HelloScalar
 GQL)),
-            <<<'PHP'
-function($rootValue, $args, $context, $info) {
-                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\SumDirective')(
-                        (function ($rootValue, $args, $context, $info) {
-    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\NamedCurrency\NameResolverArgs($args);
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\NameResolver')($rootValue, $args, $context, $info);
-}), 
-                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\SumDirectiveArgs(array (
-  'x' => '2',
-)),
-                        $rootValue, $args, $context, $info
-                        );
-                    }
-PHP,
+            __DIR__ . '/fixtures/FieldResolverDirectiveWrappedTest/case-4.php.txt',
         ];
 
         require_once __DIR__ . '/../../../ResolverProvider/resources/NameResolverArgs.php';
@@ -245,27 +218,7 @@ input DemoInput {
 scalar DateTime
 scalar HelloScalar
 GQL)),
-            <<<'PHP'
-function($rootValue, $args, $context, $info) {
-                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\SumDirective')(
-                        function($rootValue, $args, $context, $info) {
-                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective')(
-                        (function ($rootValue, $args, $context, $info) {
-    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\NamedCurrency\NameResolverArgs($args);
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\NameResolver')($rootValue, $args, $context, $info);
-}), 
-                        array (
-),
-                        $rootValue, $args, $context, $info
-                        );
-                    }, 
-                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\SumDirectiveArgs(array (
-  'x' => '2',
-)),
-                        $rootValue, $args, $context, $info
-                        );
-                    }
-PHP,
+            __DIR__ . '/fixtures/FieldResolverDirectiveWrappedTest/case-5.php.txt',
         ];
         require_once __DIR__ . '/../../resources/SumVariantsDirective.php';
         require_once __DIR__ . '/../../resources/SumVariantsDirectiveArgs.php';
@@ -290,34 +243,7 @@ input DemoInput {
 scalar DateTime
 scalar HelloScalar
 GQL)),
-            <<<'PHP'
-function($rootValue, $args, $context, $info) {
-                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\SumVariantsDirective')(
-                        function($rootValue, $args, $context, $info) {
-                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective')(
-                        (function ($rootValue, $args, $context, $info) {
-    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\NamedCurrency\NameResolverArgs($args);
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\NameResolver')($rootValue, $args, $context, $info);
-}), 
-                        array (
-),
-                        $rootValue, $args, $context, $info
-                        );
-                    }, 
-                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\SumVariantsDirectiveArgs(array (
-  'x' => '2',
-  'variants' => 
-  array (
-    0 => '1',
-    1 => '2',
-    2 => NULL,
-    3 => '3',
-  ),
-)),
-                        $rootValue, $args, $context, $info
-                        );
-                    }
-PHP,
+            __DIR__ . '/fixtures/FieldResolverDirectiveWrappedTest/case-6.php.txt',
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace Axtiva\FlexibleGraphql\Tests\Generator\ResolverProvider;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\CodeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\DirectiveResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\ContainerCallDirectiveResolverProvider;
+use Axtiva\FlexibleGraphql\Tests\Helper\FixtureLoader;
 use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
@@ -24,7 +25,7 @@ class ContainerCallDirectiveResolverProviderTest extends TestCase
         string $directiveName,
         string $languageLevel,
         Schema $schema,
-        string $expected
+        string $expectedFixturePath
     ) {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
         $dir = '/tmp/TmpTestData/GraphQL';
@@ -41,12 +42,15 @@ class ContainerCallDirectiveResolverProviderTest extends TestCase
         $this->assertInstanceOf(Directive::class, $directive);
 
         $generated = $generator->generate($directiveConfig, $directive);
-        $this->assertStringContainsString('$this->getService', $generated);
-        $this->assertStringContainsString('Directive resolver service is not callable', $generated);
+        $expected = FixtureLoader::load($expectedFixturePath);
+        $this->assertSame($expected, FixtureLoader::normalizeLineEndings($generated));
 
         FileSystemHelper::rmdir($dir);
     }
 
+    /**
+     * @return iterable<int, array<int, mixed>>
+     */
     public static function dataProviderGeneratePhpCode(): iterable
     {
         yield [
@@ -56,9 +60,7 @@ class ContainerCallDirectiveResolverProviderTest extends TestCase
 "CAPITALIZE ALL LETTERS IN STRING"
 directive @uppercase on FIELD | FIELD_DEFINITION
 GQL)),
-            <<<'PHP'
-$this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective')
-PHP,
+            __DIR__ . '/fixtures/ContainerCallDirectiveResolverProviderTest/case-1.php.txt',
         ];
     }
 }

@@ -1,0 +1,11 @@
+(function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
+    
+    return (function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\DemoResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\DemoResolver');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})($rootValue, $args, $context, $info);
+})
