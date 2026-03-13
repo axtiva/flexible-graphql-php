@@ -38,7 +38,7 @@ jobs:
       - name: Run PHPUnit with coverage
         run: php ./vendor/bin/phpunit --coverage-text
 
-      - name: Run PHPStan level 6
+      - name: Run PHPStan
         run: php ./vendor/bin/phpstan analyse -c phpstan.neon
 
       - name: Verify example code generation is reproducible
