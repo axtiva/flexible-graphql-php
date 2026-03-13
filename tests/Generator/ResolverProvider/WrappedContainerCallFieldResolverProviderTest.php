@@ -7,6 +7,7 @@ use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\CodeGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\Config\Foundation\Psr4\FieldResolverGeneratorConfig;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\ContainerCallFieldResolverProvider;
 use Axtiva\FlexibleGraphql\Generator\ResolverProvider\Foundation\WrappedContainerCallFieldResolverProvider;
+use Axtiva\FlexibleGraphql\Tests\Helper\FixtureLoader;
 use Axtiva\FlexibleGraphql\Tests\Helper\FileSystemHelper;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
@@ -27,7 +28,7 @@ class WrappedContainerCallFieldResolverProviderTest extends TestCase
         string $fieldName,
         string $languageLevel,
         Schema $schema,
-        string $expected
+        string $expectedFixturePath
     ) {
         $namespace = 'Axtiva\FlexibleGraphql\Example\GraphQL';
         $dir = uniqid('/tmp/TmpTestData/GraphQL');
@@ -52,12 +53,15 @@ class WrappedContainerCallFieldResolverProviderTest extends TestCase
         $this->assertNotFalse($type->hasField($fieldName));
         $field = $type->getField($fieldName);
         $generated = $generator->generate($fieldConfig, $type, $field);
-        $this->assertStringContainsString('function (mixed $rootValue, array $args, mixed $context, \\GraphQL\\Type\\Definition\\ResolveInfo $info): mixed', $generated);
-        $this->assertStringContainsString('$this->getService', $generated);
+        $expected = FixtureLoader::load($expectedFixturePath);
+        $this->assertSame($expected, FixtureLoader::normalizeLineEndings($generated));
 
         FileSystemHelper::rmdir($dir);
     }
 
+    /**
+     * @return iterable<int, array<int, mixed>>
+     */
     public static function dataProviderGeneratePhpCode(): iterable
     {
         yield [
@@ -70,12 +74,7 @@ type NamedCurrency {
     demo: String
 }
 GQL)),
-            <<<'PHP'
-(function ($rootValue, $args, $context, $info) {
-    
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\DemoResolver')($rootValue, $args, $context, $info);
-})
-PHP,
+            __DIR__ . '/fixtures/WrappedContainerCallFieldResolverProviderTest/case-1.php.txt',
         ];
 
         require_once __DIR__ . '/resources/NameResolverArgs.php';
@@ -98,12 +97,7 @@ input DemoInput {
 scalar DateTime
 scalar HelloScalar
 GQL)),
-            <<<'PHP'
-(function ($rootValue, $args, $context, $info) {
-    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\NamedCurrency\NameResolverArgs($args);
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\NameResolver')($rootValue, $args, $context, $info);
-})
-PHP,
+            __DIR__ . '/fixtures/WrappedContainerCallFieldResolverProviderTest/case-2.php.txt',
         ];
     }
 }

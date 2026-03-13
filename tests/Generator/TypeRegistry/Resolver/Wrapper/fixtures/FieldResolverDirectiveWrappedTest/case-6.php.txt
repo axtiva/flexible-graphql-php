@@ -1,0 +1,37 @@
+function(mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
+                        return (function (callable $next, $directiveArgs, $rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\SumVariantsDirective');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Directive resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Directive\SumVariantsDirective');
+    }
+
+    return $resolver($next, $directiveArgs, $rootValue, $args, $context, $info);
+})(
+                        function(mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
+                        return (function (callable $next, $directiveArgs, $rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Directive resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective');
+    }
+
+    return $resolver($next, $directiveArgs, $rootValue, $args, $context, $info);
+})(
+                        (function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
+    $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\NamedCurrency\NameResolverArgs($args);
+    return (function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\NameResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\NamedCurrency\NameResolver');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})($rootValue, $args, $context, $info);
+}), 
+                        [],
+                        $rootValue, $args, $context, $info
+                        );
+                    }, 
+                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\SumVariantsDirectiveArgs(['x' => '2', 'variants' => ['1', '2', NULL, '3']]),
+                        $rootValue, $args, $context, $info
+                        );
+                    }
