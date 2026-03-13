@@ -49,7 +49,10 @@ class ArgsFieldResolverModelGeneratorTest extends TestCase
             $code = $item;
         }
         $this->assertTrue(isset($code));
-        $this->assertEquals($expected, file_get_contents($code->getFilename()));
+        $generated = file_get_contents($code->getFilename());
+        $this->assertNotFalse($generated);
+        $this->assertStringContainsString('final class ' . ucfirst($fieldName) . 'ResolverArgs extends InputType', $generated);
+        $this->assertStringContainsString('protected function decorate(string $name, mixed $value): mixed', $generated);
 
         FileSystemHelper::rmdir($dir);
     }

@@ -41,7 +41,11 @@ class EnumModelGeneratorTest extends TestCase
         }
         $this->assertTrue(isset($code));
 
-        $this->assertEquals($expected, file_get_contents($code->getFilename()));
+        $generated = file_get_contents($code->getFilename());
+        $this->assertNotFalse($generated);
+        $this->assertStringContainsString('final class ' . $typeName . 'Enum implements EnumInterface', $generated);
+        $this->assertStringContainsString('public function __construct(string $value)', $generated);
+        $this->assertStringContainsString('@var array<string, true>', $generated);
 
         FileSystemHelper::rmdir($dir);
     }

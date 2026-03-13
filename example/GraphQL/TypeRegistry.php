@@ -55,18 +55,25 @@ class TypeRegistry
     
             public function FieldSet(): CustomScalarType
             {
-                return new CustomScalarType([
+                static $FieldSet = null;
+                if ($FieldSet === null) {
+                    $FieldSet = new CustomScalarType([
             'name' => 'FieldSet',
             'description' => NULL,
 
         ]);
+                }
+
+                return $FieldSet;
             }
         
 
 
             public function Query(): ObjectType
             {
-                return new ObjectType([
+                static $Query = null;
+                if ($Query === null) {
+                    $Query = new ObjectType([
             'name' => 'Query',
             'description' => NULL,
             'fields' => fn() => ['account' => new FieldDefinition([
@@ -214,13 +221,18 @@ class TypeRegistry
         ]],
         ])],
         ]);
+                }
+
+                return $Query;
             }
         
 
 
             public function Node(): InterfaceType
             {
-                return new InterfaceType([
+                static $Node = null;
+                if ($Node === null) {
+                    $Node = new InterfaceType([
             'name' => 'Node',
             'description' => NULL,
             'fields' => fn() => ['id' => new FieldDefinition([
@@ -232,13 +244,18 @@ class TypeRegistry
             'args' => [],
         ])],
         ]);
+                }
+
+                return $Node;
             }
         
 
 
             public function Account(): ObjectType
             {
-                return new ObjectType([
+                static $Account = null;
+                if ($Account === null) {
+                    $Account = new ObjectType([
             'name' => 'Account',
             'description' => NULL,
             'fields' => fn() => ['id' => new FieldDefinition([
@@ -294,13 +311,18 @@ class TypeRegistry
             'args' => [],
         ])],
         ]);
+                }
+
+                return $Account;
             }
         
 
 
             public function Transaction(): ObjectType
             {
-                return new ObjectType([
+                static $Transaction = null;
+                if ($Transaction === null) {
+                    $Transaction = new ObjectType([
             'name' => 'Transaction',
             'description' => NULL,
             'fields' => fn() => ['id' => new FieldDefinition([
@@ -350,13 +372,18 @@ class TypeRegistry
             'args' => [],
         ])],
         ]);
+                }
+
+                return $Transaction;
             }
         
 
 
             public function NamedCurrency(): ObjectType
             {
-                return new ObjectType([
+                static $NamedCurrency = null;
+                if ($NamedCurrency === null) {
+                    $NamedCurrency = new ObjectType([
             'name' => 'NamedCurrency',
             'description' => NULL,
             'fields' => fn() => ['id' => new FieldDefinition([
@@ -375,13 +402,18 @@ class TypeRegistry
             'args' => [],
         ])],
         ]);
+                }
+
+                return $NamedCurrency;
             }
         
 
 
             public function CodedCurrency(): ObjectType
             {
-                return new ObjectType([
+                static $CodedCurrency = null;
+                if ($CodedCurrency === null) {
+                    $CodedCurrency = new ObjectType([
             'name' => 'CodedCurrency',
             'description' => NULL,
             'fields' => fn() => ['id' => new FieldDefinition([
@@ -400,13 +432,18 @@ class TypeRegistry
             'args' => [],
         ])],
         ]);
+                }
+
+                return $CodedCurrency;
             }
         
 
 
             public function Currency(): UnionType
             {
-                return new UnionType([
+                static $Currency = null;
+                if ($Currency === null) {
+                    $Currency = new UnionType([
             'name' => 'Currency',
             'description' => NULL,
             'types' => fn() => [fn() => $this->NamedCurrency(),fn() => $this->CodedCurrency()],
@@ -419,13 +456,18 @@ class TypeRegistry
     return $resolver($model, $context, $info);
 }),
         ]);
+                }
+
+                return $Currency;
             }
         
 
 
             public function TransactionStatus(): EnumType
             {
-                return new EnumType([
+                static $TransactionStatus = null;
+                if ($TransactionStatus === null) {
+                    $TransactionStatus = new EnumType([
         'name' => 'TransactionStatus',
         'description' => 'TRANSACTION STATUS DOC',
         'values' => ['NEW' => [
@@ -447,13 +489,18 @@ class TypeRegistry
             'deprecationReason' => NULL,
             ]],
         ]);
+                }
+
+                return $TransactionStatus;
             }
         
 
 
             public function DateTime(): CustomScalarType
             {
-                return new CustomScalarType([
+                static $DateTime = null;
+                if ($DateTime === null) {
+                    $DateTime = new CustomScalarType([
             'name' => 'DateTime',
             'description' => NULL,
             'serialize' => function(mixed $value): mixed {
@@ -487,35 +534,50 @@ class TypeRegistry
                 return $resolver->parseLiteral($value, $variables);
             },
         ]);
+                }
+
+                return $DateTime;
             }
         
 
 
             public function HelloWorld(): CustomScalarType
             {
-                return new CustomScalarType([
+                static $HelloWorld = null;
+                if ($HelloWorld === null) {
+                    $HelloWorld = new CustomScalarType([
             'name' => 'HelloWorld',
             'description' => NULL,
 
         ]);
+                }
+
+                return $HelloWorld;
             }
         
 
 
             public function _FieldSet(): CustomScalarType
             {
-                return new CustomScalarType([
+                static $_FieldSet = null;
+                if ($_FieldSet === null) {
+                    $_FieldSet = new CustomScalarType([
             'name' => '_FieldSet',
             'description' => NULL,
 
         ]);
+                }
+
+                return $_FieldSet;
             }
         
 
 
             public function _Service(): ObjectType
             {
-                return new ObjectType([
+                static $_Service = null;
+                if ($_Service === null) {
+                    $_Service = new ObjectType([
             'name' => '_Service',
             'description' => NULL,
             'fields' => fn() => ['sdl' => new FieldDefinition([
@@ -527,13 +589,18 @@ class TypeRegistry
             'args' => [],
         ])],
         ]);
+                }
+
+                return $_Service;
             }
         
 
 
             public function _Entity(): UnionType
             {
-                return new UnionType([
+                static $_Entity = null;
+                if ($_Entity === null) {
+                    $_Entity = new UnionType([
             'name' => '_Entity',
             'description' => NULL,
             'types' => fn() => [fn() => $this->Account(),fn() => $this->Transaction()],
@@ -546,24 +613,34 @@ class TypeRegistry
     return $resolver($model, $context, $info);
 }),
         ]);
+                }
+
+                return $_Entity;
             }
         
 
 
             public function _Any(): CustomScalarType
             {
-                return new CustomScalarType([
+                static $_Any = null;
+                if ($_Any === null) {
+                    $_Any = new CustomScalarType([
             'name' => '_Any',
             'description' => NULL,
 
         ]);
+                }
+
+                return $_Any;
             }
         
 
 
             public function link__Purpose(): EnumType
             {
-                return new EnumType([
+                static $link__Purpose = null;
+                if ($link__Purpose === null) {
+                    $link__Purpose = new EnumType([
         'name' => 'link__Purpose',
         'description' => NULL,
         'values' => ['SECURITY' => [
@@ -579,17 +656,25 @@ class TypeRegistry
             'deprecationReason' => NULL,
             ]],
         ]);
+                }
+
+                return $link__Purpose;
             }
         
 
 
             public function link__Import(): CustomScalarType
             {
-                return new CustomScalarType([
+                static $link__Import = null;
+                if ($link__Import === null) {
+                    $link__Import = new CustomScalarType([
             'name' => 'link__Import',
             'description' => NULL,
 
         ]);
+                }
+
+                return $link__Import;
             }
         
 

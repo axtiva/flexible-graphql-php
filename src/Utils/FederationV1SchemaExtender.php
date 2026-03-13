@@ -120,6 +120,18 @@ GRAPHQL;
             }
         }
 
+        if ($operations === []) {
+            if ($schema->getType('Query') instanceof ObjectType) {
+                $operations[] = 'query: Query';
+            }
+            if ($schema->getType('Mutation') instanceof ObjectType) {
+                $operations[] = 'mutation: Mutation';
+            }
+            if ($schema->getType('Subscription') instanceof ObjectType) {
+                $operations[] = 'subscription: Subscription';
+            }
+        }
+
         $schemaSDL = 'schema { ' . implode(' ', $operations) . ' }';
         $documentAST = Parser::parse($schemaSDL);
         /** @var SchemaDefinitionNode $schemaDefinition */

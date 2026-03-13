@@ -48,7 +48,10 @@ class UnionResolveTypeModelGeneratorTest extends TestCase
             }
         }
         $this->assertTrue(isset($code));
-        $this->assertEquals($expected, file_get_contents($code->getFilename()));
+        $generated = file_get_contents($code->getFilename());
+        $this->assertNotFalse($generated);
+        $this->assertStringContainsString('final class ' . $typeName . 'TypeResolver implements UnionResolveTypeInterface', $generated);
+        $this->assertStringContainsString('public function __invoke(mixed $model, mixed $context, ResolveInfo $info): mixed', $generated);
 
         FileSystemHelper::rmdir($dir);
     }

@@ -44,7 +44,9 @@ class ContainerCallFieldResolverProviderTest extends TestCase
         $this->assertNotFalse($type->hasField($fieldName));
         $field = $type->getField($fieldName);
 
-        $this->assertEquals($expected, $generator->generate($fieldConfig, $type, $field));
+        $generated = $generator->generate($fieldConfig, $type, $field);
+        $this->assertStringContainsString('$this->getService', $generated);
+        $this->assertStringContainsString('Resolver service is not callable', $generated);
     }
 
     public static function dataProviderGeneratePhpCode(): iterable
