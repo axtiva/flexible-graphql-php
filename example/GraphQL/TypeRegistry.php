@@ -38,9 +38,22 @@ class TypeRegistry
     {
         return $this->types[$name] ??= $this->{$name}();
     }
+
+    /**
+     * @return object
+     */
+    private function getService(string $id): object
+    {
+        $service = $this->container->get($id);
+        if (!is_object($service)) {
+            throw new \RuntimeException("Service not found or invalid object: " . $id);
+        }
+
+        return $service;
+    }
     
     
-            public function FieldSet()
+            public function FieldSet(): CustomScalarType
             {
                 return new CustomScalarType([
             'name' => 'FieldSet',
@@ -51,7 +64,7 @@ class TypeRegistry
         
 
 
-            public function Query()
+            public function Query(): ObjectType
             {
                 return new ObjectType([
             'name' => 'Query',
@@ -60,92 +73,144 @@ class TypeRegistry
             'name' => 'account',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => (function ($rootValue, $args, $context, $info) {
+            'resolve' => (function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
     $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\AccountResolverArgs($args);
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AccountResolver')($rootValue, $args, $context, $info);
+    return (function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AccountResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AccountResolver');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})($rootValue, $args, $context, $info);
 }),
-            'type' => function() { return $this->getType('Account'); },
+            'type' => fn() => $this->Account(),
             'args' => ['id' => [
             'name' => 'id',
-            'type' => function() { return Type::nonNull(function() { return Type::id(); }); },
+            'type' => fn() => Type::nonNull(Type::id()),
         ]],
         ]),'sum' => new FieldDefinition([
             'name' => 'sum',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => function($rootValue, $args, $context, $info) {
-                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective')(
-                        (function ($rootValue, $args, $context, $info) {
+            'resolve' => function(mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
+                        return (function (callable $next, $directiveArgs, $rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Directive resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective');
+    }
+
+    return $resolver($next, $directiveArgs, $rootValue, $args, $context, $info);
+})(
+                        (function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
     
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\SumResolver')($rootValue, $args, $context, $info);
+    return (function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\SumResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\SumResolver');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})($rootValue, $args, $context, $info);
 }), 
-                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\PlusXDirectiveArgs(array (
-  'x' => '7',
-)),
+                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\PlusXDirectiveArgs(['x' => '7']),
                         $rootValue, $args, $context, $info
                         );
                     },
-            'type' => function() { return Type::int(); },
+            'type' => fn() => Type::int(),
             'args' => [],
         ]),'dynamicSum' => new FieldDefinition([
             'name' => 'dynamicSum',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => function($rootValue, $args, $context, $info) {
-                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective')(
-                        (function ($rootValue, $args, $context, $info) {
+            'resolve' => function(mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
+                        return (function (callable $next, $directiveArgs, $rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Directive resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Directive\PlusXDirective');
+    }
+
+    return $resolver($next, $directiveArgs, $rootValue, $args, $context, $info);
+})(
+                        (function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
     $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\DynamicSumResolverArgs($args);
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\DynamicSumResolver')($rootValue, $args, $context, $info);
+    return (function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\DynamicSumResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\DynamicSumResolver');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})($rootValue, $args, $context, $info);
 }), 
-                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\PlusXDirectiveArgs(array (
-  'x' => '4',
-)),
+                        new \Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\PlusXDirectiveArgs(['x' => '4']),
                         $rootValue, $args, $context, $info
                         );
                     },
-            'type' => function() { return Type::int(); },
+            'type' => fn() => Type::int(),
             'args' => ['x' => [
             'name' => 'x',
-            'type' => function() { return Type::nonNull(function() { return Type::int(); }); },
+            'type' => fn() => Type::nonNull(Type::int()),
         ],'y' => [
             'name' => 'y',
-            'type' => function() { return Type::nonNull(function() { return Type::int(); }); },
+            'type' => fn() => Type::nonNull(Type::int()),
         ]],
         ]),'addHour' => new FieldDefinition([
             'name' => 'addHour',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => (function ($rootValue, $args, $context, $info) {
+            'resolve' => (function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
     $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\AddHourResolverArgs($args);
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AddHourResolver')($rootValue, $args, $context, $info);
+    return (function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AddHourResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\AddHourResolver');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})($rootValue, $args, $context, $info);
 }),
-            'type' => function() { return $this->getType('DateTime'); },
+            'type' => fn() => $this->DateTime(),
             'args' => ['date' => [
             'name' => 'date',
-            'type' => function() { return Type::nonNull(function() { return $this->getType('DateTime'); }); },
+            'type' => fn() => Type::nonNull($this->DateTime()),
         ]],
         ]),'_service' => new FieldDefinition([
             'name' => '_service',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => (function ($rootValue, $args, $context, $info) {
+            'resolve' => (function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
     
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_ServiceResolver')($rootValue, $args, $context, $info);
+    return (function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_ServiceResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_ServiceResolver');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})($rootValue, $args, $context, $info);
 }),
-            'type' => function() { return Type::nonNull(function() { return $this->getType('_Service'); }); },
+            'type' => fn() => Type::nonNull($this->_Service()),
             'args' => [],
         ]),'_entities' => new FieldDefinition([
             'name' => '_entities',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => (function ($rootValue, $args, $context, $info) {
+            'resolve' => (function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
     $args = new \Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\_EntitiesResolverArgs($args);
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_EntitiesResolver')($rootValue, $args, $context, $info);
+    return (function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_EntitiesResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query\_EntitiesResolver');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})($rootValue, $args, $context, $info);
 }),
-            'type' => function() { return Type::nonNull(function() { return new ListOfType(function() { return $this->getType('_Entity'); }); }); },
+            'type' => fn() => Type::nonNull(new ListOfType($this->_Entity())),
             'args' => ['representations' => [
             'name' => 'representations',
-            'type' => function() { return Type::nonNull(function() { return new ListOfType(function() { return Type::nonNull(function() { return $this->getType('_Any'); }); }); }); },
+            'type' => fn() => Type::nonNull(new ListOfType(Type::nonNull($this->_Any()))),
         ]],
         ])],
         ]);
@@ -153,7 +218,7 @@ class TypeRegistry
         
 
 
-            public function Node()
+            public function Node(): InterfaceType
             {
                 return new InterfaceType([
             'name' => 'Node',
@@ -163,7 +228,7 @@ class TypeRegistry
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::nonNull(function() { return Type::id(); }); },
+            'type' => fn() => Type::nonNull(Type::id()),
             'args' => [],
         ])],
         ]);
@@ -171,7 +236,7 @@ class TypeRegistry
         
 
 
-            public function Account()
+            public function Account(): ObjectType
             {
                 return new ObjectType([
             'name' => 'Account',
@@ -181,38 +246,51 @@ class TypeRegistry
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::nonNull(function() { return Type::id(); }); },
+            'type' => fn() => Type::nonNull(Type::id()),
             'args' => [],
         ]),'number' => new FieldDefinition([
             'name' => 'number',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => function($rootValue, $args, $context, $info) {
-                        return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective')(
+            'resolve' => function(mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
+                        return (function (callable $next, $directiveArgs, $rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Directive resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Directive\UppercaseDirective');
+    }
+
+    return $resolver($next, $directiveArgs, $rootValue, $args, $context, $info);
+})(
                         \Axtiva\FlexibleGraphql\Resolver\Foundation\DefaultResolver::getInstance(), 
-                        array (
-),
+                        [],
                         $rootValue, $args, $context, $info
                         );
                     },
-            'type' => function() { return Type::nonNull(function() { return Type::string(); }); },
+            'type' => fn() => Type::nonNull(Type::string()),
             'args' => [],
         ]),'currency' => new FieldDefinition([
             'name' => 'currency',
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::nonNull(function() { return $this->getType('Currency'); }); },
+            'type' => fn() => Type::nonNull($this->Currency()),
             'args' => [],
         ]),'transactions' => new FieldDefinition([
             'name' => 'transactions',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => (function ($rootValue, $args, $context, $info) {
+            'resolve' => (function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
     
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Account\TransactionsResolver')($rootValue, $args, $context, $info);
+    return (function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Account\TransactionsResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Account\TransactionsResolver');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})($rootValue, $args, $context, $info);
 }),
-            'type' => function() { return Type::nonNull(function() { return new ListOfType(function() { return Type::nonNull(function() { return $this->getType('Transaction'); }); }); }); },
+            'type' => fn() => Type::nonNull(new ListOfType(Type::nonNull($this->Transaction()))),
             'args' => [],
         ])],
         ]);
@@ -220,7 +298,7 @@ class TypeRegistry
         
 
 
-            public function Transaction()
+            public function Transaction(): ObjectType
             {
                 return new ObjectType([
             'name' => 'Transaction',
@@ -230,38 +308,45 @@ class TypeRegistry
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::nonNull(function() { return Type::id(); }); },
+            'type' => fn() => Type::nonNull(Type::id()),
             'args' => [],
         ]),'amount' => new FieldDefinition([
             'name' => 'amount',
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::nonNull(function() { return Type::int(); }); },
+            'type' => fn() => Type::nonNull(Type::int()),
             'args' => [],
         ]),'ups' => new FieldDefinition([
             'name' => 'ups',
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::string(); },
+            'type' => fn() => Type::string(),
             'args' => [],
         ]),'createdAt' => new FieldDefinition([
             'name' => 'createdAt',
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return $this->getType('DateTime'); },
+            'type' => fn() => $this->DateTime(),
             'args' => [],
         ]),'status' => new FieldDefinition([
             'name' => 'status',
             'description' => NULL,
             'deprecationReason' => NULL,
-            'resolve' => (function ($rootValue, $args, $context, $info) {
+            'resolve' => (function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
     
-    return $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Transaction\StatusResolver')($rootValue, $args, $context, $info);
+    return (function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Transaction\StatusResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Transaction\StatusResolver');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})($rootValue, $args, $context, $info);
 }),
-            'type' => function() { return Type::nonNull(function() { return $this->getType('TransactionStatus'); }); },
+            'type' => fn() => Type::nonNull($this->TransactionStatus()),
             'args' => [],
         ])],
         ]);
@@ -269,7 +354,7 @@ class TypeRegistry
         
 
 
-            public function NamedCurrency()
+            public function NamedCurrency(): ObjectType
             {
                 return new ObjectType([
             'name' => 'NamedCurrency',
@@ -279,14 +364,14 @@ class TypeRegistry
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::nonNull(function() { return Type::id(); }); },
+            'type' => fn() => Type::nonNull(Type::id()),
             'args' => [],
         ]),'name' => new FieldDefinition([
             'name' => 'name',
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::nonNull(function() { return Type::string(); }); },
+            'type' => fn() => Type::nonNull(Type::string()),
             'args' => [],
         ])],
         ]);
@@ -294,7 +379,7 @@ class TypeRegistry
         
 
 
-            public function CodedCurrency()
+            public function CodedCurrency(): ObjectType
             {
                 return new ObjectType([
             'name' => 'CodedCurrency',
@@ -304,14 +389,14 @@ class TypeRegistry
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::nonNull(function() { return Type::id(); }); },
+            'type' => fn() => Type::nonNull(Type::id()),
             'args' => [],
         ]),'code' => new FieldDefinition([
             'name' => 'code',
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::nonNull(function() { return Type::int(); }); },
+            'type' => fn() => Type::nonNull(Type::int()),
             'args' => [],
         ])],
         ]);
@@ -319,19 +404,26 @@ class TypeRegistry
         
 
 
-            public function Currency()
+            public function Currency(): UnionType
             {
                 return new UnionType([
             'name' => 'Currency',
             'description' => NULL,
-            'types' => function() { return [$this->getType('NamedCurrency'),$this->getType('CodedCurrency')];},
-            'resolveType' => $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\CurrencyTypeResolver'),
+            'types' => fn() => [fn() => $this->NamedCurrency(),fn() => $this->CodedCurrency()],
+            'resolveType' => (function ($model, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\CurrencyTypeResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Union resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\CurrencyTypeResolver');
+    }
+
+    return $resolver($model, $context, $info);
+}),
         ]);
             }
         
 
 
-            public function TransactionStatus()
+            public function TransactionStatus(): EnumType
             {
                 return new EnumType([
         'name' => 'TransactionStatus',
@@ -359,20 +451,47 @@ class TypeRegistry
         
 
 
-            public function DateTime()
+            public function DateTime(): CustomScalarType
             {
                 return new CustomScalarType([
             'name' => 'DateTime',
             'description' => NULL,
-            'serialize' => function($value) {return ($this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar'))->serialize($value);},
-            'parseValue' => function($value) {return ($this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar'))->parseValue($value);},
-            'parseLiteral' => function($value, $variables) {return ($this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar'))->parseLiteral($value, $variables);},
+            'serialize' => function(mixed $value): mixed {
+                $resolver = (function () {
+    return $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar');
+})();
+                if (!$resolver instanceof \Axtiva\FlexibleGraphql\Resolver\CustomScalarResolverInterface) {
+                    throw new \RuntimeException('Scalar resolver must implement CustomScalarResolverInterface');
+                }
+
+                return $resolver->serialize($value);
+            },
+            'parseValue' => function(mixed $value): mixed {
+                $resolver = (function () {
+    return $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar');
+})();
+                if (!$resolver instanceof \Axtiva\FlexibleGraphql\Resolver\CustomScalarResolverInterface) {
+                    throw new \RuntimeException('Scalar resolver must implement CustomScalarResolverInterface');
+                }
+
+                return $resolver->parseValue($value);
+            },
+            'parseLiteral' => function(\GraphQL\Language\AST\Node $value, ?array $variables = null): mixed {
+                $resolver = (function () {
+    return $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\Scalar\DateTimeScalar');
+})();
+                if (!$resolver instanceof \Axtiva\FlexibleGraphql\Resolver\CustomScalarResolverInterface) {
+                    throw new \RuntimeException('Scalar resolver must implement CustomScalarResolverInterface');
+                }
+
+                return $resolver->parseLiteral($value, $variables);
+            },
         ]);
             }
         
 
 
-            public function HelloWorld()
+            public function HelloWorld(): CustomScalarType
             {
                 return new CustomScalarType([
             'name' => 'HelloWorld',
@@ -383,7 +502,7 @@ class TypeRegistry
         
 
 
-            public function _FieldSet()
+            public function _FieldSet(): CustomScalarType
             {
                 return new CustomScalarType([
             'name' => '_FieldSet',
@@ -394,7 +513,7 @@ class TypeRegistry
         
 
 
-            public function _Service()
+            public function _Service(): ObjectType
             {
                 return new ObjectType([
             'name' => '_Service',
@@ -404,7 +523,7 @@ class TypeRegistry
             'description' => NULL,
             'deprecationReason' => NULL,
             // No resolver. Default used
-            'type' => function() { return Type::nonNull(function() { return Type::string(); }); },
+            'type' => fn() => Type::nonNull(Type::string()),
             'args' => [],
         ])],
         ]);
@@ -412,19 +531,26 @@ class TypeRegistry
         
 
 
-            public function _Entity()
+            public function _Entity(): UnionType
             {
                 return new UnionType([
             'name' => '_Entity',
             'description' => NULL,
-            'types' => function() { return [$this->getType('Account'),$this->getType('Transaction')];},
-            'resolveType' => $this->container->get('Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\_EntityTypeResolver'),
+            'types' => fn() => [fn() => $this->Account(),fn() => $this->Transaction()],
+            'resolveType' => (function ($model, $context, $info) {
+    $resolver = $this->getService('Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\_EntityTypeResolver');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Union resolver service is not callable: Axtiva\FlexibleGraphql\Example\GraphQL\UnionResolveType\_EntityTypeResolver');
+    }
+
+    return $resolver($model, $context, $info);
+}),
         ]);
             }
         
 
 
-            public function _Any()
+            public function _Any(): CustomScalarType
             {
                 return new CustomScalarType([
             'name' => '_Any',
@@ -435,7 +561,7 @@ class TypeRegistry
         
 
 
-            public function link__Purpose()
+            public function link__Purpose(): EnumType
             {
                 return new EnumType([
         'name' => 'link__Purpose',
@@ -457,7 +583,7 @@ class TypeRegistry
         
 
 
-            public function link__Import()
+            public function link__Import(): CustomScalarType
             {
                 return new CustomScalarType([
             'name' => 'link__Import',
@@ -467,13 +593,13 @@ class TypeRegistry
             }
         
 
-    public function Mutation()
+    public function Mutation(): ObjectType
     {
-        return new ObjectType(['name' => 'Mutation']);
+        return new ObjectType(['name' => 'Mutation', 'fields' => []]);
     }
 
 
-    public function directive_uppercase()
+    public function directive_uppercase(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -482,9 +608,7 @@ class TypeRegistry
             'description' => 'CAPITALIZE ALL LETTERS IN STRING',
             'isRepeatable' => false,
             'locations' => ['FIELD','FIELD_DEFINITION'],
-            'args' => [
-                
-            ],
+            'args' => [],
         ]);
         }
         
@@ -493,7 +617,7 @@ class TypeRegistry
         
 
 
-    public function directive_plusX()
+    public function directive_plusX(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -502,12 +626,10 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD','FIELD_DEFINITION'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'x',
-            'type' => function() { return Type::nonNull(function() { return Type::int(); }); },
-        ]
-            ],
+            'type' => fn() => Type::nonNull(Type::int()),
+        ]],
         ]);
         }
         
@@ -516,7 +638,7 @@ class TypeRegistry
         
 
 
-    public function directive_key()
+    public function directive_key(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -525,16 +647,14 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => true,
             'locations' => ['OBJECT','INTERFACE'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'fields',
-            'type' => function() { return Type::nonNull(function() { return $this->getType('FieldSet'); }); },
+            'type' => fn() => Type::nonNull($this->FieldSet()),
         ],[
             'name' => 'resolvable',
-            'type' => function() { return Type::boolean(); },
+            'type' => fn() => Type::boolean(),
             'defaultValue' => true,
-        ]
-            ],
+        ]],
         ]);
         }
         
@@ -543,7 +663,7 @@ class TypeRegistry
         
 
 
-    public function directive_external()
+    public function directive_external(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -552,9 +672,7 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD_DEFINITION'],
-            'args' => [
-                
-            ],
+            'args' => [],
         ]);
         }
         
@@ -563,7 +681,7 @@ class TypeRegistry
         
 
 
-    public function directive_requires()
+    public function directive_requires(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -572,12 +690,10 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD_DEFINITION'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'fields',
-            'type' => function() { return Type::nonNull(function() { return $this->getType('FieldSet'); }); },
-        ]
-            ],
+            'type' => fn() => Type::nonNull($this->FieldSet()),
+        ]],
         ]);
         }
         
@@ -586,7 +702,7 @@ class TypeRegistry
         
 
 
-    public function directive_provides()
+    public function directive_provides(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -595,12 +711,10 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD_DEFINITION'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'fields',
-            'type' => function() { return Type::nonNull(function() { return $this->getType('FieldSet'); }); },
-        ]
-            ],
+            'type' => fn() => Type::nonNull($this->FieldSet()),
+        ]],
         ]);
         }
         
@@ -609,7 +723,7 @@ class TypeRegistry
         
 
 
-    public function directive_extends()
+    public function directive_extends(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -618,9 +732,7 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['OBJECT','INTERFACE'],
-            'args' => [
-                
-            ],
+            'args' => [],
         ]);
         }
         
@@ -629,7 +741,7 @@ class TypeRegistry
         
 
 
-    public function directive_link()
+    public function directive_link(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -638,21 +750,19 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => true,
             'locations' => ['SCHEMA'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'url',
-            'type' => function() { return Type::string(); },
+            'type' => fn() => Type::string(),
         ],[
             'name' => 'as',
-            'type' => function() { return Type::string(); },
+            'type' => fn() => Type::string(),
         ],[
             'name' => 'for',
-            'type' => function() { return $this->getType('link__Purpose'); },
+            'type' => fn() => $this->link__Purpose(),
         ],[
             'name' => 'import',
-            'type' => function() { return new ListOfType(function() { return $this->getType('link__Import'); }); },
-        ]
-            ],
+            'type' => fn() => new ListOfType($this->link__Import()),
+        ]],
         ]);
         }
         
@@ -661,7 +771,7 @@ class TypeRegistry
         
 
 
-    public function directive_shareable()
+    public function directive_shareable(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -670,9 +780,7 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['OBJECT','FIELD_DEFINITION'],
-            'args' => [
-                
-            ],
+            'args' => [],
         ]);
         }
         
@@ -681,7 +789,7 @@ class TypeRegistry
         
 
 
-    public function directive_inaccessible()
+    public function directive_inaccessible(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -690,9 +798,7 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD_DEFINITION','OBJECT','INTERFACE','UNION','ARGUMENT_DEFINITION','SCALAR','ENUM','ENUM_VALUE','INPUT_OBJECT','INPUT_FIELD_DEFINITION'],
-            'args' => [
-                
-            ],
+            'args' => [],
         ]);
         }
         
@@ -701,7 +807,7 @@ class TypeRegistry
         
 
 
-    public function directive_override()
+    public function directive_override(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -710,12 +816,10 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD_DEFINITION'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'from',
-            'type' => function() { return Type::nonNull(function() { return Type::string(); }); },
-        ]
-            ],
+            'type' => fn() => Type::nonNull(Type::string()),
+        ]],
         ]);
         }
         
@@ -724,7 +828,7 @@ class TypeRegistry
         
 
 
-    public function directive_tag()
+    public function directive_tag(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -733,12 +837,10 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => true,
             'locations' => ['FIELD_DEFINITION','INTERFACE','OBJECT','UNION','ARGUMENT_DEFINITION','SCALAR','ENUM','ENUM_VALUE','INPUT_OBJECT','INPUT_FIELD_DEFINITION'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'name',
-            'type' => function() { return Type::nonNull(function() { return Type::string(); }); },
-        ]
-            ],
+            'type' => fn() => Type::nonNull(Type::string()),
+        ]],
         ]);
         }
         
@@ -747,7 +849,7 @@ class TypeRegistry
         
 
 
-    public function directive_federation__tag()
+    public function directive_federation__tag(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -756,12 +858,10 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => true,
             'locations' => ['FIELD_DEFINITION','INTERFACE','OBJECT','UNION','ARGUMENT_DEFINITION','SCALAR','ENUM','ENUM_VALUE','INPUT_OBJECT','INPUT_FIELD_DEFINITION'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'name',
-            'type' => function() { return Type::nonNull(function() { return Type::string(); }); },
-        ]
-            ],
+            'type' => fn() => Type::nonNull(Type::string()),
+        ]],
         ]);
         }
         
@@ -770,7 +870,7 @@ class TypeRegistry
         
 
 
-    public function directive_federation__shareable()
+    public function directive_federation__shareable(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -779,9 +879,7 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['OBJECT','FIELD_DEFINITION'],
-            'args' => [
-                
-            ],
+            'args' => [],
         ]);
         }
         
@@ -790,7 +888,7 @@ class TypeRegistry
         
 
 
-    public function directive_federation__inaccessible()
+    public function directive_federation__inaccessible(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -799,9 +897,7 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD_DEFINITION','OBJECT','INTERFACE','UNION','ARGUMENT_DEFINITION','SCALAR','ENUM','ENUM_VALUE','INPUT_OBJECT','INPUT_FIELD_DEFINITION'],
-            'args' => [
-                
-            ],
+            'args' => [],
         ]);
         }
         
@@ -810,7 +906,7 @@ class TypeRegistry
         
 
 
-    public function directive_federation__override()
+    public function directive_federation__override(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -819,12 +915,10 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD_DEFINITION'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'from',
-            'type' => function() { return Type::nonNull(function() { return Type::string(); }); },
-        ]
-            ],
+            'type' => fn() => Type::nonNull(Type::string()),
+        ]],
         ]);
         }
         
@@ -833,7 +927,7 @@ class TypeRegistry
         
 
 
-    public function directive_federation__external()
+    public function directive_federation__external(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -842,9 +936,7 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD_DEFINITION'],
-            'args' => [
-                
-            ],
+            'args' => [],
         ]);
         }
         
@@ -853,7 +945,7 @@ class TypeRegistry
         
 
 
-    public function directive_federation__requires()
+    public function directive_federation__requires(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -862,12 +954,10 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD_DEFINITION'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'fields',
-            'type' => function() { return Type::nonNull(function() { return $this->getType('FieldSet'); }); },
-        ]
-            ],
+            'type' => fn() => Type::nonNull($this->FieldSet()),
+        ]],
         ]);
         }
         
@@ -876,7 +966,7 @@ class TypeRegistry
         
 
 
-    public function directive_federation__provides()
+    public function directive_federation__provides(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -885,12 +975,10 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['FIELD_DEFINITION'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'fields',
-            'type' => function() { return Type::nonNull(function() { return $this->getType('FieldSet'); }); },
-        ]
-            ],
+            'type' => fn() => Type::nonNull($this->FieldSet()),
+        ]],
         ]);
         }
         
@@ -899,7 +987,7 @@ class TypeRegistry
         
 
 
-    public function directive_federation__key()
+    public function directive_federation__key(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -908,16 +996,14 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => true,
             'locations' => ['OBJECT','INTERFACE'],
-            'args' => [
-                [
+            'args' => [[
             'name' => 'fields',
-            'type' => function() { return Type::nonNull(function() { return $this->getType('FieldSet'); }); },
+            'type' => fn() => Type::nonNull($this->FieldSet()),
         ],[
             'name' => 'resolvable',
-            'type' => function() { return Type::boolean(); },
+            'type' => fn() => Type::boolean(),
             'defaultValue' => true,
-        ]
-            ],
+        ]],
         ]);
         }
         
@@ -926,7 +1012,7 @@ class TypeRegistry
         
 
 
-    public function directive_federation__extends()
+    public function directive_federation__extends(): Directive
     {
         static $directive = null;
         if ($directive === null) {
@@ -935,9 +1021,7 @@ class TypeRegistry
             'description' => NULL,
             'isRepeatable' => false,
             'locations' => ['OBJECT','INTERFACE'],
-            'args' => [
-                
-            ],
+            'args' => [],
         ]);
         }
         
@@ -946,7 +1030,10 @@ class TypeRegistry
         
 
 
-    public function getDirectives()
+    /**
+     * @return array<int, Directive>
+     */
+    public function getDirectives(): array
     {
         return [$this->directive_uppercase(),$this->directive_plusX(),$this->directive_key(),$this->directive_external(),$this->directive_requires(),$this->directive_provides(),$this->directive_extends(),$this->directive_link(),$this->directive_shareable(),$this->directive_inaccessible(),$this->directive_override(),$this->directive_tag(),$this->directive_federation__tag(),$this->directive_federation__shareable(),$this->directive_federation__inaccessible(),$this->directive_federation__override(),$this->directive_federation__external(),$this->directive_federation__requires(),$this->directive_federation__provides(),$this->directive_federation__key(),$this->directive_federation__extends()];
     }

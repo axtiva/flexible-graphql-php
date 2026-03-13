@@ -6,6 +6,7 @@ namespace Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Transaction;
 use Axtiva\FlexibleGraphql\Example\GraphQL\Model\TransactionStatusEnum;
 use Axtiva\FlexibleGraphql\Example\GraphQL\Model\TransactionType;
 use Axtiva\FlexibleGraphql\Resolver\ResolverInterface;
+use ArrayAccess;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
@@ -14,15 +15,12 @@ use GraphQL\Type\Definition\ResolveInfo;
  */
 final class StatusResolver implements ResolverInterface
 {
-    /**
-     * @param TransactionType $rootValue
-     * @param $args
-     * @param $context
-     * @param ResolveInfo $info
-     * @return TransactionStatusEnum
-     */
-    public function __invoke($rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
+        if (!$rootValue instanceof TransactionType) {
+            return new TransactionStatusEnum(TransactionStatusEnum::FAIL);
+        }
+
         $value = $rootValue->idStatus;
         $enum = null;
         if ($value === 0) {
@@ -30,6 +28,8 @@ final class StatusResolver implements ResolverInterface
         } elseif ($value === 1) {
             $enum = TransactionStatusEnum::SUCCESS;
         } elseif ($value === 2) {
+            $enum = TransactionStatusEnum::FAIL;
+        } else {
             $enum = TransactionStatusEnum::FAIL;
         }
 

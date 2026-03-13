@@ -45,8 +45,14 @@ class Representation
         return $this->typeName;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getFields(): array
     {
-        return $this->fields;
+        /** @var array<string, mixed> $fields */
+        $fields = $this->fields;
+
+        return $fields;
     }
 }

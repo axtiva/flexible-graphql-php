@@ -5,6 +5,7 @@ namespace Axtiva\FlexibleGraphql\Example\GraphQL\Resolver\Query;
 
 use Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\DynamicSumResolverArgs;
 use Axtiva\FlexibleGraphql\Resolver\ResolverInterface;
+use ArrayAccess;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
@@ -13,15 +14,12 @@ use GraphQL\Type\Definition\ResolveInfo;
  */
 final class DynamicSumResolver implements ResolverInterface
 {
-    /**
-     * @param $rootValue
-     * @param DynamicSumResolverArgs $args
-     * @param $context
-     * @param ResolveInfo $info
-     * @return ?int
-     */
-    public function __invoke($rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
-        return $args->x + $args['y'];
+        if (!$args instanceof DynamicSumResolverArgs) {
+            return 0;
+        }
+
+        return $args->x + $args->y;
     }
 }

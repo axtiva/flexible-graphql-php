@@ -8,6 +8,7 @@ use Axtiva\FlexibleGraphql\Example\GraphQL\Model\CodedCurrencyType;
 use Axtiva\FlexibleGraphql\Example\GraphQL\Model\NamedCurrencyType;
 use Axtiva\FlexibleGraphql\Example\GraphQL\ResolverArgs\Query\AccountResolverArgs;
 use Axtiva\FlexibleGraphql\Resolver\ResolverInterface;
+use ArrayAccess;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
@@ -16,24 +17,21 @@ use GraphQL\Type\Definition\ResolveInfo;
  */
 final class AccountResolver implements ResolverInterface
 {
-    /**
-     * @param $rootValue
-     * @param AccountResolverArgs $args
-     * @param $context
-     * @param ResolveInfo $info
-     * @return ?AccountType
-     */
-    public function __invoke($rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
-        $model = new \Axtiva\FlexibleGraphql\Example\GraphQL\Model\AccountType();
-        $model->id  = $args['id'];
+        if (!$args instanceof AccountResolverArgs) {
+            return null;
+        }
+
+        $model = new AccountType();
+        $model->id  = (string) $args->id;
         $model->number = 'fdasf32dsfasge3';
 
         $namedCurrency = new NamedCurrencyType();
         $namedCurrency->id = '32';
         $namedCurrency->name = 'DemoName';
 
-        $codedCurrency = new CodedCurrencyType(42, 323);
+        $codedCurrency = new CodedCurrencyType();
         $codedCurrency->id = '42';
         $codedCurrency->code = 42;
 

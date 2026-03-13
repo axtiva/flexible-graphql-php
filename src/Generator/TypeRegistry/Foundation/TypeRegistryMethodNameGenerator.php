@@ -11,6 +11,6 @@ class TypeRegistryMethodNameGenerator implements TypeRegistryMethodNameGenerator
 {
     public function getMethodName(Type $type): string
     {
-        return $type->name;
+        return $type->toString();
     }
 }

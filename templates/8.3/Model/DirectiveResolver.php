@@ -21,16 +21,7 @@ use <?=$import_class?>;
  */
 final class <?=$short_class_name?> implements DirectiveResolverInterface
 {
-    /**
-     * @param callable $next
-     * @param <?php if (!empty($directive_args_class)): ?><?=$directive_args_class?> <?php endif ?>$directiveArgs
-     * @param $rootValue
-     * @param $args
-     * @param $context
-     * @param ResolveInfo $info
-     * @return mixed
-     */
-    public function __invoke(callable $next, $directiveArgs, $rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(callable $next, array|\ArrayAccess|null $directiveArgs, mixed $rootValue, array|\ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
         throw new NotImplementedResolver('Not implemented directive resolver ' . __CLASS__);
         // FIXME example return mb_strtoupper($next($rootValue, $args, $context, $info));

@@ -5,6 +5,7 @@ namespace Axtiva\FlexibleGraphql\Example\GraphQL\Directive;
 
 use Axtiva\FlexibleGraphql\Example\GraphQL\DirectiveArgs\PlusXDirectiveArgs;
 use Axtiva\FlexibleGraphql\Resolver\DirectiveResolverInterface;
+use ArrayAccess;
 use GraphQL\Type\Definition\ResolveInfo;
 
 /**
@@ -13,17 +14,12 @@ use GraphQL\Type\Definition\ResolveInfo;
  */
 final class PlusXDirective implements DirectiveResolverInterface
 {
-    /**
-     * @param callable $next
-     * @param PlusXDirectiveArgs $directiveArgs
-     * @param $rootValue
-     * @param $args
-     * @param $context
-     * @param ResolveInfo $info
-     * @return mixed
-     */
-    public function __invoke(callable $next, $directiveArgs, $rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(callable $next, array|ArrayAccess|null $directiveArgs, mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
+        if (!$directiveArgs instanceof PlusXDirectiveArgs) {
+            return $next($rootValue, $args, $context, $info);
+        }
+
         return $next($rootValue, $args, $context, $info) + $directiveArgs->x;
     }
 }

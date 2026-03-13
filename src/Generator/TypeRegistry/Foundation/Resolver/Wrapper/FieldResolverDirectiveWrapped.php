@@ -88,7 +88,7 @@ class FieldResolverDirectiveWrapped implements FieldResolverGeneratorInterface
                         );
                 }
 
-                $resolver = "function(\$rootValue, \$args, \$context, \$info) {
+                $resolver = "function(mixed \$rootValue, array \$args, mixed \$context, \\GraphQL\\Type\\Definition\\ResolveInfo \$info): mixed {
                         return {$directiveResolver}(
                         {$resolver}, 
                         {$directiveArgs},

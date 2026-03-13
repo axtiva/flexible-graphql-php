@@ -258,8 +258,11 @@ class CodeGeneratorBuilder implements CodeGeneratorBuilderInterface
             );
         }
 
+        /** @var list<FieldResolverGeneratorInterface> $fieldResolverGenerators */
+        $fieldResolverGenerators = array_values($this->fieldResolverGenerators);
+
         return new CodeGenerator(
-            $this->fieldResolverGenerators,
+            $fieldResolverGenerators,
             $this->scalarResolverGenerator,
             $this->directiveResolverGenerator,
             $this->argsDirectiveResolverGenerator,

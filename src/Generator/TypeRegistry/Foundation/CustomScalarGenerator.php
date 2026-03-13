@@ -37,21 +37,44 @@ class CustomScalarGenerator implements ScalarTypeGeneratorInterface
     public function generate(Type $type): string
     {
         if (false === $this->isSupportedType($type)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->toString(), __CLASS__));
         }
+
+        /** @var CustomScalarType $type */
 
         $resolvers = '';
         if ($this->resolverGenerator->hasResolver($type)) {
             $customResolver = $this->resolverGenerator->generate($type);
             $resolvers = <<<PHP
-            'serialize' => function(\$value) {return ({$customResolver})->serialize(\$value);},
-            'parseValue' => function(\$value) {return ({$customResolver})->parseValue(\$value);},
-            'parseLiteral' => function(\$value, \$variables) {return ({$customResolver})->parseLiteral(\$value, \$variables);},
+            'serialize' => function(mixed \$value): mixed {
+                \$resolver = {$customResolver};
+                if (!\$resolver instanceof \Axtiva\FlexibleGraphql\Resolver\CustomScalarResolverInterface) {
+                    throw new \RuntimeException('Scalar resolver must implement CustomScalarResolverInterface');
+                }
+
+                return \$resolver->serialize(\$value);
+            },
+            'parseValue' => function(mixed \$value): mixed {
+                \$resolver = {$customResolver};
+                if (!\$resolver instanceof \Axtiva\FlexibleGraphql\Resolver\CustomScalarResolverInterface) {
+                    throw new \RuntimeException('Scalar resolver must implement CustomScalarResolverInterface');
+                }
+
+                return \$resolver->parseValue(\$value);
+            },
+            'parseLiteral' => function(\GraphQL\Language\AST\Node \$value, ?array \$variables = null): mixed {
+                \$resolver = {$customResolver};
+                if (!\$resolver instanceof \Axtiva\FlexibleGraphql\Resolver\CustomScalarResolverInterface) {
+                    throw new \RuntimeException('Scalar resolver must implement CustomScalarResolverInterface');
+                }
+
+                return \$resolver->parseLiteral(\$value, \$variables);
+            },
 PHP;
         }
 
         return "new CustomScalarType([
-            'name' => {$this->serializer->serialize($type->name)},
+            'name' => {$this->serializer->serialize($type->toString())},
             'description' => {$this->serializer->serialize($type->description)},
 {$resolvers}
         ])";

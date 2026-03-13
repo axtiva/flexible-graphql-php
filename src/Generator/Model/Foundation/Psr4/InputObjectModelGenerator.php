@@ -56,7 +56,7 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
     public function generate(Type $type, Schema $schema): string
     {
         if (false === $this->isSupportedType($type)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->toString(), __CLASS__));
         }
 
         /** @var InputObjectType $type */
@@ -65,7 +65,7 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
         foreach ($type->getFields() as $field) {
             $fieldType = $this->getWrappedType($field->getType());
             if (
-                (\in_array(\get_class($fieldType), [InputObjectType::class, EnumType::class, CustomScalarType::class]))
+                ($fieldType instanceof InputObjectType || $fieldType instanceof EnumType || $fieldType instanceof CustomScalarType)
                 && !Introspection::isIntrospectionType($fieldType)
             ) {
                 if ($fieldType instanceof InputObjectType) {
@@ -77,7 +77,6 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
                         $importClasses[] = $this->enumConfig->getModelFullClassName($fieldType);
                     }
                 } elseif ($fieldType instanceof CustomScalarType) {
-                    /** @var TypedCustomScalarResolverInterface|string $scalarClass */
                     $scalarClass = $this->scalarConfig->getModelFullClassName($fieldType);
                     if (
                         \class_exists($scalarClass)
@@ -89,7 +88,7 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
                         }
                     }
                 } else {
-                    throw new UnsupportedType($fieldType->name);
+                    throw new UnsupportedType($fieldType::class);
                 }
             }
 
@@ -108,7 +107,7 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
         $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/InputObjectModel.php';
         return TemplateRender::render($template, [
             'namespace' => $this->config->getModelNamespace($type),
-            'type_name' => $type->name,
+            'type_name' => $type->toString(),
             'short_class_name' => $this->config->getModelClassName($type),
             'type_description' => $type->description,
             'import_classes' => array_unique($importClasses),
@@ -123,17 +122,6 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
         }
 
         return $type instanceof CustomScalarType || $type instanceof EnumType || $type instanceof InputObjectType;
-    }
-
-    private function getFieldTypePHPDefinition(Type $type): string
-    {
-        $nullSign = '?';
-        if ($type instanceof NonNull) {
-            $nullSign = '';
-            $type = $type->getWrappedType();
-        }
-
-        return $nullSign . $this->getFieldTypeDefinition($type);
     }
 
     private function getFieldTypeDefinition(Type $type): string
@@ -157,7 +145,6 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
         ) {
             return 'string';
         } elseif ($type instanceof CustomScalarType) {
-            /** @var TypedCustomScalarResolverInterface|string $scalarClass */
             $scalarClass = $this->scalarConfig->getModelFullClassName($type);
             if (
                 \class_exists($scalarClass)
@@ -175,9 +162,12 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
             return $this->config->getModelClassName($type);
         }
 
-        throw new UnsupportedType($type->name);
+        throw new UnsupportedType($type::class);
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function getFieldTypeDocDefinition(Type $type): array
     {
         $types = [];
@@ -201,7 +191,6 @@ class InputObjectModelGenerator implements InputObjectModelGeneratorInterface
             ) {
                 $types[] = 'string';
             } elseif ($type instanceof CustomScalarType) {
-                /** @var TypedCustomScalarResolverInterface|string $scalarClass */
                 $scalarClass = $this->scalarConfig->getModelFullClassName($type);
                 if (
                     \class_exists($scalarClass)

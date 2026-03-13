@@ -42,21 +42,26 @@ class FederationRepresentationResolverGenerator implements FederationRepresentat
     public function generate(Type $type, Schema $schema): string
     {
         if (false === $this->isSupportedType($type)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->toString(), __CLASS__));
         }
 
         /** @var ObjectType $type */
 
         $filename = $this->config->getModelClassFileName($type);
         if (file_exists($filename)) {
-            return file_get_contents($filename);
+            $content = file_get_contents($filename);
+            if ($content === false) {
+                throw new UnsupportedType(sprintf('Could not read generated file %s', $filename));
+            }
+
+            return $content;
         }
 
         $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/RepresentationResolver.php';
 
         return TemplateRender::render($template, [
             'namespace' => $this->config->getModelNamespace($type),
-            'type_name' => $type->name,
+            'type_name' => $type->toString(),
             'short_class_name' => $this->config->getModelClassName($type),
         ]);
     }

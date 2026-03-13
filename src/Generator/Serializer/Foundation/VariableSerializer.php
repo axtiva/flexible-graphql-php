@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Axtiva\FlexibleGraphql\Generator\Serializer\Foundation;
 
 use Axtiva\FlexibleGraphql\Generator\Serializer\VariableSerializerInterface;
+use Stringable;
 
 class VariableSerializer implements VariableSerializerInterface
 {
@@ -43,6 +44,10 @@ class VariableSerializer implements VariableSerializerInterface
             return '[' . implode(', ', $parts) . ']';
         }
 
-        return var_export($value, true);
+        if ($value instanceof Stringable) {
+            return $this->serializeValue((string) $value);
+        }
+
+        return $this->serializeValue(get_debug_type($value));
     }
 }

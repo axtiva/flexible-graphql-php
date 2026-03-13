@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Axtiva\FlexibleGraphql\Generator\Model\Foundation\Psr4;
 
 use Axtiva\FlexibleGraphql\Generator\Config\ArgsDirectiveResolverGeneratorConfigInterface;
@@ -68,7 +70,7 @@ class ArgsDirectiveResolverModelGenerator implements ArgsDirectiveResolverModelG
             $fieldType = $this->getWrappedType($field->getType());
 
             if (
-                (\in_array(\get_class($fieldType), [InputObjectType::class, EnumType::class, CustomScalarType::class]))
+                ($fieldType instanceof InputObjectType || $fieldType instanceof EnumType || $fieldType instanceof CustomScalarType)
                 && !Introspection::isIntrospectionType($fieldType)
             ) {
                 if ($fieldType instanceof InputObjectType) {
@@ -76,7 +78,6 @@ class ArgsDirectiveResolverModelGenerator implements ArgsDirectiveResolverModelG
                 } elseif ($fieldType instanceof EnumType) {
                     $importClasses[] = $this->enumConfig->getModelFullClassName($fieldType);
                 } elseif ($fieldType instanceof CustomScalarType) {
-                    /** @var TypedCustomScalarResolverInterface|string $scalarClass */
                     $scalarClass = $this->scalarConfig->getModelFullClassName($fieldType);
                     if (
                         \class_exists($scalarClass)
@@ -88,7 +89,7 @@ class ArgsDirectiveResolverModelGenerator implements ArgsDirectiveResolverModelG
                         }
                     }
                 } else {
-                    throw new UnsupportedType($fieldType->name);
+                    throw new UnsupportedType($fieldType::class);
                 }
             }
 
@@ -176,7 +177,6 @@ class ArgsDirectiveResolverModelGenerator implements ArgsDirectiveResolverModelG
         ) {
             return 'string';
         } elseif ($type instanceof CustomScalarType) {
-            /** @var TypedCustomScalarResolverInterface|string $scalarClass */
             $scalarClass = $this->scalarConfig->getModelFullClassName($type);
             if (
                 \class_exists($scalarClass)
@@ -194,9 +194,12 @@ class ArgsDirectiveResolverModelGenerator implements ArgsDirectiveResolverModelG
             return $this->inputObjectConfig->getModelClassName($type);
         }
 
-        throw new UnsupportedType($type->name);
+        throw new UnsupportedType($type::class);
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function getFieldTypeDocDefinition(Type $type): array
     {
         $types = [];
@@ -220,7 +223,6 @@ class ArgsDirectiveResolverModelGenerator implements ArgsDirectiveResolverModelG
             ) {
                 $types[] = 'string';
             } elseif ($type instanceof CustomScalarType) {
-                /** @var TypedCustomScalarResolverInterface|string $scalarClass */
                 $scalarClass = $this->scalarConfig->getModelFullClassName($type);
                 if (
                     \class_exists($scalarClass)

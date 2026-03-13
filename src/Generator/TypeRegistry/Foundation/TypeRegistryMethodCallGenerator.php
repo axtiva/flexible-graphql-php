@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace Axtiva\FlexibleGraphql\Generator\TypeRegistry\Foundation;
 
 use GraphQL\Type\Definition\Type;
-use Axtiva\FlexibleGraphql\Generator\Serializer\VariableSerializerInterface;
 use Axtiva\FlexibleGraphql\Generator\TypeRegistry\TypeRegistryMethodCallGeneratorInterface;
+use Axtiva\FlexibleGraphql\Generator\TypeRegistry\TypeRegistryMethodNameGeneratorInterface;
 
 class TypeRegistryMethodCallGenerator implements TypeRegistryMethodCallGeneratorInterface
 {
-    private VariableSerializerInterface $serializer;
+    private TypeRegistryMethodNameGeneratorInterface $nameGenerator;
 
-    public function __construct(VariableSerializerInterface $serializer)
+    public function __construct(TypeRegistryMethodNameGeneratorInterface $nameGenerator)
     {
-        $this->serializer = $serializer;
+        $this->nameGenerator = $nameGenerator;
     }
 
     public function getMethodCall(Type $type): string
     {
-        return "\$this->getType({$this->serializer->serialize($type->name)})";
+        return sprintf('$this->%s()', $this->nameGenerator->getMethodName($type));
     }
 }

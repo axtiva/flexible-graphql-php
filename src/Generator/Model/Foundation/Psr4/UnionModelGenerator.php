@@ -34,8 +34,10 @@ class UnionModelGenerator implements ModelGeneratorInterface
     public function generate(Type $type, Schema $schema): string
     {
         if (false === $this->isSupportedType($type)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->toString(), __CLASS__));
         }
+
+        /** @var UnionType $type */
 
         $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/UnionModel.php';
         return TemplateRender::render($template, [

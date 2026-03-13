@@ -67,7 +67,7 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
     public function generate(Type $type, Schema $schema): string
     {
         if (false === $this->isSupportedType($type)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->toString(), __CLASS__));
         }
 
         /** @var ObjectType $type */
@@ -86,24 +86,16 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
         $importClasses = [];
         foreach ($type->getFields() as $field) {
             $fieldType = $this->getWrappedType($field->getType());
-            if (
-                (\in_array(\get_class($fieldType), [CustomScalarType::class]))
-                && !Introspection::isIntrospectionType($fieldType)
-            ) {
-                if ($fieldType instanceof CustomScalarType) {
-                    /** @var TypedCustomScalarResolverInterface|string $scalarClass */
-                    $scalarClass = $this->scalarConfig->getModelFullClassName($fieldType);
-                    if (
-                        \class_exists($scalarClass)
-                        && \in_array(TypedCustomScalarResolverInterface::class, \class_implements($scalarClass) ?: [])
-                    ) {
-                        $typeName = (string) $scalarClass::getTypeName();
-                        if (! empty($typeName)) {
-                            $importClasses[] = $typeName;
-                        }
+            if ($fieldType instanceof CustomScalarType && !Introspection::isIntrospectionType($fieldType)) {
+                $scalarClass = $this->scalarConfig->getModelFullClassName($fieldType);
+                if (
+                    \class_exists($scalarClass)
+                    && \in_array(TypedCustomScalarResolverInterface::class, \class_implements($scalarClass) ?: [])
+                ) {
+                    $typeName = (string) $scalarClass::getTypeName();
+                    if (! empty($typeName)) {
+                        $importClasses[] = $typeName;
                     }
-                } else {
-                    throw new UnsupportedType($fieldType->name);
                 }
             }
 
@@ -122,7 +114,7 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
         $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/ObjectModel.php';
         return TemplateRender::render($template, [
             'namespace' => $this->config->getModelNamespace($type),
-            'type_name' => $type->name,
+            'type_name' => $type->toString(),
             'short_class_name' => $this->config->getModelClassName($type),
             'type_description' => $type->description,
             'implements' => $implements,
@@ -153,7 +145,6 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
         ) {
             return $nullSign . 'string';
         } elseif ($type instanceof CustomScalarType) {
-            /** @var TypedCustomScalarResolverInterface|string $scalarClass */
             $scalarClass = $this->scalarConfig->getModelFullClassName($type);
             if (
                 \class_exists($scalarClass)
@@ -176,9 +167,12 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
             return $nullSign . $this->config->getModelClassName($type);
         }
 
-        throw new UnsupportedType($type->name);
+        throw new UnsupportedType($type->toString());
     }
 
+    /**
+     * @return array<int, string>
+     */
     private function getFieldTypeDocDefinition(Type $type): array
     {
         $types = [];
@@ -202,7 +196,6 @@ class ObjectModelGenerator implements ObjectModelGeneratorInterface
             ) {
                 $types[] = 'string';
             } elseif ($type instanceof CustomScalarType) {
-                /** @var TypedCustomScalarResolverInterface|string $scalarClass */
                 $scalarClass = $this->scalarConfig->getModelFullClassName($type);
                 if (
                     \class_exists($scalarClass)
