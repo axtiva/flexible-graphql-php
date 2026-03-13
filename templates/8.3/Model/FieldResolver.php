@@ -21,6 +21,21 @@ use <?=$import_class?>;
  */
 final class <?=$short_class_name?> implements ResolverInterface
 {
+<?php if (isset($root_value_class) || isset($field_args_class) || isset($return_class)): ?>
+    /**
+<?php if (isset($root_value_class)): ?>
+     * @param <?=$root_value_class?> $rootValue<?=PHP_EOL?>
+<?php endif ?>
+<?php if (isset($field_args_class)): ?>
+     * @param <?=$field_args_class?>|array<string, mixed>|\ArrayAccess<string, mixed>|null $args<?=PHP_EOL?>
+<?php else: ?>
+     * @param array<string, mixed>|\ArrayAccess<string, mixed>|null $args<?=PHP_EOL?>
+<?php endif ?>
+<?php if (isset($return_class)): ?>
+     * @return <?=$return_class?><?=PHP_EOL?>
+<?php endif ?>
+     */
+<?php endif ?>
     public function __invoke(mixed $rootValue, array|\ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
         throw new NotImplementedResolver('Not implemented field resolver ' . __CLASS__);

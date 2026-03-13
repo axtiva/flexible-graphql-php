@@ -101,5 +101,21 @@ GQL
             )),
             __DIR__ . '/fixtures/FieldResolverGeneratorTest/case-2.php.txt'
             ,];
+
+        require_once __DIR__ . '/resources/DateTimeScalar.php';
+        yield [
+            'NamedCurrency',
+            'dates',
+            CodeGeneratorConfig::V8_3,
+            BuildSchema::build(Parser::parse(<<<GQL
+type NamedCurrency {
+    id: ID!
+    dates: [DateTime!]
+}
+scalar DateTime
+GQL
+            )),
+            __DIR__ . '/fixtures/FieldResolverGeneratorTest/case-3.php.txt'
+            ,];
     }
 }

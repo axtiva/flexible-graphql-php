@@ -15,6 +15,11 @@ use DateTimeImmutable;
  */
 final class DateResolver implements ResolverInterface
 {
+    /**
+     * @param NamedCurrencyType $rootValue
+     * @param array<string, mixed>|\ArrayAccess<string, mixed>|null $args
+     * @return DateTimeImmutable
+     */
     public function __invoke(mixed $rootValue, array|\ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
         throw new NotImplementedResolver('Not implemented field resolver ' . __CLASS__);
