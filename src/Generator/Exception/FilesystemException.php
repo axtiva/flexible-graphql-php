@@ -9,7 +9,7 @@ use Throwable;
 
 class FilesystemException extends RuntimeException
 {
-    public function __construct($path, $code = 0, Throwable $previous = null)
+    public function __construct(string $path, int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct('Can not access to path: ' . $path, $code, $previous);
     }
