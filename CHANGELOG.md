@@ -2,7 +2,7 @@
 
 - upgrade php version to 8.3
 - upgrade webonyx/graphql-php
-- setup phpstan with level 9 and fix all errors and strict types in codebase and code generation templates
+- setup phpstan with level 6 and fix all errors and strict types in codebase and code generation templates
 - code coverage with phpunit
 
 2.1.1
