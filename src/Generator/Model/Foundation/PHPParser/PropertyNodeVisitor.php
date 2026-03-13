@@ -4,6 +4,7 @@ namespace Axtiva\FlexibleGraphql\Generator\Model\Foundation\PHPParser;
 
 use Axtiva\FlexibleGraphql\Generator\Model\FieldProviderInterface;
 use PhpParser\Node;
+use PhpParser\NodeVisitor;
 use PhpParser\NodeVisitorAbstract;
 
 /**
@@ -11,25 +12,35 @@ use PhpParser\NodeVisitorAbstract;
  */
 class PropertyNodeVisitor extends NodeVisitorAbstract implements FieldProviderInterface
 {
+    /**
+     * @var array<string, Node\Stmt\Property>
+     */
     private array $variables = [];
 
-    public function beforeTraverse(array $nodes)
+    /**
+     * @param array<Node> $nodes
+     */
+    public function beforeTraverse(array $nodes): ?array
     {
         $this->variables = [];
+
+        return null;
     }
 
-    public function leaveNode(Node $node)
+    public function leaveNode(Node $node): Node|int|null
     {
         if ($node instanceof Node\Stmt\Property) {
             $prop = $node->props[0];
             $this->variables[(string) $prop->name] = $node;
         }
+
+        return null;
     }
 
     /**
-     * @return array<string, string> <variable name, variable type>
+     * @return array<string, Node\Stmt\Property>
      */
-    public function getResults(): iterable
+    public function getResults(): array
     {
         return $this->variables;
     }

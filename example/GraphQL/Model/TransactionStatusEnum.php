@@ -21,13 +21,16 @@ final class TransactionStatusEnum implements EnumInterface
     public const SUCCESS = 'SUCCESS';
     public const FAIL = 'FAIL';
     public string $value;
+    /**
+     * @var array<string, true>
+     */
     private static array $map = [
         self::NEW => true,
         self::SUCCESS => true,
         self::FAIL => true,
     ];
 
-    public function __construct($value)
+    public function __construct(string $value)
     {
         if (!isset(self::$map[$value])) {
             throw new UnknownEnumValue(__CLASS__, $value);

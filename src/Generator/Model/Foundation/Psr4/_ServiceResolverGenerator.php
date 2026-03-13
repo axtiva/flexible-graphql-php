@@ -29,7 +29,7 @@ class _ServiceResolverGenerator implements FieldResolverGeneratorInterface
 
     public function isSupportedType(Type $type, FieldDefinition $field): bool
     {
-        return $type->name === 'Query' && $field->name === '_service';
+        return $type->toString() === 'Query' && $field->name === '_service';
     }
 
     public function generate(Type $type, FieldDefinition $field, Schema $schema): string
@@ -37,7 +37,7 @@ class _ServiceResolverGenerator implements FieldResolverGeneratorInterface
         if (false === $this->isSupportedType($type, $field)) {
             throw new UnsupportedType(sprintf(
                 'Unsupported generator for %s.%s on %s',
-                $type->name,
+                $type->toString(),
                 $field->name,
                 __CLASS__
             ));
@@ -47,7 +47,12 @@ class _ServiceResolverGenerator implements FieldResolverGeneratorInterface
 
         $filename = $this->config->getFieldResolverClassFileName($type, $field);
         if (file_exists($filename)) {
-            return file_get_contents($filename);
+            $content = file_get_contents($filename);
+            if ($content === false) {
+                throw new UnsupportedType(sprintf('Could not read generated file %s', $filename));
+            }
+
+            return $content;
         }
 
         $template = __DIR__ . '/../../../../../templates/' . $this->config->getPHPVersion() . '/Model/_ServiceResolver.php';

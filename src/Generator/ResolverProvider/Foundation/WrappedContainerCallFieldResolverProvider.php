@@ -32,7 +32,7 @@ class WrappedContainerCallFieldResolverProvider implements FieldResolverProvider
         }
 
         return sprintf(<<<'PHP'
-(function ($rootValue, $args, $context, $info) {
+(function (mixed $rootValue, array $args, mixed $context, \GraphQL\Type\Definition\ResolveInfo $info): mixed {
     %s
     return %s($rootValue, $args, $context, $info);
 })

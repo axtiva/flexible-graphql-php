@@ -37,9 +37,7 @@ class DirectiveGenerator implements DirectiveGeneratorInterface
             'description' => {$this->serializer->serialize($directive->description)},
             'isRepeatable' => {$this->serializer->serialize($directive->isRepeatable)},
             'locations' => [{$locations}],
-            'args' => [
-                {$args}
-            ],
+            'args' => [{$args}],
         ])";
     }
 }

@@ -40,18 +40,20 @@ class UnionGenerator implements TypeGeneratorInterface
     public function generate(Type $type): string
     {
         if (false === $this->isSupportedType($type)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->toString(), __CLASS__));
         }
+
+        /** @var UnionType $type */
 
         $values = [];
         foreach ($type->getTypes() as $value) {
-            $values[] = $this->methodGenerator->getMethodCall($value);
+            $values[] = 'fn() => ' . $this->methodGenerator->getMethodCall($value);
         }
         $values = implode(',', $values);
         return "new UnionType([
-            'name' => {$this->serializer->serialize($type->name)},
+            'name' => {$this->serializer->serialize($type->toString())},
             'description' => {$this->serializer->serialize($type->description)},
-            'types' => function() { return [{$values}];},
+            'types' => fn() => [{$values}],
             'resolveType' => {$this->resolverGenerator->generate($type)},
         ])";
     }

@@ -12,6 +12,10 @@ class ContainerCallScalarResolverProvider implements ScalarResolverProviderInter
 {
     public function generate(ScalarResolverGeneratorConfigInterface $config, Type $type): string
     {
-        return sprintf('$this->container->get(\'%s\')', $config->getModelFullClassName($type));
+        return sprintf(<<<'PHP'
+(function () {
+    return $this->getService('%s');
+})()
+PHP, $config->getModelFullClassName($type));
     }
 }

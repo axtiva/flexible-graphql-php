@@ -20,9 +20,9 @@ use <?=$use?>;
  */
 final class <?=$short_class_name?> implements UnionResolveTypeInterface
 {
-    public function __invoke($model, $context, ResolveInfo $info)
+    public function __invoke(mixed $model, mixed $context, ResolveInfo $info): mixed
     {
-        if (isset($model)) {
+        if (is_object($model)) {
             switch (get_class($model)) {
 <?php foreach ($models ?? [] as $model): ?>
                 case <?=$model['model']?>::class:

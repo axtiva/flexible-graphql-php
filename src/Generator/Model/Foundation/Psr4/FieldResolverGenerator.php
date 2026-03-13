@@ -85,7 +85,7 @@ class FieldResolverGenerator implements FieldResolverGeneratorInterface
             $argsClass = $this->argsFieldConfig->getFieldArgsClassName($type, $field);
         }
 
-        if (!\in_array($type->name, ['Query', 'Mutation', 'Subscribe']) ) {
+        if (!\in_array($type->toString(), ['Query', 'Mutation', 'Subscribe'], true) ) {
             $importClasses[] = $this->objectConfig->getModelFullClassName($type);
             $rootClass = $this->objectConfig->getModelClassName($type);
         }
@@ -103,12 +103,15 @@ class FieldResolverGenerator implements FieldResolverGeneratorInterface
             'root_value_class' => $rootClass,
             'field_args_class' => $argsClass,
             'return_class' => $returnClass,
-            'type_name' => $type->name,
+            'type_name' => $type->toString(),
             'import_classes' => array_unique($importClasses),
             'field_name' => $field->name,
         ]);
     }
 
+    /**
+     * @return array{0: ?string, 1: ?string}
+     */
     private function getFieldTypePHPDefinition(Type $type): array
     {
         $nullSign = '?';
@@ -132,7 +135,6 @@ class FieldResolverGenerator implements FieldResolverGeneratorInterface
         ) {
             return [$nullSign . 'string', null];
         } elseif ($type instanceof CustomScalarType) {
-            /** @var TypedCustomScalarResolverInterface|string $scalarClass */
             $scalarClass = $this->scalarConfig->getModelFullClassName($type);
             if (
                 \class_exists($scalarClass)
@@ -155,6 +157,6 @@ class FieldResolverGenerator implements FieldResolverGeneratorInterface
             return [$nullSign . $this->objectConfig->getModelClassName($type), $this->objectConfig->getModelFullClassName($type)];
         }
 
-        throw new UnsupportedType($type->name);
+        throw new UnsupportedType($type->toString());
     }
 }

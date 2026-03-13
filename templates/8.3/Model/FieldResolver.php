@@ -21,15 +21,7 @@ use <?=$import_class?>;
  */
 final class <?=$short_class_name?> implements ResolverInterface
 {
-    /**
-     * @param <?php if (!empty($root_value_class)): ?><?=$root_value_class?> <?php endif ?>$rootValue
-     * @param <?php if (!empty($field_args_class)): ?><?=$field_args_class?> <?php endif ?>$args
-     * @param $context
-     * @param ResolveInfo $info
-     * @return <?php if (!empty($return_class)): ?><?=$return_class?><?php else: ?>mixed<?php endif ?>
-
-     */
-    public function __invoke($rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(mixed $rootValue, array|\ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
         throw new NotImplementedResolver('Not implemented field resolver ' . __CLASS__);
     }

@@ -13,6 +13,15 @@ class ContainerCallFieldResolverProvider implements FieldResolverProviderInterfa
 {
     public function generate(FieldResolverGeneratorConfigInterface $config, Type $type, FieldDefinition $field): string
     {
-        return sprintf('$this->container->get(\'%s\')', $config->getFieldResolverFullClassName($type, $field));
+        return sprintf(<<<'PHP'
+(function ($rootValue, $args, $context, $info) {
+    $resolver = $this->getService('%s');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Resolver service is not callable: %s');
+    }
+
+    return $resolver($rootValue, $args, $context, $info);
+})
+PHP, $config->getFieldResolverFullClassName($type, $field), $config->getFieldResolverFullClassName($type, $field));
     }
 }

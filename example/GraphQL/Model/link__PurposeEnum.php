@@ -22,12 +22,15 @@ final class link__PurposeEnum implements EnumInterface
      */
     public const EXECUTION = 'EXECUTION';
     public string $value;
+    /**
+     * @var array<string, true>
+     */
     private static array $map = [
         self::SECURITY => true,
         self::EXECUTION => true,
     ];
 
-    public function __construct($value)
+    public function __construct(string $value)
     {
         if (!isset(self::$map[$value])) {
             throw new UnknownEnumValue(__CLASS__, $value);
