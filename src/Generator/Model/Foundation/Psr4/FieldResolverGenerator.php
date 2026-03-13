@@ -114,26 +114,43 @@ class FieldResolverGenerator implements FieldResolverGeneratorInterface
      */
     private function getFieldTypePHPDefinition(Type $type): array
     {
-        $nullSign = '?';
+        $isNullable = !($type instanceof NonNull);
+
+        [$fieldType, $fieldFullClassName] = $this->getFieldTypePHPBaseDefinition($type);
+        if ($fieldType === null) {
+            return [null, $fieldFullClassName];
+        }
+
+        return [$isNullable ? $fieldType . '|null' : $fieldType, $fieldFullClassName];
+    }
+
+    /**
+     * @return array{0: ?string, 1: ?string}
+     */
+    private function getFieldTypePHPBaseDefinition(Type $type): array
+    {
         if ($type instanceof NonNull) {
-            $nullSign = '';
-            $type = $type->getWrappedType();
+            return $this->getFieldTypePHPBaseDefinition($type->getWrappedType());
         }
 
         if ($type instanceof ListOfType) {
-            [$wrappedShortName, $wrappedName] = $this->getFieldTypePHPDefinition($type->getWrappedType());
-            return [$nullSign . $wrappedShortName . '[]', $wrappedName];
+            [$wrappedShortName, $wrappedName] = $this->getFieldTypePHPBaseDefinition($type->getWrappedType());
+            if ($wrappedShortName === null) {
+                return [null, $wrappedName];
+            }
+
+            return ['iterable<int, ' . $wrappedShortName . '>', $wrappedName];
         } elseif ($type instanceof BooleanType) {
-            return [$nullSign . 'bool', null];
+            return ['bool', null];
         } elseif ($type instanceof IntType) {
-            return [$nullSign . 'int', null];
+            return ['int', null];
         } elseif ($type instanceof FloatType) {
-            return [$nullSign . 'float', null];
+            return ['float', null];
         } elseif (
             $type instanceof IDType
             || $type instanceof StringType
         ) {
-            return [$nullSign . 'string', null];
+            return ['string', null];
         } elseif ($type instanceof CustomScalarType) {
             $scalarClass = $this->scalarConfig->getModelFullClassName($type);
             if (
@@ -142,19 +159,19 @@ class FieldResolverGenerator implements FieldResolverGeneratorInterface
             ) {
                 $typeName = (string) $scalarClass::getTypeName();
                 if (! empty($typeName)) {
-                    return [$nullSign . ObjectHelper::getClassShortName($typeName), $typeName];
+                    return [ObjectHelper::getClassShortName($typeName), $typeName];
                 }
             }
 
             return [null, null];
         } elseif ($type instanceof UnionType) {
-            return [$nullSign . $this->unionConfig->getModelClassName($type), $this->unionConfig->getModelFullClassName($type)];
+            return [$this->unionConfig->getModelClassName($type), $this->unionConfig->getModelFullClassName($type)];
         } elseif ($type instanceof InterfaceType) {
-            return [$nullSign . $this->interfaceConfig->getModelClassName($type), $this->interfaceConfig->getModelFullClassName($type)];
+            return [$this->interfaceConfig->getModelClassName($type), $this->interfaceConfig->getModelFullClassName($type)];
         } elseif ($type instanceof EnumType) {
-            return [$nullSign . $this->enumConfig->getModelClassName($type), $this->enumConfig->getModelFullClassName($type)];
+            return [$this->enumConfig->getModelClassName($type), $this->enumConfig->getModelFullClassName($type)];
         } elseif ($type instanceof ObjectType) {
-            return [$nullSign . $this->objectConfig->getModelClassName($type), $this->objectConfig->getModelFullClassName($type)];
+            return [$this->objectConfig->getModelClassName($type), $this->objectConfig->getModelFullClassName($type)];
         }
 
         throw new UnsupportedType($type->toString());
