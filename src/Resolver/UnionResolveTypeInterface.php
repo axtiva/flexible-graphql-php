@@ -6,5 +6,5 @@ use GraphQL\Type\Definition\ResolveInfo;
 
 interface UnionResolveTypeInterface
 {
-    public function __invoke($model, $context, ResolveInfo $info);
+    public function __invoke(mixed $model, mixed $context, ResolveInfo $info): mixed;
 }

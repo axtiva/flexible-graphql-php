@@ -29,7 +29,7 @@ use <?=$import_class?>;
 }; ?>
 final class <?=$short_class_name?> extends InputType
 {
-    protected function decorate($name, $value)
+    protected function decorate(string $name, mixed $value): mixed
     {
         if ($value === null) {
             return null;
