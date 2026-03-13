@@ -6,17 +6,20 @@ use ArrayObject;
 
 abstract class InputType extends ArrayObject
 {
-    public function __construct($array = [])
+    /**
+     * @param array<string, mixed> $array
+     */
+    public function __construct(array $array = [])
     {
         parent::__construct($array);
     }
 
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         return $this->offsetGet($name);
     }
 
-    public function __set($name, $value)
+    public function __set(string $name, mixed $value): void
     {
         $this[$name] = $value;
     }
@@ -26,11 +29,10 @@ abstract class InputType extends ArrayObject
         unset($this[$name]);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetGet($key)
+    public function offsetGet(mixed $key): mixed
     {
         return isset($this[$key]) ? $this->decorate($key, parent::offsetGet($key)) : null;
     }
 
-    abstract protected function decorate($name, $value);
+    abstract protected function decorate(string $name, mixed $value): mixed;
 }

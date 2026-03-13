@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Axtiva\FlexibleGraphql;
 
-use Axtiva\FlexibleGraphql\Federation\Exception\EmptyRepresentation;
-use Axtiva\FlexibleGraphql\Federation\Exception\RepresentationDoesNotHaveTypeNameField;
+use Axtiva\FlexibleGraphql\Exception\EmptyRepresentation;
+use Axtiva\FlexibleGraphql\Exception\RepresentationDoesNotHaveTypeNameField;
 
 class Representation
 {
@@ -20,7 +20,10 @@ class Representation
      */
     private array $fields;
 
-    public function __construct($representation)
+    /**
+     * @param array<string, mixed> $representation
+     */
+    public function __construct(array $representation)
     {
         if (empty($representation['__typename']) || !is_string($representation['__typename'])) {
             throw new RepresentationDoesNotHaveTypeNameField();

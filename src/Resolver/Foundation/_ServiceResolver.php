@@ -6,6 +6,7 @@ namespace Axtiva\FlexibleGraphql\Resolver\Foundation;
 
 use Axtiva\FlexibleGraphql\Resolver\_ServiceResolverInterface;
 use GraphQL\Type\Definition\ResolveInfo;
+use ArrayAccess;
 
 class _ServiceResolver implements _ServiceResolverInterface
 {
@@ -16,7 +17,7 @@ class _ServiceResolver implements _ServiceResolverInterface
         $this->schema = $graphqlSchemaSDL;
     }
 
-    public function __invoke($rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
         return [
             'sdl' => $this->schema,
