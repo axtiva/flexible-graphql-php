@@ -4,5 +4,5 @@ namespace Axtiva\FlexibleGraphql\Generator\Serializer;
 
 interface VariableSerializerInterface
 {
-    public function serialize($value): string;
+    public function serialize(mixed $value): string;
 }

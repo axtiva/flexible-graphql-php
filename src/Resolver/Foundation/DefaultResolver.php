@@ -7,6 +7,7 @@ namespace Axtiva\FlexibleGraphql\Resolver\Foundation;
 use GraphQL\Executor\Executor;
 use GraphQL\Type\Definition\ResolveInfo;
 use Axtiva\FlexibleGraphql\Resolver\ResolverInterface;
+use ArrayAccess;
 
 final class DefaultResolver implements ResolverInterface
 {
@@ -22,8 +23,9 @@ final class DefaultResolver implements ResolverInterface
         return self::$instance;
     }
 
-    public function __invoke($rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
-        return Executor::defaultFieldResolver($rootValue, $args, $context, $info);
+        $normalizedArgs = is_array($args) ? $args : [];
+        return Executor::defaultFieldResolver($rootValue, $normalizedArgs, $context, $info);
     }
 }

@@ -14,18 +14,26 @@ class ScalarDateTimeImmutableResolver implements CustomScalarResolverInterface
      * @param DateTimeImmutable $value
      * @return string
      */
-    public function serialize($value)
+    public function serialize(mixed $value): mixed
     {
+        if (!$value instanceof DateTimeImmutable) {
+            return null;
+        }
+
         return $value->format(DateTimeImmutable::ISO8601);
     }
 
-    public function parseValue($value)
+    public function parseValue(mixed $value): mixed
     {
-        return $value ? new DateTimeImmutable($value) : null;
+        return $value ? new DateTimeImmutable((string) $value) : null;
     }
 
-    public function parseLiteral(Node $value, ?array $variables = null)
+    /**
+     * @param array<string, mixed>|null $variables
+     */
+    public function parseLiteral(Node $value, ?array $variables = null): mixed
     {
-        return $value->value ? new DateTimeImmutable((string) $value->value) : null;
+        $literal = get_object_vars($value)['value'] ?? null;
+        return $literal ? new DateTimeImmutable((string) $literal) : null;
     }
 }

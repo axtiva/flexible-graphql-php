@@ -9,6 +9,7 @@ use Axtiva\FlexibleGraphql\Representation;
 use Axtiva\FlexibleGraphql\Resolver\_EntitiesResolverInterface;
 use Axtiva\FlexibleGraphql\Resolver\FederationRepresentationResolverInterface;
 use GraphQL\Type\Definition\ResolveInfo;
+use ArrayAccess;
 
 class _EntitiesResolver implements _EntitiesResolverInterface
 {
@@ -24,10 +25,15 @@ class _EntitiesResolver implements _EntitiesResolverInterface
         }
     }
 
-    public function __invoke($rootValue, $args, $context, ResolveInfo $info)
+    public function __invoke(mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
         $result = [];
-        foreach ($args['representations'] ?? [] as $representation) {
+        $representations = is_array($args) ? ($args['representations'] ?? []) : [];
+        foreach ($representations as $representation) {
+            if (!is_array($representation)) {
+                continue;
+            }
+
             $representation = new Representation($representation);
             if (empty($this->resolvers[$representation->getTypename()])) {
                 throw new RepresentationResolverDoesNotFound($representation);

@@ -20,18 +20,21 @@ class DefaultScalarResolver implements CustomScalarResolverInterface
         return self::$instance;
     }
 
-    public function serialize($value)
+    public function serialize(mixed $value): mixed
     {
         return $value;
     }
 
-    public function parseValue($value)
+    public function parseValue(mixed $value): mixed
     {
         return $value;
     }
 
-    public function parseLiteral(Node $value, ?array $variables = null)
+    /**
+     * @param array<string, mixed>|null $variables
+     */
+    public function parseLiteral(Node $value, ?array $variables = null): mixed
     {
-        return $value->value;
+        return get_object_vars($value)['value'] ?? null;
     }
 }

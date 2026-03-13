@@ -9,9 +9,9 @@ interface ResolverInterface
 {
     /**
      * @param mixed $rootValue value from previous level resolver
-     * @param array|ArrayAccess|null $args list of field arguments
+     * @param array<string, mixed>|ArrayAccess<string, mixed>|null $args list of field arguments
      * @param mixed $context global context
      * @param ResolveInfo $info information about current field and ast node with full schema declaration
      */
-    public function __invoke($rootValue, $args, $context, ResolveInfo $info);
+    public function __invoke(mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed;
 }

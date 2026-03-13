@@ -8,5 +8,5 @@ use GraphQL\Type\Definition\ResolveInfo;
 interface FederationRepresentationResolverInterface
 {
     public function getTypeName(): string;
-    public function __invoke(Representation $representation, $context, ResolveInfo $info);
+    public function __invoke(Representation $representation, mixed $context, ResolveInfo $info): mixed;
 }
