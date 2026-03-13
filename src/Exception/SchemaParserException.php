@@ -9,7 +9,7 @@ use Throwable;
 
 class SchemaParserException extends Exception
 {
-    public function __construct($message = "", $code = 0, Throwable $previous = null)
+    public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message ?: "Schema parser exception", $code, $previous);
     }
