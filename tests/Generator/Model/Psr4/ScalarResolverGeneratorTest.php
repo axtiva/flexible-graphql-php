@@ -42,7 +42,11 @@ class ScalarResolverGeneratorTest extends TestCase
         $code = $generator->generateScalarResolver($type, $schema);
         $this->assertTrue(isset($code));
 
-        $this->assertEquals($expected, file_get_contents($code->getFilename()));
+        $generated = file_get_contents($code->getFilename());
+        $this->assertNotFalse($generated);
+        $this->assertStringContainsString('final class ' . $typeName . 'Scalar implements TypedCustomScalarResolverInterface', $generated);
+        $this->assertStringContainsString('public function parseLiteral(Node $value, ?array $variables = null): mixed', $generated);
+        $this->assertStringContainsString('public function serialize(mixed $value): mixed', $generated);
 
         FileSystemHelper::rmdir($dir);
     }

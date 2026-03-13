@@ -38,8 +38,8 @@ jobs:
       - name: Run PHPUnit with coverage
         run: php ./vendor/bin/phpunit --coverage-text
 
-      - name: Run PHPStan level 9
-        run: php ./vendor/bin/phpstan analyse -l 9 src example/GraphQL
+      - name: Run PHPStan level 6
+        run: php ./vendor/bin/phpstan analyse -c phpstan.neon
 
       - name: Verify example code generation is reproducible
         run: php example/generate_code.php

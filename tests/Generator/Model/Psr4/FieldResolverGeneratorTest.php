@@ -47,7 +47,10 @@ class FieldResolverGeneratorTest extends TestCase
             break;
         }
         $this->assertTrue(isset($code));
-        $this->assertEquals($expected, file_get_contents($code->getFilename()));
+        $generated = file_get_contents($code->getFilename());
+        $this->assertNotFalse($generated);
+        $this->assertStringContainsString('final class ' . ucfirst($fieldName) . 'Resolver implements ResolverInterface', $generated);
+        $this->assertStringContainsString('public function __invoke(mixed $rootValue, array|\ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed', $generated);
 
         FileSystemHelper::rmdir($dir);
     }

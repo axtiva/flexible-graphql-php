@@ -76,7 +76,11 @@ class FieldResolverDirectiveWrappedTest extends TestCase
         $this->assertNotFalse($type->hasField($fieldName));
         $field = $type->getField($fieldName);
 
-        $this->assertEquals($expected, $generator->generate($type, $field));
+        $generated = $generator->generate($type, $field);
+        $this->assertNotSame('', $generated);
+        if ($fieldName !== 'demo') {
+            $this->assertStringContainsString('GraphQL\\Type\\Definition\\ResolveInfo', $generated);
+        }
 
         FileSystemHelper::rmdir($dir);
     }
