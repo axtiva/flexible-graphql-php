@@ -20,7 +20,7 @@ class IntGenerator implements TypeGeneratorInterface, ScalarTypeGeneratorInterfa
     public function generate(Type $type): string
     {
         if (false === $this->isSupportedType($type)) {
-            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->name, __CLASS__));
+            throw new UnsupportedType(sprintf('Unsupported type %s for %s', $type->toString(), __CLASS__));
         }
 
         return 'Type::int()';

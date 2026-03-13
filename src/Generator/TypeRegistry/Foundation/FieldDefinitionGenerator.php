@@ -47,7 +47,7 @@ class FieldDefinitionGenerator implements FieldDefinitionGeneratorInterface
             'description' => {$this->serializer->serialize($field->description)},
             'deprecationReason' => {$this->serializer->serialize($field->deprecationReason)},
             {$resolve}
-            'type' => function() { return {$this->typeDefinitionResolver->getDefinition($field->getType())}; },
+            'type' => fn() => {$this->typeDefinitionResolver->getDefinition($field->getType())},
             'args' => [{$args}],
         ])";
     }

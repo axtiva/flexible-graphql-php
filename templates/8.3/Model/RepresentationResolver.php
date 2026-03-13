@@ -21,7 +21,7 @@ final class <?=$short_class_name?> implements FederationRepresentationResolverIn
         return '<?=$type_name?>';
     }
 
-    public function __invoke(Representation $representation, $context, ResolveInfo $info)
+    public function __invoke(Representation $representation, mixed $context, ResolveInfo $info): mixed
     {
         throw new NotImplementedResolver('Not implemented field resolver ' . __CLASS__);
     }

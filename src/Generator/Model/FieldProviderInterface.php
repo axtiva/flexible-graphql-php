@@ -8,6 +8,8 @@ interface FieldProviderInterface extends NodeVisitor
 {
     /**
      * return collected information
+     *
+     * @return array<string, mixed>
      */
-    public function getResults(): iterable;
+    public function getResults(): array;
 }

@@ -13,6 +13,15 @@ class ContainerCallUnionResolverProvider implements UnionResolverProviderInterfa
 {
     public function generate(UnionResolveTypeGeneratorConfigInterface $config, Type $type): string
     {
-        return sprintf('$this->container->get(\'%s\')', $config->getModelFullClassName($type));
+        return sprintf(<<<'PHP'
+(function ($model, $context, $info) {
+    $resolver = $this->getService('%s');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Union resolver service is not callable: %s');
+    }
+
+    return $resolver($model, $context, $info);
+})
+PHP, $config->getModelFullClassName($type), $config->getModelFullClassName($type));
     }
 }

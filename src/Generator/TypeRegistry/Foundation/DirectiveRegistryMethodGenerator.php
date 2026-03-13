@@ -25,7 +25,7 @@ class DirectiveRegistryMethodGenerator implements DirectiveRegistryMethodGenerat
     public function getMethod(Directive $directive): string
     {
             return sprintf('
-    public function %s()
+    public function %s(): Directive
     {
         static $directive = null;
         if ($directive === null) {

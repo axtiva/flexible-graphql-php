@@ -35,7 +35,7 @@ class FieldArgumentGenerator implements FieldArgumentGeneratorInterface
         }
         return "[
             'name' => {$this->serializer->serialize($argument->name)},
-            'type' => function() { return {$this->typeDefinitionResolver->getDefinition($argument->getType())}; },{$description}{$defaultValue}
+            'type' => fn() => {$this->typeDefinitionResolver->getDefinition($argument->getType())},{$description}{$defaultValue}
         ]";
     }
 

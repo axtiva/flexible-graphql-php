@@ -27,13 +27,16 @@ final class <?=$short_class_name?> implements EnumInterface
     public const <?=$enum['value']?> = '<?=$enum['value']?>';
 <?php endforeach ?>
     public string $value;
+    /**
+     * @var array<string, true>
+     */
     private static array $map = [
 <?php foreach ($enums ?? [] as $enum): ?>
         self::<?=$enum['value']?> => true,
 <?php endforeach ?>
     ];
 
-    public function __construct($value)
+    public function __construct(string $value)
     {
         if (!isset(self::$map[$value])) {
             throw new UnknownEnumValue(__CLASS__, $value);

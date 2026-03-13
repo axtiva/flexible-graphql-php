@@ -28,18 +28,24 @@ class _EntitiesResolver implements _EntitiesResolverInterface
     public function __invoke(mixed $rootValue, array|ArrayAccess|null $args, mixed $context, ResolveInfo $info): mixed
     {
         $result = [];
-        $representations = is_array($args) ? ($args['representations'] ?? []) : [];
+        $representations = [];
+        if (is_array($args) && isset($args['representations']) && is_iterable($args['representations'])) {
+            $representations = $args['representations'];
+        }
+
         foreach ($representations as $representation) {
             if (!is_array($representation)) {
                 continue;
             }
 
-            $representation = new Representation($representation);
-            if (empty($this->resolvers[$representation->getTypename()])) {
-                throw new RepresentationResolverDoesNotFound($representation);
+            /** @var array<string, mixed> $representationData */
+            $representationData = $representation;
+            $representationObject = new Representation($representationData);
+            if (empty($this->resolvers[$representationObject->getTypename()])) {
+                throw new RepresentationResolverDoesNotFound($representationObject);
             }
 
-            $result[] = $this->resolvers[$representation->getTypename()]->__invoke($representation, $context, $info);
+            $result[] = $this->resolvers[$representationObject->getTypename()]->__invoke($representationObject, $context, $info);
         }
 
         return $result;

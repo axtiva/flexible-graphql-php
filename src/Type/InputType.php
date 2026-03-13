@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Axtiva\FlexibleGraphql\Type;
 
 use ArrayObject;
 
+/**
+ * @extends ArrayObject<string, mixed>
+ */
 abstract class InputType extends ArrayObject
 {
     /**
@@ -24,7 +29,7 @@ abstract class InputType extends ArrayObject
         $this[$name] = $value;
     }
 
-    public function __unset(string $name)
+    public function __unset(string $name): void
     {
         unset($this[$name]);
     }

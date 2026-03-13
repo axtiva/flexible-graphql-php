@@ -85,6 +85,19 @@ class %s
     {
         return $this->types[$name] ??= $this->{$name}();
     }
+
+    /**
+     * @return object
+     */
+    private function getService(string $id): object
+    {
+        $service = $this->container->get($id);
+        if (!is_object($service)) {
+            throw new \RuntimeException("Service not found or invalid object: " . $id);
+        }
+
+        return $service;
+    }
     
     %s
 
@@ -103,12 +116,12 @@ class %s
         $hasMutation = false;
         $allBuiltInTypes = array_keys(Type::builtInTypes());
         foreach ($schema->getTypeMap() as $type) {
-            if (!in_array($type->name, $allBuiltInTypes)) {
+            if (!in_array($type->toString(), $allBuiltInTypes, true)) {
                 $string[] = $this->typeRegistryMethodGenerator->getMethod($type);
-                if ($type->name === 'Query') {
+                if ($type->toString() === 'Query') {
                     $hasQuery = true;
                 }
-                if ($type->name === 'Mutation') {
+                if ($type->toString() === 'Mutation') {
                     $hasMutation = true;
                 }
             }
@@ -116,18 +129,18 @@ class %s
 
         if (!$hasQuery) {
             $string[] = <<<'PHP'
-    public function Query()
+    public function Query(): ObjectType
     {
-        return new ObjectType(['name' => 'Query']);
+        return new ObjectType(['name' => 'Query', 'fields' => []]);
     }
 PHP;
         }
 
         if (!$hasMutation) {
             $string[] = <<<'PHP'
-    public function Mutation()
+    public function Mutation(): ObjectType
     {
-        return new ObjectType(['name' => 'Mutation']);
+        return new ObjectType(['name' => 'Mutation', 'fields' => []]);
     }
 PHP;
         }
@@ -135,7 +148,7 @@ PHP;
         $allBuiltInDirectives = array_keys(Directive::getInternalDirectives());
         $directivesMethods = [];
         foreach ($schema->getDirectives() as $directive) {
-            if (in_array($directive->name, $allBuiltInDirectives) === false) {
+            if (in_array($directive->name, $allBuiltInDirectives, true) === false) {
                 $directivesMethods[] = $this->directiveRegistryMethodGenerator->getMethodCall($directive);
                 $string[] = $this->directiveRegistryMethodGenerator->getMethod($directive);
             }
@@ -143,7 +156,10 @@ PHP;
 
         $string[] = sprintf(
             '
-    public function getDirectives()
+    /**
+     * @return array<int, Directive>
+     */
+    public function getDirectives(): array
     {
         return [%s];
     }

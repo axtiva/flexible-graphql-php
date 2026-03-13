@@ -10,13 +10,9 @@ use Axtiva\FlexibleGraphql\Resolver\CustomScalarResolverInterface;
 
 class ScalarDateTimeImmutableResolver implements CustomScalarResolverInterface
 {
-    /**
-     * @param DateTimeImmutable $value
-     * @return string
-     */
     public function serialize(mixed $value): mixed
     {
-        if (!$value instanceof DateTimeImmutable) {
+        if (!($value instanceof DateTimeImmutable)) {
             return null;
         }
 
@@ -25,7 +21,11 @@ class ScalarDateTimeImmutableResolver implements CustomScalarResolverInterface
 
     public function parseValue(mixed $value): mixed
     {
-        return $value ? new DateTimeImmutable((string) $value) : null;
+        if (!is_string($value) || $value === '') {
+            return null;
+        }
+
+        return new DateTimeImmutable($value);
     }
 
     /**
@@ -34,6 +34,10 @@ class ScalarDateTimeImmutableResolver implements CustomScalarResolverInterface
     public function parseLiteral(Node $value, ?array $variables = null): mixed
     {
         $literal = get_object_vars($value)['value'] ?? null;
-        return $literal ? new DateTimeImmutable((string) $literal) : null;
+        if (!is_string($literal) || $literal === '') {
+            return null;
+        }
+
+        return new DateTimeImmutable($literal);
     }
 }

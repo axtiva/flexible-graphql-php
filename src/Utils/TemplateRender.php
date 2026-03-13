@@ -11,15 +11,23 @@ class TemplateRender
      */
     public static function render(string $template, array $data): string
     {
-        extract($data);
-        ob_start();
-        include($template);
-        $content = ob_get_contents();
-        ob_end_clean();
-        if ($content === false) {
+        $content = static function () use ($template, $data): string {
+            extract($data, EXTR_SKIP);
+
+            ob_start();
+            include $template;
+            return (string) ob_get_clean();
+        };
+
+        $rendered = $content();
+        if ($rendered === '') {
             return '<?php';
         }
 
-        return '<?php' . $content;
+        if (str_starts_with($rendered, '<?php')) {
+            return $rendered;
+        }
+
+        return '<?php' . $rendered;
     }
 }

@@ -12,6 +12,15 @@ class ContainerCallDirectiveResolverProvider implements DirectiveResolverProvide
 {
     public function generate(DirectiveResolverGeneratorConfigInterface $config, Directive $directive): string
     {
-        return sprintf('$this->container->get(\'%s\')', $config->getDirectiveResolverFullClassName($directive));
+        return sprintf(<<<'PHP'
+(function (callable $next, $directiveArgs, $rootValue, $args, $context, $info) {
+    $resolver = $this->getService('%s');
+    if (!\is_callable($resolver)) {
+        throw new \RuntimeException('Directive resolver service is not callable: %s');
+    }
+
+    return $resolver($next, $directiveArgs, $rootValue, $args, $context, $info);
+})
+PHP, $config->getDirectiveResolverFullClassName($directive), $config->getDirectiveResolverFullClassName($directive));
     }
 }

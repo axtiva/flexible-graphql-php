@@ -7,10 +7,12 @@ namespace Axtiva\FlexibleGraphql\Utils;
 use GraphQL\Language\AST\ArgumentNode;
 use GraphQL\Language\AST\DirectiveNode;
 use GraphQL\Language\AST\DocumentNode;
-use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\ListValueNode;
 use GraphQL\Language\AST\ObjectValueNode;
+use GraphQL\Language\AST\ObjectFieldNode;
 use GraphQL\Language\AST\SchemaExtensionNode;
 use GraphQL\Language\AST\StringValueNode;
+use GraphQL\Language\AST\ValueNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\SchemaExtender;
@@ -63,70 +65,83 @@ scalar link__Import
 GQL
         );
 
-        $schema = self::addDirectiveIfNotExists($schema, 'shareable', sprintf(static::SHAREABLE, 'shareable'));
-        $schema = self::addDirectiveIfNotExists($schema, 'inaccessible', sprintf(static::INACCESSIBLE, 'inaccessible'));
-        $schema = self::addDirectiveIfNotExists($schema, 'override', sprintf(static::OVERRIDE, 'override'));
-        $schema = self::addDirectiveIfNotExists($schema, 'tag', sprintf(static::TAG, 'tag'));
+        $schema = self::addDirectiveIfNotExists($schema, 'shareable', sprintf(self::SHAREABLE, 'shareable'));
+        $schema = self::addDirectiveIfNotExists($schema, 'inaccessible', sprintf(self::INACCESSIBLE, 'inaccessible'));
+        $schema = self::addDirectiveIfNotExists($schema, 'override', sprintf(self::OVERRIDE, 'override'));
+        $schema = self::addDirectiveIfNotExists($schema, 'tag', sprintf(self::TAG, 'tag'));
         $schema = self::addFederationDirectivesWithAliases($schema, 'federation');
 
         $hasLinkExtension = false;
-        /** @var SchemaExtensionNode|Node $node */
-        foreach ($ast->definitions as $node) {
-            if ($node->kind === 'SchemaExtension') {
-                /** @var SchemaExtensionNode $node */
-                /** @var DirectiveNode $directive */
-                foreach ($node->directives->getIterator() as $directive) {
-                    if ($directive->name->value === 'link') {
-                        $hasLinkExtension = true;
-                        /** @var ArgumentNode $argument */
-                        foreach ($directive->arguments->getIterator() as $argument) {
-                            if ($argument->name->value === 'as') {
-                                $schema = self::addFederationDirectivesWithAliases(
+        foreach ($ast->definitions as $definition) {
+            if (!$definition instanceof SchemaExtensionNode) {
+                continue;
+            }
+
+            /** @var DirectiveNode $directive */
+            foreach ($definition->directives as $directive) {
+                if ($directive->name->value !== 'link') {
+                    continue;
+                }
+
+                $hasLinkExtension = true;
+
+                /** @var ArgumentNode $argument */
+                foreach ($directive->arguments as $argument) {
+                    if ($argument->name->value === 'as') {
+                        $alias = self::extractStringValue($argument->value);
+                        if ($alias !== null) {
+                            $schema = self::addFederationDirectivesWithAliases(
+                                $schema,
+                                self::trimDirectivePrefix($alias),
+                            );
+                        }
+                    } elseif ($argument->name->value === 'import' && $argument->value instanceof ListValueNode) {
+                        foreach ($argument->value->values as $value) {
+                            if ($value instanceof StringValueNode) {
+                                $directiveName = self::trimDirectivePrefix($value->value);
+                                if (empty(self::DIRECTIVE_MAP[$directiveName])) {
+                                    continue;
+                                }
+                                $schema = self::addDirectiveIfNotExists(
                                     $schema,
-                                    self::trimDirectivePrefix($argument->value->value),
+                                    $directiveName,
+                                    sprintf(self::DIRECTIVE_MAP[$directiveName], $directiveName)
                                 );
-                            } elseif ($argument->name->value === 'import') {
-                                /** @var ObjectValueNode|StringValueNode $value */
-                                foreach ($argument->value->values->getIterator() as $value) {
-                                    if ($value instanceof StringValueNode) {
-                                        $directiveName = self::trimDirectivePrefix($value->value);
-                                        if (empty(static::DIRECTIVE_MAP[$directiveName])) {
-                                            continue;
-                                        }
-                                        $schema = self::addDirectiveIfNotExists(
-                                            $schema,
-                                            $directiveName,
-                                            sprintf(static::DIRECTIVE_MAP[$directiveName], $directiveName)
-                                        );
-                                    } elseif ($value instanceof ObjectValueNode) {
-                                        $name = null;
-                                        $as = null;
-                                        /** @var ArgumentNode $argument */
-                                        foreach ($value->fields->getIterator() as $argument) {
-                                            if ($argument->name->value === 'name') {
-                                                $name = self::trimDirectivePrefix($argument->value->value);
-                                            }
-                                            if ($argument->name->value === 'as') {
-                                                $as = self::trimDirectivePrefix($argument->value->value);
-                                            }
-                                        }
-                                        if (empty(static::DIRECTIVE_MAP[$name])) {
-                                            continue;
-                                        }
-                                        if ($name !== null && $as !== null) {
-                                            $schema = self::addDirectiveIfNotExists(
-                                                $schema,
-                                                $as,
-                                                sprintf(static::DIRECTIVE_MAP[$name], $as)
-                                            );
-                                        } elseif ($name !== null) {
-                                            $schema = self::addDirectiveIfNotExists(
-                                                $schema,
-                                                $name,
-                                                sprintf(static::DIRECTIVE_MAP[$name], $name)
-                                            );
+                            } elseif ($value instanceof ObjectValueNode) {
+                                $name = null;
+                                $as = null;
+                                /** @var ObjectFieldNode $field */
+                                foreach ($value->fields as $field) {
+                                    if ($field->name->value === 'name') {
+                                        $nameValue = self::extractStringValue($field->value);
+                                        if ($nameValue !== null) {
+                                            $name = self::trimDirectivePrefix($nameValue);
                                         }
                                     }
+                                    if ($field->name->value === 'as') {
+                                        $aliasValue = self::extractStringValue($field->value);
+                                        if ($aliasValue !== null) {
+                                            $as = self::trimDirectivePrefix($aliasValue);
+                                        }
+                                    }
+                                }
+
+                                if ($name === null || empty(self::DIRECTIVE_MAP[$name])) {
+                                    continue;
+                                }
+
+                                if ($as !== null) {
+                                    $schema = self::addDirectiveIfNotExists(
+                                        $schema,
+                                        $as,
+                                        sprintf(self::DIRECTIVE_MAP[$name], $as)
+                                    );
+                                } else {
+                                    $schema = self::addDirectiveIfNotExists(
+                                        $schema,
+                                        $name,
+                                        sprintf(self::DIRECTIVE_MAP[$name], $name)
+                                    );
                                 }
                             }
                         }
@@ -147,7 +162,7 @@ GQL
 
     private static function addFederationDirectivesWithAliases(Schema $schema, string $alias): Schema
     {
-        foreach (static::DIRECTIVE_MAP as $directiveName => $directive) {
+        foreach (self::DIRECTIVE_MAP as $directiveName => $directive) {
             $schema = self::addDirectiveIfNotExists(
                 $schema,
                 $alias . '__' . $directiveName,
@@ -161,5 +176,14 @@ GQL
     private static function trimDirectivePrefix(string $value): string
     {
         return ltrim($value, '@');
+    }
+
+    private static function extractStringValue(ValueNode $value): ?string
+    {
+        if ($value instanceof StringValueNode) {
+            return $value->value;
+        }
+
+        return null;
     }
 }

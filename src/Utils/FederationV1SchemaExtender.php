@@ -62,7 +62,12 @@ GRAPHQL;
         /** @var ObjectType $query */
         $query = $schema->getType('Query');
         if ($query->getField('_service')->resolveFn === null) {
-            $query->getField('_service')->resolveFn = new _ServiceResolver(Printer::doPrint($schema->astNode));
+            $schemaAstNode = $schema->astNode;
+            if (!$schemaAstNode instanceof SchemaDefinitionNode) {
+                throw new \RuntimeException('Schema AST node was not created.');
+            }
+
+            $query->getField('_service')->resolveFn = new _ServiceResolver(Printer::doPrint($schemaAstNode));
         }
 
         if (empty($entityTypeNamesList)) {
@@ -107,23 +112,22 @@ GRAPHQL;
 
     private static function extendSchemaAst(Schema $schema): Schema
     {
-        $schemaSDL = 'schema { query: Query }';
+        $operations = [];
+        foreach (['query', 'mutation', 'subscription'] as $operationName) {
+            $operationType = $schema->getOperationType($operationName);
+            if ($operationType !== null) {
+                $operations[] = $operationName . ': ' . $operationType->name;
+            }
+        }
+
+        $schemaSDL = 'schema { ' . implode(' ', $operations) . ' }';
         $documentAST = Parser::parse($schemaSDL);
         /** @var SchemaDefinitionNode $schemaDefinition */
         $schemaDefinition = $documentAST->definitions[0];
-        foreach ($schema->getDirectives() as $directive) {
-            if ($directive->astNode) {
-                $schemaDefinition->directives[] = $directive->astNode;
-            }
-        }
-        foreach (['query', 'mutation', 'subscription'] as $operation) {
-            $operation = $schema->getOperationType($operation);
-            if ($operation && $operation->astNode) {
-                $schemaDefinition->operationTypes[] = $operation->astNode;
-            }
-        }
+
         $schema->getConfig()->setAstNode($schemaDefinition);
         $schema->astNode = $schemaDefinition;
+
         return $schema;
     }
 }
