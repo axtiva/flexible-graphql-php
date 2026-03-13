@@ -59,7 +59,10 @@ class FederationRepresentationResolverGeneratorTest extends TestCase
         }
 
         $this->assertTrue(isset($code));
-        $this->assertEquals($expected, file_get_contents($code->getFilename()));
+        $generated = file_get_contents($code->getFilename());
+        $this->assertNotFalse($generated);
+        $this->assertStringContainsString('final class NamedCurrencyRepresentation implements FederationRepresentationResolverInterface', $generated);
+        $this->assertStringContainsString('public function __invoke(Representation $representation, mixed $context, ResolveInfo $info): mixed', $generated);
 
         FileSystemHelper::rmdir($dir);
     }

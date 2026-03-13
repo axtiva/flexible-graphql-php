@@ -33,6 +33,10 @@ class _EntitiesResolver implements _EntitiesResolverInterface
             $representations = $args['representations'];
         }
 
+        if ($args instanceof ArrayAccess && isset($args['representations']) && is_iterable($args['representations'])) {
+            $representations = $args['representations'];
+        }
+
         foreach ($representations as $representation) {
             if (!is_array($representation)) {
                 continue;

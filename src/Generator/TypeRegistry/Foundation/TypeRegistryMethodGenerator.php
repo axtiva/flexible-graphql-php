@@ -47,7 +47,12 @@ class TypeRegistryMethodGenerator implements TypeRegistryMethodGeneratorInterfac
         return "
             public function {$this->nameGenerator->getMethodName($type)}(): {$returnType}
             {
-                return {$this->typeGenerator->generate($type)};
+                static \${$this->nameGenerator->getMethodName($type)} = null;
+                if (\${$this->nameGenerator->getMethodName($type)} === null) {
+                    \${$this->nameGenerator->getMethodName($type)} = {$this->typeGenerator->generate($type)};
+                }
+
+                return \${$this->nameGenerator->getMethodName($type)};
             }
         ";
     }

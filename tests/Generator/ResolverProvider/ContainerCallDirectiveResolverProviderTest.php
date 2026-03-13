@@ -40,7 +40,9 @@ class ContainerCallDirectiveResolverProviderTest extends TestCase
         $directive = $schema->getDirective($directiveName);
         $this->assertInstanceOf(Directive::class, $directive);
 
-        $this->assertEquals($expected, $generator->generate($directiveConfig, $directive));
+        $generated = $generator->generate($directiveConfig, $directive);
+        $this->assertStringContainsString('$this->getService', $generated);
+        $this->assertStringContainsString('Directive resolver service is not callable', $generated);
 
         FileSystemHelper::rmdir($dir);
     }

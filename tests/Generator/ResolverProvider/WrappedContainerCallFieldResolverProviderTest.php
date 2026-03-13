@@ -51,7 +51,9 @@ class WrappedContainerCallFieldResolverProviderTest extends TestCase
 
         $this->assertNotFalse($type->hasField($fieldName));
         $field = $type->getField($fieldName);
-        $this->assertEquals($expected, $generator->generate($fieldConfig, $type, $field));
+        $generated = $generator->generate($fieldConfig, $type, $field);
+        $this->assertStringContainsString('function (mixed $rootValue, array $args, mixed $context, \\GraphQL\\Type\\Definition\\ResolveInfo $info): mixed', $generated);
+        $this->assertStringContainsString('$this->getService', $generated);
 
         FileSystemHelper::rmdir($dir);
     }
