@@ -40,6 +40,6 @@ class FieldGenerator implements FieldResolverGeneratorInterface
             }
         }
 
-        throw new UnsupportedType(get_class($type), get_class($field));
+        throw new UnsupportedType(sprintf('%s.%s', get_class($type), $field->name));
     }
 }
