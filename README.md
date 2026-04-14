@@ -12,6 +12,7 @@ Can easy to integrate graphql to any project, all you need is controller. Fast s
 - Support all features from [webonyx/graphql-php](https://github.com/webonyx/graphql-php)
 - Executable directives
 - Apollo Federation/Federation2 support
+- Amphp v3 support for async executions
 - Popular framework integration:
   + Symfony [axtiva/flexible-graphql-bundle](//github.com/axtiva/flexible-graphql-bundle)
 
@@ -61,7 +62,7 @@ Example:
 }
 ```
 
-and run `php example/generate_code.php`, after this you will find in [example/Resolver/CodedCurrency/CodeResolver.php](example/Resolver/CodedCurrency/CodeResolver.php).
+and run `php example/generate_code.php`, after this you will find in [example/GraphQL/Resolver/CodedCurrency/CodeResolver.php](example/GraphQL/Resolver/CodedCurrency/CodeResolver.php).
 this is your field resolver, define him in your psr container like PsrContainerExample in [example/start_graphql_server.php](example/start_graphql_server.php):
 
 ```diff

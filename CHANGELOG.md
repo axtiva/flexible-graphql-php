@@ -1,3 +1,7 @@
+3.0.1
+
+- add amphp tests and suggestions
+
 3.0.0
 
 - upgrade php version to 8.3
