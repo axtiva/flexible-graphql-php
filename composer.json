@@ -28,6 +28,10 @@
   "require-dev": {
     "psr/container": "^1 | ^2",
     "phpunit/phpunit": "^12",
-    "phpstan/phpstan": "^2.1"
+    "phpstan/phpstan": "^2.1",
+    "amphp/amp": "^3"
+  },
+  "suggest": {
+    "amphp/amp": "Needed for async execution support"
   }
 }

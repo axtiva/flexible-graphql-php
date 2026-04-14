@@ -33,7 +33,7 @@ jobs:
         run: composer validate --strict
 
       - name: Run composer install
-        run: composer install -n --prefer-dist
+        run: composer install -n --prefer-dist --dev
 
       - name: Run PHPUnit with coverage
         run: php ./vendor/bin/phpunit --coverage-text
