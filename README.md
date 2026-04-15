@@ -12,7 +12,7 @@ Can easy to integrate graphql to any project, all you need is controller. Fast s
 - Support all features from [webonyx/graphql-php](https://github.com/webonyx/graphql-php)
 - Executable directives
 - Apollo Federation/Federation2 support
-- Amphp v3 support for async executions
+- [Amphp v3](#amphp-v3-async-execution) support for async executions
 - Popular framework integration:
   + Symfony [axtiva/flexible-graphql-bundle](//github.com/axtiva/flexible-graphql-bundle)
 
@@ -75,6 +75,43 @@ $container = new PsrContainerExample([
 ```
 
 Run demo app `php -S localhost:8080 example/start_graphql_server.php` and try request CodedCurrency.code field in query 
+
+## Amphp v3 Async Execution
+
+`AmpFutureAdapter` bridges [Amphp v3](https://amphp.org/) `Future` objects with the
+`webonyx/graphql-php` promise system, enabling fully non-blocking GraphQL execution.
+
+### Setup
+
+```php
+use Axtiva\FlexibleGraphql\Executor\AmpFutureAdapter;
+use GraphQL\Server\ServerConfig;
+use GraphQL\Server\StandardServer;
+use Amp\Future;
+
+$config = ServerConfig::create()
+    // ... schema, root value, etc.
+    ->setPromiseAdapter(new AmpFutureAdapter());
+
+$server = new StandardServer($config);
+$promise = $server->executePsrRequest($psrRequest);
+
+$response = null;
+if ($promise->adoptedPromise instanceof Future) {
+    $response = $promise->adoptedPromise->await()->toArray();
+}
+
+return new JsonResponse($response);
+```
+
+### Notes
+
+- Every field resolver that returns an Amphp `Future` is automatically wrapped via `Amp\async()` by the generated `TypeRegistry` when you use the `TypeRegistryGeneratorBuilderAmphp` builder.
+- `amphp/amp` is a **suggested** dependency; add it explicitly when async execution is needed:
+
+```
+composer require amphp/amp:^3
+```
 
 ## Tests
 
